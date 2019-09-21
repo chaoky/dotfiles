@@ -1,0 +1,43 @@
+{
+	"name": "vscode-gtm",
+	"displayName": "vscode-gtm",
+	"description": "VSCode plugin to support Git Time Metrics",
+	"version": "0.2.0",
+	"publisher": "s3ramsay",
+	"license": "MIT",
+	"engines": {
+		"vscode": "^1.0.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"*"
+	],
+	"keywords": [
+		"gtm",
+		"git time metrics",
+		"time tracking"
+	],
+	"icon": "GTMLogo-128.png",
+	"main": "./out/src/extension",
+	"contributes": {},
+	"scripts": {
+		"vscode:prepublish": "node ./node_modules/vscode/bin/compile",
+		"compile": "node ./node_modules/vscode/bin/compile -watch -p ./",
+		"postinstall": "node ./node_modules/vscode/bin/install",
+		"test": "node ./node_modules/vscode/bin/compile"
+	},
+	"devDependencies": {
+		"typescript": "^1.8.5",
+		"vscode": "^0.11.0"
+	},
+	"repository": {
+		"url": " git@github.com:nexus-uw/vscode-gtm.git"
+	},
+	"__metadata": {
+		"id": "890a6530-df36-4909-a20d-57e41d77f085",
+		"publisherId": "fadf3418-afa4-4f43-a58d-3fcae2f578c1",
+		"publisherDisplayName": "s3ramsay"
+	}
+}

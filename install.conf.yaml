@@ -3,5 +3,7 @@
 - link:
     ~/.profile: profile
     ~/.bash_profile: bash_profile
-
-
+    ~/.ssh: ssh
+    ~/.vscode-oss: vscode-oss
+    ~/.themes: gtkThemes
+    ~/.config/fish/config.fish: config.fish

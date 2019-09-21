@@ -1,0 +1,34 @@
+{
+  "required": ["name"],
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "label": "Name",
+      "placeHolder": "Unique Identifier"
+    },
+    "nodes": {
+      "type": "array",
+      "properties": {
+        "addable": true,
+        "placeHolder": "Add Node"
+      },
+      "label": "Nodes",
+      "items": {
+        "type": "object",
+        "required": ["nodeName", "algorithmName"],
+        "properties": {
+          "nodeName": {
+            "type": "string",
+            "label": "",
+            "placeHolder": "Node Name"
+          },
+          "algorithName": {
+            "type": "string",
+            "placeHolder": "Algorithm Name"
+          }
+        }
+      }
+    }
+  }
+}
