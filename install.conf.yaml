@@ -8,4 +8,4 @@
 - shell:
     - [echo 'source ~/.zsh_plugins.sh' > ~/.zshrc && antibody bundle < ~/.zsh_plugins.txt > ~/.zsh_plugins.sh, loading plugins]
     - [git config --global user.email "levimanga@gmail.com" && git config --global user.name "lordie", git config]
-      
+    - ['git remote set-url origin git@github.com:chaoky/dotfiles.git', switching repo to ssh]
