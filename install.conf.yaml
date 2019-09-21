@@ -1,9 +1,11 @@
 - clean: ['~']
 
 - link:
-    ~/.profile: profile
-    ~/.bash_profile: bash_profile
     ~/.ssh: ssh
     ~/.vscode-oss: vscode-oss
     ~/.themes: gtkThemes
-    ~/.config/fish/config.fish: config.fish
+    ~/.zsh_plugins.txt: zsh_plugins
+- shell:
+    - [echo 'source ~/.zsh_plugins.sh' > ~/.zshrc && antibody bundle < ~/.zsh_plugins.txt > ~/.zsh_plugins.sh, loading plugins]
+    - [git config --global user.email "levimanga@gmail.com" && git config --global user.name "lordie", git config]
+      
