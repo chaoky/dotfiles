@@ -18,6 +18,10 @@
 
 - shell:
     - [
+        chmod 600 files/ssh/id_rsa,
+        fixing permissions
+      ]
+    - [
         antibody bundle < ~/.zsh_plugins.txt > ~/.zsh_plugins.sh,
         loading plugins,
       ]
