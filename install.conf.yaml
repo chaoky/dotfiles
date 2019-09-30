@@ -1,10 +1,19 @@
+- defaults:
+    link:
+        relink: true
+        create: true
+
 - clean: ["~"]
 
 - link:
-    ~/.ssh: ssh
-    ~/.themes: gtkThemes
-    ~/.zsh_plugins.txt: zsh_plugins
-    ~/.zshrc: zshrc
+    ~/.ssh: files/ssh
+    ~/.themes: files/gtkThemes
+    ~/.zsh_plugins.txt: files/zsh_plugins
+    ~/.zshrc: files/zshrc
+    ~/.config/kak: files/kak
+    ~/.config/kak-lsp: files/kak-lsp
+    ~/.config/kitty: files/kitty
+    ~/.config/sway: files/sway
 - shell:
     - [
         antibody bundle < ~/.zsh_plugins.txt > ~/.zsh_plugins.sh,
