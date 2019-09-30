@@ -14,6 +14,8 @@
     ~/.config/kak-lsp: files/kak-lsp
     ~/.config/kitty: files/kitty
     ~/.config/sway: files/sway
+    ~/.tmux.conf: files/tmux.conf
+
 - shell:
     - [
         antibody bundle < ~/.zsh_plugins.txt > ~/.zsh_plugins.sh,
