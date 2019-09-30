@@ -20,6 +20,12 @@ map global user p '<a-!>xsel --output --clipboard<ret>'
 colorscheme dracula
 lsp-auto-hover-enable
 
+# yy to escape
+hook global InsertChar y %{ try %{
+  exec -draft hH <a-k>yy<ret> d
+  exec <esc>
+}}
+
 # Move on colemak
 map -docstring "select to next word end" global normal 'j' 'e'
 map -docstring "select to next WORD end" global normal '<a-j>' '<a-e>'
