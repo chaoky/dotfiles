@@ -1,5 +1,5 @@
- snippet_support = false
- verbosity = 2
+ snippet_support = true
+ verbosity = 1
 
 [server]
 # exit session if no requests were received during given period in seconds
