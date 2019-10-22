@@ -4,7 +4,7 @@ lsp-enable
 
 # elm format-on-write
 hook global WinSetOption filetype=elm %{
-  set window formatcmd 'elm-format --stdin'
+  set window formatcmd 'elm-format --stdin --elm-version=0.19'
 
   hook buffer BufWritePre .* %{format}
 } 
@@ -19,6 +19,23 @@ map global user p '<a-!>xsel --output --clipboard<ret>'
 # Theme
 colorscheme dracula
 lsp-auto-hover-enable
+set-option global ui_options ncurses_assistant=cat
+
+# Plugins
+source "%val{config}/plugins/plug.kak/rc/plug.kak"
+plug 'andreyorst/plug.kak' noload
+plug 'alexherbo2/auto-pairs.kak'
+plug 'alexherbo2/palette.kak'
+plug 'delapouite/kakoune-palette'
+plug 'alexherbo2/explore.kak'
+plug 'occivink/kakoune-sudo-write'
+plug "abuffseagull/kakoune-discord" do %{ cargo install --locked --force --path . } %{
+}
+
+hook global WinCreate .* %{
+  palette-enable
+  auto-pairs-enable
+}
 
 # yy to escape
 hook global InsertChar y %{ try %{

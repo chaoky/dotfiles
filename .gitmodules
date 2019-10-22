@@ -1,6 +1,3 @@
 [submodule "dotbot"]
 	path = dotbot
 	url = https://github.com/anishathalye/dotbot
-[submodule "files/files/kak/colors"]
-	path = files/files/kak/colors
-	url = https://github.com/Delapouite/kakoune-colors
