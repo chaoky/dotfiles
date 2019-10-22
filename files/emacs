@@ -1,0 +1,199 @@
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+(package-initialize)
+
+(unless (package-installed-p 'use-package) 
+  (package-refresh-contents) 
+  (package-install 'use-package))
+
+(setq custom-file (make-temp-file "emacs-custom"))
+
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(menu-bar-mode -1)
+
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+(setq backup-directory-alist '(("." . "~/.emacs.d/backup")) backup-by-copying t	; Don't delink hardlinks
+      version-control t      ; Use version numbers on backups
+      delete-old-versions t  ; Automatically delete excess backups
+      kept-new-versions 20   ; how many of the newest versions to keep
+      kept-old-versions 5    ; and how many of the old
+      )
+
+(dolist (x (list '(height . 53) 
+		 '(width . 190) 
+		 '(top . 47) 
+		 '(left . -80))) 
+  (add-to-list 'initial-frame-alist x))
+
+(put 'dired-find-alternate-file 'disabled nil)
+
+(use-package 
+  dashboard 
+  :ensure t 
+  :config (dashboard-setup-startup-hook) 
+  (setq dashboard-banner-logo-title "\"I dont know everything, I just know what I know\"") 
+  (setq dashboard-startup-banner "~/Pictures/edit/tsubasaFace.png") 
+  (setq dashboard-set-file-icons t) 
+  (setq dashboard-set-heading-icons t) 
+  (setq dashboard-items '((recents  . 5) 
+			  (projects . 13))))
+
+(use-package 
+  all-the-icons 
+  :ensure t)
+
+(use-package 
+  dracula-theme 
+  :ensure t 
+  :config (load-theme 'dracula t))
+
+(use-package 
+  amx 
+  :ensure t)
+
+(use-package 
+  ivy 
+  :ensure t 
+  :diminish ivy-mode 
+  :config (ivy-mode t))
+
+(use-package 
+  counsel 
+  :ensure t 
+  :bind (("M-x" . counsel-M-x)))
+
+(use-package 
+  swiper 
+  :ensure t 
+  :bind (("M-s" . swiper)))
+
+(use-package 
+  ivy-hydra 
+  :ensure t)
+
+(use-package 
+  which-key 
+  :ensure t 
+  :diminish which-key-mode 
+  :config (add-hook 'after-init-hook 'which-key-mode))
+
+(use-package 
+  undo-tree 
+  :ensure t 
+  :diminish undo-tree-mode: 
+  :config (global-undo-tree-mode 1))
+
+(use-package 
+  expand-region 
+  :ensure t 
+  :bind ("C-=" . er/expand-region))
+
+(use-package 
+  powerline 
+  :ensure t 
+  :config (setq powerline-default-separator 'utf-8))
+
+(use-package 
+  projectile 
+  :ensure t 
+  :config (projectile-mode) 
+  (setq projectile-completion-system 'ivy) 
+  (setq projectile-project-search-path '("~/Projects")) 
+  (setq projectile-sort-order 'access-time)
+  (setq projectile-git-submodule-command nil))
+
+(use-package 
+  counsel-projectile 
+  :ensure t 
+  :config (add-hook 'after-init-hook 'counsel-projectile-mode))
+
+(use-package 
+  fzf 
+  :ensure t)
+
+(use-package 
+  exec-path-from-shell 
+  :ensure t 
+  :config (exec-path-from-shell-initialize))
+
+(use-package 
+  magit 
+  :ensure t 
+  :bind ("C-x g" . magit-status))
+
+(use-package 
+  git-gutter 
+  :ensure t 
+  :config (global-git-gutter-mode 't) 
+  :diminish git-gutter-mode)
+
+(use-package 
+  git-timemachine 
+  :ensure t)
+
+(use-package 
+  boon 
+  :ensure t 
+  :config (require 'boon-colemak) 
+  (boon-mode))
+
+(use-package 
+  helm 
+  :ensure t 
+  :config (helm-autoresize-mode) 
+  (setq helm-autoresize-max-height 20))
+
+(use-package 
+  helm-spotify-plus 
+  :ensure t)
+
+(use-package 
+  elcord 
+  :ensure t)
+
+(use-package 
+  eyebrowse 
+  :ensure t 
+  :config (eyebrowse-setup-opinionated-keys) 
+  (eyebrowse-mode))
+
+(use-package 
+  frog-jump-buffer 
+  :ensure t 
+  :config (setq frog-jump-buffer-default-filter 'frog-jump-buffer-filter-file-buffers) 
+  :bind ("C-x '" . frog-jump-buffer))
+
+;;Programming
+(use-package 
+  lsp-mode 
+  :ensure t 
+  :config (add-hook 'prog-mode-hook #'lsp))
+
+(use-package 
+  elisp-format 
+  :ensure t)
+
+(use-package 
+  smartparens 
+  :ensure t 
+  :diminish smartparens-mode 
+  :config (add-hook 'prog-mode-hook 'smartparens-mode))
+
+(use-package 
+  rainbow-delimiters 
+  :ensure t 
+  :config (add-hook 'prog-mode-hook 'rainbow-delimiters-mode))
+
+(use-package 
+  rainbow-mode 
+  :ensure t 
+  :config (setq rainbow-x-colors nil) 
+  (add-hook 'prog-mode-hook 'rainbow-mode))
+
+(use-package 
+  aggressive-indent 
+  :ensure t)
+
+(add-hook 'prog-mode-hook 'electric-pair-mode)
