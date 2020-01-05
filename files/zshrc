@@ -1,7 +1,6 @@
 #load cached plugins
 source ~/.zsh_plugins.sh
 
-alias ls='ls --color=auto'
 
 # keybinds
 bindkey '^[[A' history-substring-search-up
@@ -42,3 +41,7 @@ ex() {
 if command -v tmux &>/dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
     tmux a || tmux
 fi
+
+alias ls='ls --color=auto'
+alias docker='sudo docker'
+alias e='emacsclient -n'
