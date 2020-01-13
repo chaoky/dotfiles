@@ -15,6 +15,20 @@ HISTFILE=~/.bash_history
 # Flags completion
 autoload -U compinit && compinit
 
+# Emacs
+e() {
+    #return a list of all frames on $DISPLAY
+    emacsclient -e "(frames-on-display-list \"$DISPLAY\")" &>/dev/null
+    
+    if [ $? -eq 0 ]; then
+	emacsclient -n "$@"
+	
+    else
+	emacsclient -nc "$@"
+    fi
+}
+
+
 # ex - archive extractor. usage: ex <file>
 ex() {
     if [ -f $1 ]; then
@@ -44,4 +58,4 @@ fi
 
 alias ls='ls --color=auto'
 alias docker='sudo docker'
-alias e='emacsclient -n'
+alias cp='xsel --clipboard --input'
