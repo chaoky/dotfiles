@@ -2,6 +2,5 @@ zsh-users/zsh-history-substring-search
 zsh-users/zsh-autosuggestions
 zsh-users/zsh-syntax-highlighting
 agkozak/zsh-z
-robbyrussell/oh-my-zsh path:plugins/vi-mode
 mafredri/zsh-async
 sindresorhus/pure

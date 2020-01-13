@@ -1,3 +1,5 @@
+# -*- mode: sh -*-
+
 #load cached plugins
 source ~/.zsh_plugins.sh
 
