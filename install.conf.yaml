@@ -15,7 +15,7 @@
     ~/.config/kitty: files/kitty
     ~/.config/sway: files/sway
     ~/.tmux.conf: files/tmux.conf
-    ~/.emacs: files/emacs
+    ~/.emacs: files/emacs.el
 
 - shell:
     - [
