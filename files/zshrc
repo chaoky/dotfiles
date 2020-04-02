@@ -58,6 +58,10 @@ if command -v tmux &>/dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && 
     tmux a || tmux
 fi
 
+#virtualenvwrapper
+export WORKON_HOME=~/.virtualenvs
+source /usr/bin/virtualenvwrapper_lazy.sh
+
 alias ls='ls --color=auto'
 alias docker='sudo docker'
-alias cp='xsel --clipboard --input'
+alias yk='xsel --clipboard --input'

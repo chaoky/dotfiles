@@ -1,19 +1,21 @@
 /************
  * GtkScale *
  ************/
+ $scale_slider_bg: if($variant == 'light', $base_color, lighten($base_color, 10%));
+ $scale_trough_bg: if($variant == 'light', transparentize(black,0.86), lighten(transparentize($bg_color,0.86), 47%));
 %scale_trough {
-  background-color: $scale_bg;
+  background-color: $scale_trough_bg;
   border: none;
   border-radius: 3px;
   margin: 0;
 
-  &:disabled { background-color: $scale_disabled_bg; }
+  &:disabled { background-color: transparentize(black,0.86); }
 
   &:backdrop {
-    background-color: $scale_disabled_bg; 
+    background-color: transparentize(black,0.86);
     transition: $backdrop_transition;
 
-    &:disabled { background-color: $scale_disabled_bg;  }
+    &:disabled { background-color: transparentize(black,0.86); }
   }
 }
 
@@ -25,7 +27,7 @@
 
   &:disabled {
     border: none;
-    background-color: $scale_bg;
+    background-color: transparentize(black, 0.86);
   }
 
   &:backdrop,
@@ -33,7 +35,7 @@
     border-color: lighten($selected_bg_color, 5%);
     background-color: lighten($selected_bg_color, 5%);
     &:disabled {
-      background-color: $scale_disabled_bg;
+      background-color: transparentize(black, 0.9);
     }
   }
 }
@@ -64,7 +66,7 @@ scale {
     min-width: 16px;
     margin: -7px;
 
-    background-color: $base_color;
+    background-color: $scale_slider_bg;
     box-shadow: inset 0 1px $top_highlight,
                 0px 0px 1px 1px rgba(0,0,0,0.1);
     border-radius: 12px;
@@ -147,21 +149,21 @@ scale {
     }
   }
 
-  $_scale_bg: if($variant == 'light', $base_color, lighten($main_dark_color, 20%));
-  $_scale_disabled_bg: lighten($_scale_bg, 15%);
   slider {
-    border-color: $_scale_bg;
+    border-color: $base_color;
     border: none;
     border-radius: 12px;
 
-    background-color: $_scale_bg;
+    background-color: $scale_slider_bg;
+    box-shadow: inset 0 1px $top_highlight,
+                0px 0px 1px 1px rgba(0,0,0,0.1);
 
     &:hover { @include button(hover-alt, $edge: $shadow_color); }
 
     &:active { border-color: $selected_borders_color; }
 
     &:disabled {
-      background-color: $_scale_disabled_bg;
+      background-color: $insensitive_bg_color;
       box-shadow: inset 0 1px $top_highlight,
                   0px 0px 1px 1px rgba(0,0,0,0.1);
       }
@@ -170,7 +172,7 @@ scale {
     &:backdrop:disabled {
       transition: $backdrop_transition;
 
-      background-color: $_scale_disabled_bg;
+      background-color: $insensitive_bg_color;
       box-shadow: inset 0 1px $top_highlight,
                   0px 0px 1px 1px rgba(0,0,0,0.1);
     }
@@ -284,9 +286,9 @@ scale {
               border: none;
               border-radius: 50%;
 
-              background-color: $_scale_bg;
-              box-shadow: inset 0 1px darken(white, 60%),
-                          0px 0px 1px 1px darken(white, 60%);
+              background-color: $scale_slider_bg;
+              box-shadow: inset 0 1px $top_highlight,
+                          0px 0px 1px 1px rgba(0,0,0,0.1);
               }
           }
 

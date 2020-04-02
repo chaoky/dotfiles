@@ -1,28 +1,34 @@
-;;(setq my-global-map (make-sparse-keymap))
-;;(substitute-key-definition 'self-insert-command 'self-insert-command my-global-map global-map)
-;;(use-global-map my-global-map)
+;; ;;(setq my-global-map (make-sparse-keymap))
+;; ;;(substitute-key-definition 'self-insert-command 'self-insert-command my-global-map global-map)
+;; ;;(use-global-map my-global-map)
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 (package-initialize)
-
 (unless (package-installed-p 'use-package) 
   (package-refresh-contents) 
   (package-install 'use-package))
-
 (setq custom-file (make-temp-file "emacs-custom"))
 
-(setq default-frame-alist '((font . "Fira Code 11") 
+(setq default-frame-alist '((font . "Fira Code 10") 
 			    (width . 0.93) 
 			    (height . 0.95) 
 			    (left . 0.52) 
 			    (top . 0.55)))
-
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 (menu-bar-mode -1)
 (global-display-line-numbers-mode t)
 (global-prettify-symbols-mode t)
+
+(defun save-buffer-without-dtw () 
+  (interactive) 
+  (let ((b (current-buffer)))		; memorize the buffer
+    (with-temp-buffer ; new temp buffer to bind the global value of before-save-hook
+      (let ((before-save-hook (remove 'delete-trailing-whitespace before-save-hook))) 
+	(with-current-buffer b ; go back to the current buffer, before-save-hook is now buffer-local
+          (let ((before-save-hook (remove 'delete-trailing-whitespace before-save-hook))) 
+	    (save-buffer)))))))
 
 (defun fira-code-mode--make-alist (list) 
   "Generate prettify-symbols alist from LIST."
@@ -65,7 +71,8 @@
   (prettify-symbols-mode -1))
 
 (define-minor-mode fira-code-mode "Fira Code ligatures minor mode" 
-  :lighter " Fira Code"
+  :lighter " Fira Code" 
+  :init-value t
   (setq-local prettify-symbols-unprettify-at-point 'right-edge) 
   (if fira-code-mode (fira-code-mode--enable) 
     (fira-code-mode--disable)))
@@ -75,8 +82,6 @@
   (set-fontset-font t '(#Xe100 . #Xe16f) "Fira Code Symbol"))
 
 (provide 'fira-code-mode)
-
-(add-hook 'prog-mode-hook 'fira-code-mode)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -89,6 +94,11 @@
 
 
 (put 'dired-find-alternate-file 'disabled nil)
+
+(use-package 
+  recentf 
+  :ensure t 
+  :config (recentf-mode 1))
 
 (use-package 
   dashboard 
@@ -108,7 +118,7 @@
   ("C-x f" . helm-recentf) 
   ("M-y" . helm-show-kill-ring) 
   :config (helm-autoresize-mode) 
-  (setq helm-autoresize-max-height 20) 
+  (setq helm-autoresize-max-height 18) 
   (helm-mode 1) 
   (helm-adaptive-mode 1) 
   (helm-adaptive-save-history 1) 
@@ -125,21 +135,20 @@
   :ensure t 
   :config (exec-path-from-shell-initialize))
 
+;; (use-package 
+;;   dracula-theme 
+;;   :ensure t 
+;;   :config (load-theme 'dracula t))
+
 (use-package 
-  dracula-theme 
+  flucui-themes 
   :ensure t 
-  :config (load-theme 'dracula t))
+  :config (flucui-themes-load-style 'light))
 
 (use-package 
   swiper 
   :ensure t 
-  :config (define-key boon-command-map "p" '("pinpoint" . swiper)))
-
-(use-package 
-  which-key 
-  :ensure t 
-  :diminish which-key-mode 
-  :config (add-hook 'after-init-hook 'which-key-mode))
+  :config )
 
 (use-package 
   undo-tree 
@@ -161,10 +170,6 @@
   :ensure t 
   :config (add-hook 'prog-mode-hook 'rainbow-mode))
 
-(use-package 
-  exec-path-from-shell 
-  :ensure t 
-  :config (exec-path-from-shell-initialize))
 
 (use-package 
   helm-spotify-plus 
@@ -188,7 +193,12 @@
   (setq frog-jump-buffer-current-filter-function 'frog-jump-buffer-filter-file-buffers) 
   :bind ("C-x '" . frog-jump-buffer))
 
-;;Programming
+(use-package doom-modeline
+      :ensure t
+      :hook (after-init . doom-modeline-mode)
+      :config (setq doom-modeline-icon (display-graphic-p)) (setq doom-modeline-modal-icon t)(setq doom-modeline-gnus t)(setq doom-modeline-irc t)(setq doom-modeline-enable-word-count nil))
+      
+;;;;Programming
 
 (use-package 
   lsp-mode 
@@ -205,12 +215,12 @@
   :ensure t 
   :config (global-company-mode))
 
-(use-package 
-  elisp-format 
-  :ensure t 
-  :config (add-hook 'emacs-lisp-mode-hook 
-		    (lambda () 
-		      (add-hook 'before-save-hook 'elisp-format-buffer))))
+;; (use-package
+;;   elisp-format
+;;   :ensure t
+;;   :config (add-hook 'emacs-lisp-mode-hook
+;; 		    (lambda ()
+;; 		      (add-hook 'before-save-hook 'elisp-format-buffer))))
 
 (use-package 
   smartparens 
@@ -225,8 +235,7 @@
 
 (use-package 
   aggressive-indent 
-  :ensure t 
-  :config (global-aggressive-indent-mode 1))
+  :ensure t)
 
 (use-package 
   elm-mode 
@@ -243,15 +252,27 @@
   :mode "\\.js\\'")
 
 (use-package 
+  typescript-mode 
+  :ensure t 
+  :mode "\\.ts\\'")
+
+(use-package 
   rjsx-mode 
   :ensure t)
 
 (use-package 
   prettier-js 
   :ensure t 
-  :config (add-hook 'js2-mode-hook 'prettier-js-mode) 
-  (add-hook 'web-mode-hook 'prettier-js-mode))
+  :config (mapcar 
+	   '(lambda (x) 
+	      (add-hook  x 'prettier-js-mode)) 
+	   '(js2-mode-hook  web-mode-hook  vue-mode-hook  typescript-mode-hook)))
 
 (use-package 
   yaml-mode 
   :ensure t)
+
+(use-package 
+  haskell-mode 
+  :ensure t 
+  :config (setq haskell-stylish-on-save t))
