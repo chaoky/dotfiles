@@ -6,16 +6,20 @@
 - clean: ["~"]
 
 - link:
-    ~/.ssh: files/ssh
-    ~/.themes: files/gtkThemes
-    ~/.zsh_plugins.txt: files/zsh_plugins
-    ~/.zshrc: files/zshrc
     ~/.config/kak: files/kak
     ~/.config/kak-lsp: files/kak-lsp
     ~/.config/kitty: files/kitty
     ~/.config/sway: files/sway
+    ~/.config/fish: files/fish
     ~/.tmux.conf: files/tmux.conf
-    ~/.emacs: files/emacs.el
+    # ~/.emacs: files/emacs.el
+    ~/.xmonad: files/xmonad
+    ~/.xinitrc: files/xinitrc
+    ~/.ssh: files/ssh
+    ~/.themes: files/gtkThemes
+    ~/.zsh_plugins.txt: files/zsh_plugins
+    ~/.zshrc: files/zshrc
+    ~/.doom.d: files/doom
 
 - shell:
     - [

@@ -1,0 +1,9 @@
+
+xmonad.hs:38:23: error:
+    • No instance for (Num WorkspaceId) arising from the literal ‘1’
+    • In the expression: 1
+      In the expression: [1, 2, 4]
+      In a stmt of a list comprehension: i <- [1, 2, 4]
+   |
+38 |          | i      <- [1, 2, 4]
+   |                       ^

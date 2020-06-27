@@ -1,8 +1,11 @@
 # -*- mode: sh -*-
 
 #load cached plugins
+cd ~
 source ~/.zsh_plugins.sh
 
+setxkbmap -model pc104 -layout us -variant colemak
+export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0
 
 # keybinds
 bindkey '^[[A' history-substring-search-up
@@ -30,7 +33,6 @@ e() {
     fi
 }
 
-
 # ex - archive extractor. usage: ex <file>
 ex() {
     if [ -f $1 ]; then
@@ -53,15 +55,15 @@ ex() {
     fi
 }
 
-# start tmux
-if command -v tmux &>/dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
-    tmux a || tmux
-fi
-
-#virtualenvwrapper
+#virtualenvwrappercase
 export WORKON_HOME=~/.virtualenvs
 source /usr/bin/virtualenvwrapper_lazy.sh
 
 alias ls='ls --color=auto'
 alias docker='sudo docker'
 alias yk='xsel --clipboard --input'
+
+# start tmux
+if command -v tmux &>/dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+    tmux a || tmux
+fi
