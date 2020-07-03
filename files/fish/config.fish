@@ -10,9 +10,9 @@ alias yk='xsel --clipboard --input'
 
 starship init fish | source
 
-if not set -q TMUX
-    tmux a || tmux
-end
+# if not set -q TMUX
+#     tmux a || tmux
+# end
 
 function e
     emacsclient -n $argv || emacs $argv
