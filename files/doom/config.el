@@ -3,7 +3,7 @@
 (setq user-full-name "lordie"
       user-mail-address "levimanga@gmail.com"
       doom-theme 'doom-one
-      doom-font (font-spec :family "Fira Code" :size 15)
+      doom-font (font-spec :family "UZURA_FONT" :size 16)
       org-directory "~/org/"
       display-line-numbers-type t)
 
