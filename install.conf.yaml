@@ -20,6 +20,7 @@
     ~/.zsh_plugins.txt: files/zsh_plugins
     ~/.zshrc: files/zshrc
     ~/.doom.d: files/doom
+    ~/.fonts: files/fonts
 
 - shell:
     - [
