@@ -21,6 +21,7 @@
     ~/.zshrc: files/zshrc
     ~/.doom.d: files/doom
     ~/.fonts: files/fonts
+    ~/.config/fontconfig/fonts.conf: files/fonts/fonts.conf
 
 - shell:
     - [
