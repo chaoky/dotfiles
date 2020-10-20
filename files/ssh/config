@@ -1,3 +1,7 @@
 Host yagoMine
      HostName 35.199.81.27
      User lordie
+
+Host club
+     HostName 138.197.50.115
+     User root
