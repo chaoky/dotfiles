@@ -3,6 +3,8 @@ import           XMonad.Layout.Gaps
 import qualified Data.Map                      as Map
 import qualified XMonad.StackSet               as W
 import           System.Process
+import           XMonad.Util.SpawnOnce
+import           XMonad.Actions.SpawnOn
 
 main :: IO ()
 main = do
@@ -15,13 +17,17 @@ main = do
     , layoutHook         = gaps [(U, 10), (D, 10), (L, 10), (R, 10)]
                                 (Tall 1 (3 / 100) (1 / 2))
     , borderWidth        = 5
+    , manageHook         = manageSpawn
+    , startupHook        = do
+                             spawnOnOnce "1" "emacs"
+                             spawnOnOnce "2" "chromium"
     }
  where
-  hotkeys conf =
+  hotkeys _ =
     Map.fromList
       $  [ ((modm .|. controlMask, xK_0), withFocused $ windows . W.sink)
          , ((modm, xK_Return)           , spawn "kitty")
-         , ((modm, xK_space)            , spawn "rofi -show drun")
+         , ((modm, xK_space)            , spawn "rofi -show drun -show-icons")
          , ( (modm, xK_r)
            , spawn "killall trayer; xmonad --recompile; xmonad --restart"
            )
@@ -34,9 +40,8 @@ main = do
          , ((modm, xK_minus)             , sendMessage Shrink)
          , ((modm, xK_equal)             , sendMessage Expand)
          ]
-      ++ [ ((m .|. modm, k), windows $ f i)
-         | i      <- [1, 2, 4]
-         , k      <- [xK_1 .. xK_9]
+      ++ [ ((m .|. modm, k), windows $ f [i])
+         | (i, k) <- zip ['1' .. '9'] [xK_1 .. xK_9]
          , (f, m) <- [(W.greedyView, 0), (W.shift, controlMask)]
          ]
    where
