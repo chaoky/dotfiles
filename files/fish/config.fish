@@ -17,3 +17,5 @@ starship init fish | source
 function e
     emacsclient -n $argv || emacs $argv
 end
+
+eval (direnv hook fish)
