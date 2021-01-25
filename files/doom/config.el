@@ -1,77 +1,101 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
+(load-file "~/dotfiles/files/doom/custom.el")
 
 (setq user-full-name "lordie"
       user-mail-address "levimanga@gmail.com"
       doom-theme 'doom-one
-      doom-font (font-spec :family "DaddyTimeMono Nerd Font" :size 14)
+      doom-font (font-spec :family "Fira Code" :size 12)
       org-directory "~/org/"
       display-line-numbers-type t
-      projectile-project-search-path (doom-files-in '("~/Projects/" "~/Projects/Learn/" "~/Projects/CTF/")  :depth 0 :type 'dirs)
-      counsel-projectile-remove-current-buffer t
-      counsel-projectile-preview-buffers t
-      counsel-switch-buffer-preview-virtual-buffers t)
+      save-interprogram-paste-before-kill t
 
+      ;;projectile
+      projectile-indexing-method 'alien ;;don't index .git and git ignored files
+      ;;projectile-project-search-path (doom-files-in '("~/Projects/" "~/Projects/Learn/" "~/Projects/CTF/")  :depth 0 :type 'dirs)
+
+      ;;rls
+      ;;lsp-ui-doc-use-childframe nil
+      rustic-lsp-server 'rust-analyzer
+      lsp-rust-analyzer-proc-macro-enable t
+      lsp-rust-analyzer-cargo-load-out-dirs-from-check t
+
+      +workspaces-on-switch-project-behavior nil
+      )
+
+;;(server-mode)
 (set-fontset-font t 'symbol "Twemoji")
-
-(projectile-discover-projects-in-search-path)
-
-(defun dante-doc (ident)
-  "Get the haddock about IDENT at point."
-  (interactive (list (dante-ident-at-point)))
-  (lcr-cps-let ((info (dante-async-call (format ":doc %s" ident))))
-               (with-help-window (help-buffer)
-                 (with-current-buffer (help-buffer)
-                   (insert  (dante-fontify-expression info))))))
-
-
-(defun counsel-projectile-switch-to-buffer-other-window ()
-  "Switch to another buffer in another window.
-Display a preview of the selected ivy completion candidate buffer
-in the current window."
-  (interactive)
-  (let ((ivy-update-fns-alist
-         '((ivy-switch-buffer-other-window . counsel--switch-buffer-update-fn)))
-        (ivy-unwind-fns-alist
-         '((ivy-switch-buffer-other-window . counsel--switch-buffer-unwind))))
-    (ivy-read (projectile-prepend-project-name "Switch to other project buffer: ")
-              ;; We use a collection function so that it is called each
-              ;; time the `ivy-state' is reset. This is needed for the
-              ;; "kill buffer" action.
-              #'counsel-projectile--project-buffers
-              :matcher #'ivy--switch-buffer-matcher
-              :require-match t
-              :preselect (buffer-name (other-buffer (current-buffer)))
-              :sort counsel-projectile-sort-buffers
-              :action #'ivy--switch-buffer-other-window-action
-              :keymap counsel-projectile-switch-to-buffer-map
-              :caller 'ivy-switch-buffer-other-window)))
+(persp-counsel-switch-buffer)
 
 (use-package! boon
-  :config (require 'boon-colemak)
+  :config
+  (require 'boon-colemak)
   (boon-mode)
   (general-define-key :keymaps 'boon-command-map
-                      "p" 'swiper
                       "C-e" 'doom/escape
-                      "c" (general-simulate-key "C-c")
-                      "1" '+workspace/switch-to-0
-                      "2" '+workspace/switch-to-1
-                      "3" '+workspace/switch-to-2)
+                      "c" (general-simulate-key "C-c"))
   (general-define-key :keymaps 'global-map
                       "C-e" 'boon-set-command-state)
   (general-define-key :keymaps 'boon-x-map
                       "s" 'save-buffer
                       "C-s" 'save-some-buffers
-                      "f" 'find-file
-                      "b" 'counsel-projectile-switch-to-buffer
-                      "C-b" 'counsel-projectile-switch-to-buffer-other-window
-                      "B" 'counsel-switch-buffer
-                      ))
+                      "f" 'find-file))
+
+(use-package! persp-mode
+  :general (:keymaps 'boon-command-map
+            "1" '+workspace/switch-to-0
+            "2" '+workspace/switch-to-1
+            "3" '+workspace/switch-to-2
+            "4" '+workspace/switch-to-3))
+
+(use-package! ispell
+  :config
+  (setenv "LANG" "en_GB")
+  (setq ispell-dictionary "pt_BR,en_GB")
+  (ispell-set-spellchecker-params)
+  (ispell-hunspell-add-multi-dic "pt_BR,en_GB")
+  )
+
+(use-package! ivy
+  :general
+  (:keymaps 'boon-command-map
+   "p" 'swiper)
+  (:keymaps 'boon-x-map
+   "b" 'counsel-switch-buffer
+   "B" 'counsel-projectile-switch-to-buffer
+   "C-b" 'counsel-switch-buffer-other-window)
+
+  :config
+  (setq counsel-projectile-remove-current-buffer t
+        counsel-projectile-preview-buffers t
+        counsel-switch-buffer-preview-virtual-buffers t
+        ivy-ignore-buffers '("\\` " "\\`\\*")))
+
+(use-package! switch-window
+  :general (:keymaps 'boon-command-map
+            "C-w" 'switch-window-mvborder-up
+            "C-r" 'switch-window-mvborder-down
+            "C-a" 'switch-window-mvborder-left
+            "C-s" 'switch-window-mvborder-right
+            "C-b" 'balance-windows)
+  :config
+  (setq switch-window-shortcut-style 'qwerty
+        switch-window-qwerty-shortcuts '("n" "e" "i" "o" "'")
+        switch-window-extra-map nil))
+
+
 
 (use-package! rainbow-mode
   :config (add-to-list 'minor-mode-list 'rainbow-mode))
 
-(use-package! tree-sitter-langs)
-(use-package! tree-sitter
+(use-package! elcord
+  :load-path "~/dotfiles/files/doom/elcord"
   :config
-  (global-tree-sitter-mode)
-  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+  (setq elcord-idle-timer 360
+        elcord-use-major-mode-as-main-icon t)
+  (elcord-mode t))
+
+(use-package! org-projectile
+  :config
+  (org-projectile-per-project)
+  (setq org-projectile-per-project-filepath "/docs/todo.org")
+  (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
