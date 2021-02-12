@@ -9,17 +9,13 @@
       display-line-numbers-type t
       save-interprogram-paste-before-kill t
 
-      ;;projectile
       projectile-indexing-method 'alien ;;don't index .git and git ignored files
       ;;projectile-project-search-path (doom-files-in '("~/Projects/" "~/Projects/Learn/" "~/Projects/CTF/")  :depth 0 :type 'dirs)
 
-      ;;rls
       ;;lsp-ui-doc-use-childframe nil
       rustic-lsp-server 'rust-analyzer
       lsp-rust-analyzer-proc-macro-enable t
       lsp-rust-analyzer-cargo-load-out-dirs-from-check t
-
-      +workspaces-on-switch-project-behavior nil
       )
 
 ;;(server-mode)
@@ -49,10 +45,10 @@
 
 (use-package! ispell
   :config
-  (setenv "LANG" "en_GB")
-  (setq ispell-dictionary "pt_BR,en_GB")
+  (setenv "LANG" "en_US")
+  (setq ispell-dictionary "pt_BR,en_US,en_GB")
   (ispell-set-spellchecker-params)
-  (ispell-hunspell-add-multi-dic "pt_BR,en_GB")
+  (ispell-hunspell-add-multi-dic "pt_BR,en_US,en_GB")
   )
 
 (use-package! ivy
@@ -99,3 +95,18 @@
   (org-projectile-per-project)
   (setq org-projectile-per-project-filepath "/docs/todo.org")
   (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
+
+
+(use-package! eaf
+  :custom
+  (eaf-browser-continue-where-left-off t)
+  :config
+  (eaf-setq eaf-browser-enable-adblocker "true")
+  (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key take_photo "p" eaf-camera-keybinding)
+  (eaf-bind-key nil "M-q" eaf-browser-keybinding)) ;; unbind, see more in the Wiki
+
+(use-package! epc :defer t)
+(use-package! ctable :defer t)
+(use-package! deferred :defer t)

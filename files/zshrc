@@ -67,3 +67,4 @@ alias yk='xsel --clipboard --input'
 if command -v tmux &>/dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
     tmux a || tmux
 fi
+if [ -e /home/lordie/.nix-profile/etc/profile.d/nix.sh ]; then . /home/lordie/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
