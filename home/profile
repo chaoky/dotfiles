@@ -1,0 +1,1 @@
+if [ -e /home/lordie/.nix-profile/etc/profile.d/nix.sh ]; then . /home/lordie/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
