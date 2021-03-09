@@ -1,5 +1,5 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
-(load-file "~/dotfiles/files/config/doom/custom.el")
+(load-file "$HOME/.config/doom/custom.el")
 
 (setq user-full-name "lordie"
       user-mail-address "levimanga@gmail.com"
@@ -85,3 +85,12 @@
   (setq org-projectile-per-project-filepath "/docs/todo.org")
   (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
 
+(after! tramp
+  (setq tramp-inline-compress-start-size 1000)
+  (setq tramp-copy-size-limit 10000)
+  (setq vc-handled-backends '(Git))
+  (setq tramp-verbose 1)
+  (setq tramp-default-method "rpc")
+  (setq tramp-use-ssh-controlmaster-options nil)
+  (setq projectile--mode-line "Projectile")
+  (setq tramp-verbose 1))

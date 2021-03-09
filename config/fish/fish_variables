@@ -1,7 +1,7 @@
 # This file contains fish universal variable definitions.
 # VERSION: 3.0
 SETUVAR ANDROID_SDK:/home/lordie/Android/Sdk
-SETUVAR EDITOR:emacsclient
+SETUVAR EDITOR:e
 SETUVAR XDG_CONFIG_HOME:/home/lordie/\x2econfig
 SETUVAR ZO_CMD:zo
 SETUVAR Z_CMD:z

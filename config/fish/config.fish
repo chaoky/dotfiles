@@ -7,23 +7,23 @@ bass source ~/.profile
 
 setxkbmap -model pc104 -layout us -variant colemak
 
-#set -Ua ~/.cargo/bin ~/ ~/Android/Sdk
-set -U EDITOR emacsclient
-set -U ANDROID_SDK ~/Android/Sdk
-
-alias ls='ls --color=auto'
-alias docker='sudo docker'
-alias yk='xsel --clipboard --input'
-alias pp='xsel --clipboard --output'
-
 function e
     emacsclient -n $argv || emacs $argv
 end
 
+alias tablet '/home/lordie/Android/Sdk/emulator/emulator @tablet'
+alias ls 'ls --color=auto'
+alias docker 'sudo docker'
+alias yk 'xsel --clipboard --input'
+alias pp 'xsel --clipboard --output'
+
+starship init fish | source
+direnv hook fish | source
 
 # if not set -q TMUX
 #     tmux a || tmux
 # end
 
-starship init fish | source
-direnv hook fish | source
+#set -Ua ~/.cargo/bin ~/ ~/Android/Sdk
+#set -U EDITOR e
+#set -U ANDROID_SDK ~/Android/Sdk
