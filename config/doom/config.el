@@ -3,7 +3,7 @@
 
 (setq user-full-name "lordie"
       user-mail-address "levimanga@gmail.com"
-      doom-theme 'doom-one
+      doom-theme 'doom-flatwhite
       doom-font (font-spec :family "Fira Code" :size 12)
       org-directory "~/org/"
       display-line-numbers-type t
@@ -16,8 +16,9 @@
       rustic-lsp-server 'rust-analyzer
       lsp-rust-analyzer-proc-macro-enable t
       lsp-rust-analyzer-cargo-load-out-dirs-from-check t
-      )
 
+      +format-with-lsp nil
+      )
 ;;(server-mode)
 (set-fontset-font t 'symbol "Twemoji")
 (persp-counsel-switch-buffer)
@@ -73,17 +74,23 @@
 (use-package! rainbow-mode
   :config (add-to-list 'minor-mode-list 'rainbow-mode))
 
-(use-package! elcord
-  :config
-  (setq elcord-idle-timer 360
-        elcord-use-major-mode-as-main-icon t)
-  (elcord-mode t))
+;; (use-package! elcord
+;;   :config
+;;   (setq elcord-idle-timer 360
+;;         elcord-use-major-mode-as-main-icon t)
+;;   (elcord-mode t))
 
 (use-package! org-projectile
   :config
   (org-projectile-per-project)
   (setq org-projectile-per-project-filepath "/docs/todo.org")
   (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
+
+(use-package! request)
+
+(after! flycheck
+(set-face-attribute 'flycheck-warning nil :underline nil)
+)
 
 (after! tramp
   (setq tramp-inline-compress-start-size 1000)
