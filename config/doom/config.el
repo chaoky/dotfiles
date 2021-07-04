@@ -8,6 +8,7 @@
       org-directory "~/org/"
       display-line-numbers-type t
       save-interprogram-paste-before-kill t
+      enable-local-variables t
 
       projectile-indexing-method 'alien ;;don't index .git and git ignored files
       ;;projectile-project-search-path (doom-files-in '("~/Projects/" "~/Projects/Learn/" "~/Projects/CTF/")  :depth 0 :type 'dirs)
@@ -18,10 +19,19 @@
       lsp-rust-analyzer-cargo-load-out-dirs-from-check t
 
       +format-with-lsp nil
+      ;;default-frame-alist '((undecorated . t))
+
+      ispell-dictionary "en_US"
+
+      ;;term names :)
+      vterm-buffer-name "vterm"
+      vterm-buffer-name-string "%s"
+      vterm-shell "fish"
+      eshell-buffer-name "eshell"
       )
-;;(server-mode)
+
 (set-fontset-font t 'symbol "Twemoji")
-(persp-counsel-switch-buffer)
+;;😊
 
 (use-package! boon
   :config
@@ -35,7 +45,8 @@
   (general-define-key :keymaps 'boon-x-map
                       "s" 'save-buffer
                       "C-s" 'save-some-buffers
-                      "f" 'find-file))
+                      "f" 'find-file
+                      "k" 'persp-kill-buffer))
 
 (use-package! persp-mode
   :general (:keymaps 'boon-command-map
@@ -49,7 +60,7 @@
   (:keymaps 'boon-command-map
    "p" 'swiper)
   (:keymaps 'boon-x-map
-   "b" 'counsel-switch-buffer
+   "b" '+ivy/switch-workspace-buffer
    "B" 'counsel-projectile-switch-to-buffer
    "C-b" 'counsel-switch-buffer-other-window)
 
@@ -89,8 +100,8 @@
 (use-package! request)
 
 (after! flycheck
-(set-face-attribute 'flycheck-warning nil :underline nil)
-)
+  (set-face-attribute 'flycheck-warning nil :underline nil)
+  )
 
 (after! tramp
   (setq tramp-inline-compress-start-size 1000)
@@ -101,3 +112,23 @@
   (setq tramp-use-ssh-controlmaster-options nil)
   (setq projectile--mode-line "Projectile")
   (setq tramp-verbose 1))
+
+
+(use-package! ox-moderncv
+  :init (require 'ox-moderncv))
+
+
+(setq wl-copy-process nil)
+(defun wl-copy (text)
+  (setq wl-copy-process (make-process :name "wl-copy"
+                                      :buffer nil
+                                      :command '("wl-copy" "-f" "-n")
+                                      :connection-type 'pipe))
+  (process-send-string wl-copy-process text)
+  (process-send-eof wl-copy-process))
+(defun wl-paste ()
+  (if (and wl-copy-process (process-live-p wl-copy-process))
+      nil ; should return nil if we're the current paste owner
+    (shell-command-to-string "wl-paste -n | tr -d \r")))
+(setq interprogram-cut-function 'wl-copy)
+(setq interprogram-paste-function 'wl-paste)

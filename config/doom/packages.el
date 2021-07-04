@@ -14,3 +14,7 @@
 (package! graphql-mode)
 (package! caddyfile-mode)
 (package! elcord)
+
+(package! org-cv :recipe (:host gitlab
+                       :repo  "Titan-C/org-cv"
+                       :files ("*")))

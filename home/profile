@@ -1,1 +1,16 @@
-if [ -e /home/lordie/.nix-profile/etc/profile.d/nix.sh ]; then . /home/lordie/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+# If not running interactively, don't do anything
+[[ $- != *i* ]] && return
+
+PS1='[\u@\h \W]\$ '
+
+. "$HOME/.cargo/env"
+
+export PATH="$PATH:/home/lordie/.local/share/coursier/bin"
+
+setxkbmap -model pc104 -layout us -variant colemak
+
+alias ls='ls --color=auto'
+alias scala=scala3
+alias fixk="wsl.exe --system -e bash -c \"echo -e \"\n[keyboard]\nkeymap_layout=us\nkeymap_variant=colemak\n\" >> /home/wslg/.config/weston.ini && pkill -HUP weston\""
+
+exec fish
