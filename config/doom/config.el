@@ -3,8 +3,7 @@
 
 (setq user-full-name "lordie"
       user-mail-address "levimanga@gmail.com"
-      doom-theme 'doom-flatwhite
-      doom-font (font-spec :family "Fira Code" :size 12)
+      doom-theme 'doom-dracula
       org-directory "~/org/"
       display-line-numbers-type t
       save-interprogram-paste-before-kill t
@@ -15,13 +14,11 @@
 
       ;;lsp-ui-doc-use-childframe nil
       rustic-lsp-server 'rust-analyzer
-      lsp-rust-analyzer-proc-macro-enable t
-      lsp-rust-analyzer-cargo-load-out-dirs-from-check t
+      ;;lsp-rust-analyzer-proc-macro-enable t
+      ;;lsp-rust-analyzer-cargo-load-out-dirs-from-check t
 
-      +format-with-lsp nil
+      +format-with-lsp t
       ;;default-frame-alist '((undecorated . t))
-
-      ispell-dictionary "en_US"
 
       ;;term names :)
       vterm-buffer-name "vterm"
@@ -30,8 +27,14 @@
       eshell-buffer-name "eshell"
       )
 
-(set-fontset-font t 'symbol "Twemoji")
+(setq-hook! 'typescript-tsx-mode-hook +format-with-lsp nil)
+
+;;font
 ;;😊
+(set-fontset-font t 'symbol "Twemoji")
+(setq doom-font (font-spec :family "Iosevka SS17" :size 13)
+      doom-variable-pitch-font (font-spec :family "Iosevka SS17" :size 13)
+      ivy-posframe-font (font-spec :family "Iosevka SS17" :size 15))
 
 (use-package! boon
   :config
@@ -85,11 +88,13 @@
 (use-package! rainbow-mode
   :config (add-to-list 'minor-mode-list 'rainbow-mode))
 
-;; (use-package! elcord
-;;   :config
-;;   (setq elcord-idle-timer 360
-;;         elcord-use-major-mode-as-main-icon t)
-;;   (elcord-mode t))
+(use-package! elcord
+  :load-path "/home/lordie/Projects/elcord"
+  :config
+  (setq
+   elcord-use-major-mode-as-main-icon t)
+  (elcord-mode t))
+
 
 (use-package! org-projectile
   :config
@@ -118,17 +123,28 @@
   :init (require 'ox-moderncv))
 
 
-(setq wl-copy-process nil)
-(defun wl-copy (text)
-  (setq wl-copy-process (make-process :name "wl-copy"
-                                      :buffer nil
-                                      :command '("wl-copy" "-f" "-n")
-                                      :connection-type 'pipe))
-  (process-send-string wl-copy-process text)
-  (process-send-eof wl-copy-process))
-(defun wl-paste ()
-  (if (and wl-copy-process (process-live-p wl-copy-process))
-      nil ; should return nil if we're the current paste owner
-    (shell-command-to-string "wl-paste -n | tr -d \r")))
-(setq interprogram-cut-function 'wl-copy)
-(setq interprogram-paste-function 'wl-paste)
+;; (setq wl-copy-process nil)
+;; (defun wl-copy (text)
+;;   (setq wl-copy-process (make-process :name "wl-copy"
+;;                                       :buffer nil
+;;                                       :command '("wl-copy" "-f" "-n")
+;;                                       :connection-type 'pipe))
+;;   (process-send-string wl-copy-process text)
+;;   (process-send-eof wl-copy-process))
+;; (defun wl-paste ()
+;;   (if (and wl-copy-process (process-live-p wl-copy-process))
+;;       nil ; should return nil if we're the current paste owner
+;;     (shell-command-to-string "wl-paste -n | tr -d \r")))
+;; (setq interprogram-cut-function 'wl-copy)
+;; (setq interprogram-paste-function 'wl-paste)
+
+(use-package! tree-sitter
+  :config
+  (require 'tree-sitter-langs)
+  (global-tree-sitter-mode)
+  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+
+(use-package! ob-sql-mode)
+(use-package! activity-watch-mode
+  :config(global-activity-watch-mode))
+

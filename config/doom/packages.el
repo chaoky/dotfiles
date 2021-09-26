@@ -18,3 +18,8 @@
 (package! org-cv :recipe (:host gitlab
                        :repo  "Titan-C/org-cv"
                        :files ("*")))
+
+(package! tree-sitter)
+(package! tree-sitter-langs)
+(package! ob-sql-mode)
+(package! activity-watch-mode)
