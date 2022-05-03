@@ -9,7 +9,7 @@
       save-interprogram-paste-before-kill t
       enable-local-variables t
 
-      projectile-indexing-method 'alien ;;don't index .git and git ignored files
+      projectile-indexing-method 'hybrid
       ;;projectile-project-search-path (doom-files-in '("~/Projects/" "~/Projects/Learn/" "~/Projects/CTF/")  :depth 0 :type 'dirs)
 
       ;;lsp-ui-doc-use-childframe nil
@@ -23,15 +23,17 @@
       ;;term names :)
       vterm-buffer-name "vterm"
       vterm-buffer-name-string "%s"
-      vterm-shell "fish"
+      vterm-shell "bash"
       eshell-buffer-name "eshell"
+
+      ;;long lines boost
+      bidi-inhibit-bpa t
+      bidi-paragraph-direction 'left-to-right
       )
 
-(setq-hook! 'typescript-tsx-mode-hook +format-with-lsp nil)
+(setq-hook! '(typescript-mode-hook typescript-tsx-mode-hook js2-mode-hook) +format-with-lsp nil)
 
-;;font
-;;😊
-(set-fontset-font t 'symbol "Twemoji")
+;; (set-fontset-font t 'symbol "Twemoji") ;;😊
 (setq doom-font (font-spec :family "Iosevka SS17" :size 13)
       doom-variable-pitch-font (font-spec :family "Iosevka SS17" :size 13)
       ivy-posframe-font (font-spec :family "Iosevka SS17" :size 15))
@@ -42,14 +44,14 @@
   (boon-mode)
   (general-define-key :keymaps 'boon-command-map
                       "C-e" 'doom/escape
-                      "c" (general-simulate-key "C-c"))
+                      "c" (general-simulate-key "C-c")
+                      "p" 'consult-line)
   (general-define-key :keymaps 'global-map
                       "C-e" 'boon-set-command-state)
   (general-define-key :keymaps 'boon-x-map
                       "s" 'save-buffer
                       "C-s" 'save-some-buffers
-                      "f" 'find-file
-                      "k" 'persp-kill-buffer))
+                      "f" 'find-file))
 
 (use-package! persp-mode
   :general (:keymaps 'boon-command-map
@@ -58,20 +60,20 @@
             "3" '+workspace/switch-to-2
             "4" '+workspace/switch-to-3))
 
-(use-package! ivy
-  :general
-  (:keymaps 'boon-command-map
-   "p" 'swiper)
-  (:keymaps 'boon-x-map
-   "b" '+ivy/switch-workspace-buffer
-   "B" 'counsel-projectile-switch-to-buffer
-   "C-b" 'counsel-switch-buffer-other-window)
+;; (use-package! ivy
+;;   :general
+;;   (:keymaps 'boon-command-map
+;;    "p" 'swiper)
+;;   (:keymaps 'boon-x-map
+;;    "b" '+ivy/switch-workspace-buffer
+;;    "B" '+ivy/switch-buffer
+;;    "C-b" '+ivy/switch-workspace-buffer-other-window)
 
-  :config
-  (setq counsel-projectile-remove-current-buffer t
-        counsel-projectile-preview-buffers t
-        counsel-switch-buffer-preview-virtual-buffers t
-        ivy-ignore-buffers '("\\` " "\\`\\*")))
+;;   :config
+;;   (setq counsel-projectile-remove-current-buffer t
+;;         counsel-projectile-preview-buffers t
+;;         counsel-switch-buffer-preview-virtual-buffers t
+;;         +ivy-buffer-preview t))
 
 (use-package! switch-window
   :general (:keymaps 'boon-command-map
@@ -88,13 +90,12 @@
 (use-package! rainbow-mode
   :config (add-to-list 'minor-mode-list 'rainbow-mode))
 
-(use-package! elcord
-  :load-path "/home/lordie/Projects/elcord"
-  :config
-  (setq
-   elcord-use-major-mode-as-main-icon t)
-  (elcord-mode t))
-
+;; (use-package! elcord
+;;   :load-path "/home/lordie/Projects/elcord"
+;;   :config
+;;   (setq
+;;    elcord-use-major-mode-as-main-icon t)
+;;   (elcord-mode t))
 
 (use-package! org-projectile
   :config
@@ -118,33 +119,24 @@
   (setq projectile--mode-line "Projectile")
   (setq tramp-verbose 1))
 
-
 (use-package! ox-moderncv
   :init (require 'ox-moderncv))
 
-
-;; (setq wl-copy-process nil)
-;; (defun wl-copy (text)
-;;   (setq wl-copy-process (make-process :name "wl-copy"
-;;                                       :buffer nil
-;;                                       :command '("wl-copy" "-f" "-n")
-;;                                       :connection-type 'pipe))
-;;   (process-send-string wl-copy-process text)
-;;   (process-send-eof wl-copy-process))
-;; (defun wl-paste ()
-;;   (if (and wl-copy-process (process-live-p wl-copy-process))
-;;       nil ; should return nil if we're the current paste owner
-;;     (shell-command-to-string "wl-paste -n | tr -d \r")))
-;; (setq interprogram-cut-function 'wl-copy)
-;; (setq interprogram-paste-function 'wl-paste)
-
-(use-package! tree-sitter
-  :config
-  (require 'tree-sitter-langs)
-  (global-tree-sitter-mode)
-  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+(setq wl-copy-process nil)
+(defun wl-copy (text)
+  (setq wl-copy-process (make-process :name "wl-copy"
+                                      :buffer nil
+                                      :command '("wl-copy" "-f" "-n")
+                                      :connection-type 'pipe))
+  (process-send-string wl-copy-process text)
+  (process-send-eof wl-copy-process))
+(defun wl-paste ()
+  (if (and wl-copy-process (process-live-p wl-copy-process))
+      nil ; should return nil if we're the current paste owner
+    (shell-command-to-string "wl-paste -n")))
+(setq interprogram-cut-function 'wl-copy)
+(setq interprogram-paste-function 'wl-paste)
 
 (use-package! ob-sql-mode)
-(use-package! activity-watch-mode
-  :config(global-activity-watch-mode))
-
+;; (use-package! activity-watch-mode
+;;   :config(global-activity-watch-mode))

@@ -3,14 +3,5 @@
 
 PS1='[\u@\h \W]\$ '
 
-. "$HOME/.cargo/env"
-
 export PATH="$PATH:/home/lordie/.local/share/coursier/bin"
-
-setxkbmap -model pc104 -layout us -variant colemak
-
-alias ls='ls --color=auto'
-alias scala=scala3
-alias fixk="wsl.exe --system -e bash -c \"echo -e \"\n[keyboard]\nkeymap_layout=us\nkeymap_variant=colemak\n\" >> /home/wslg/.config/weston.ini && pkill -HUP weston\""
-
-exec fish
+export PATH="/home/lordie/.local/share/solana/install/active_release/bin:$PATH"
