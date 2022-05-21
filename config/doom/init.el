@@ -5,8 +5,7 @@
                                         ; the ultimate code completion backend
  company
                                         ; a search engine for love and life
- ;; (ivy +icons +prescient +fuzzy)
- (vertico +icons)
+ (ivy +icons +prescient +fuzzy)
 
  :os
  tty                                    ; improve the terminal Emacs experience

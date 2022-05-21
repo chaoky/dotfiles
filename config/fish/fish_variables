@@ -13,7 +13,11 @@ SETUVAR Z_EXCLUDE:\x5e/home/lordie\x24
 SETUVAR __fish_initialized:3400
 SETUVAR _fisher_edc_2F_bass_files:/home/lordie/\x2econfig/fish/functions/__bass\x2epy\x1e/home/lordie/\x2econfig/fish/functions/bass\x2efish
 SETUVAR _fisher_jethrokuan_2F_z_files:/home/lordie/\x2econfig/fish/functions/__z\x2efish\x1e/home/lordie/\x2econfig/fish/functions/__z_add\x2efish\x1e/home/lordie/\x2econfig/fish/functions/__z_clean\x2efish\x1e/home/lordie/\x2econfig/fish/functions/__z_complete\x2efish\x1e/home/lordie/\x2econfig/fish/conf\x2ed/z\x2efish
-SETUVAR _fisher_plugins:jethrokuan/z\x1eedc/bass
+SETUVAR _fisher_jorgebucaran_2F_getopts_2E_fish_files:/home/lordie/\x2econfig/fish/functions/getopts\x2efish
+SETUVAR _fisher_jorgebucaran_2F_nvm_2E_fish_files:/home/lordie/\x2econfig/fish/functions/_nvm_index_update\x2efish\x1e/home/lordie/\x2econfig/fish/functions/_nvm_list\x2efish\x1e/home/lordie/\x2econfig/fish/functions/_nvm_version_activate\x2efish\x1e/home/lordie/\x2econfig/fish/functions/_nvm_version_deactivate\x2efish\x1e/home/lordie/\x2econfig/fish/functions/nvm\x2efish\x1e/home/lordie/\x2econfig/fish/conf\x2ed/nvm\x2efish\x1e/home/lordie/\x2econfig/fish/completions/nvm\x2efish
+SETUVAR _fisher_jorgebucaran_2F_replay_2E_fish_files:/home/lordie/\x2econfig/fish/functions/replay\x2efish\x1e/home/lordie/\x2econfig/fish/completions/replay\x2efish
+SETUVAR _fisher_laughedelic_2F_pisces_files:/home/lordie/\x2econfig/fish/functions/_pisces_append\x2efish\x1e/home/lordie/\x2econfig/fish/functions/_pisces_backspace\x2efish\x1e/home/lordie/\x2econfig/fish/functions/_pisces_bind_pair\x2efish\x1e/home/lordie/\x2econfig/fish/functions/_pisces_complete\x2efish\x1e/home/lordie/\x2econfig/fish/functions/_pisces_insert_identical\x2efish\x1e/home/lordie/\x2econfig/fish/functions/_pisces_insert_left\x2efish\x1e/home/lordie/\x2econfig/fish/functions/_pisces_insert_right\x2efish\x1e/home/lordie/\x2econfig/fish/functions/_pisces_jump\x2efish\x1e/home/lordie/\x2econfig/fish/functions/_pisces_lookup\x2efish\x1e/home/lordie/\x2econfig/fish/functions/_pisces_remove\x2efish\x1e/home/lordie/\x2econfig/fish/functions/_pisces_should_insert\x2efish\x1e/home/lordie/\x2econfig/fish/functions/_pisces_skip\x2efish\x1e/home/lordie/\x2econfig/fish/conf\x2ed/pisces\x2efish
+SETUVAR _fisher_plugins:jethrokuan/z\x1eedc/bass\x1ejorgebucaran/nvm\x2efish\x1ejorgebucaran/replay\x2efish\x1ejorgebucaran/getopts\x2efish\x1elaughedelic/pisces
 SETUVAR fish_color_autosuggestion:555\x1ebrblack
 SETUVAR fish_color_cancel:\x2dr
 SETUVAR fish_color_command:005fd7
@@ -45,3 +49,7 @@ SETUVAR fish_pager_color_prefix:white\x1e\x2d\x2dbold\x1e\x2d\x2dunderline
 SETUVAR fish_pager_color_progress:brwhite\x1e\x2d\x2dbackground\x3dcyan
 SETUVAR fish_pager_color_selected_background:\x2dr
 SETUVAR fish_user_paths:/home/lordie/\x2ecargo/bin\x1e/home/lordie/Android/Sdk
+SETUVAR nvm_data:/home/lordie/\x2elocal/share/nvm
+SETUVAR nvm_default_version:v16\x2e15\x2e0
+SETUVAR nvm_mirror:https\x3a//nodejs\x2eorg/dist
+SETUVAR pisces_pairs:\x28\x2c\x29\x1e\x5b\x2c\x5d\x1e\x7b\x2c\x7d\x1e\x22\x2c\x22\x1e\x27\x2c\x27

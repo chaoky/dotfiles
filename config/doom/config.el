@@ -23,7 +23,7 @@
       ;;term names :)
       vterm-buffer-name "vterm"
       vterm-buffer-name-string "%s"
-      vterm-shell "bash"
+      vterm-shell "fish"
       eshell-buffer-name "eshell"
 
       ;;long lines boost
@@ -45,7 +45,7 @@
   (general-define-key :keymaps 'boon-command-map
                       "C-e" 'doom/escape
                       "c" (general-simulate-key "C-c")
-                      "p" 'consult-line)
+                      "p" (general-simulate-key "C-c s b"))
   (general-define-key :keymaps 'global-map
                       "C-e" 'boon-set-command-state)
   (general-define-key :keymaps 'boon-x-map
@@ -90,12 +90,12 @@
 (use-package! rainbow-mode
   :config (add-to-list 'minor-mode-list 'rainbow-mode))
 
-;; (use-package! elcord
-;;   :load-path "/home/lordie/Projects/elcord"
-;;   :config
-;;   (setq
-;;    elcord-use-major-mode-as-main-icon t)
-;;   (elcord-mode t))
+(use-package! elcord
+  ;; :load-path "/home/lordie/Projects/elcord"
+  :config
+  (setq
+   elcord-use-major-mode-as-main-icon t)
+  (elcord-mode t))
 
 (use-package! org-projectile
   :config
@@ -122,20 +122,20 @@
 (use-package! ox-moderncv
   :init (require 'ox-moderncv))
 
-(setq wl-copy-process nil)
-(defun wl-copy (text)
-  (setq wl-copy-process (make-process :name "wl-copy"
-                                      :buffer nil
-                                      :command '("wl-copy" "-f" "-n")
-                                      :connection-type 'pipe))
-  (process-send-string wl-copy-process text)
-  (process-send-eof wl-copy-process))
-(defun wl-paste ()
-  (if (and wl-copy-process (process-live-p wl-copy-process))
-      nil ; should return nil if we're the current paste owner
-    (shell-command-to-string "wl-paste -n")))
-(setq interprogram-cut-function 'wl-copy)
-(setq interprogram-paste-function 'wl-paste)
+;; (setq wl-copy-process nil)
+;; (defun wl-copy (text)
+;;   (setq wl-copy-process (make-process :name "wl-copy"
+;;                                       :buffer nil
+;;                                       :command '("wl-copy" "-f" "-n")
+;;                                       :connection-type 'pipe))
+;;   (process-send-string wl-copy-process text)
+;;   (process-send-eof wl-copy-process))
+;; (defun wl-paste ()
+;;   (if (and wl-copy-process (process-live-p wl-copy-process))
+;;       nil ; should return nil if we're the current paste owner
+;;     (shell-command-to-string "wl-paste -n")))
+;; (setq interprogram-cut-function 'wl-copy)
+;; (setq interprogram-paste-function 'wl-paste)
 
 (use-package! ob-sql-mode)
 ;; (use-package! activity-watch-mode
