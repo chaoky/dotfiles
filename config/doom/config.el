@@ -1,97 +1,54 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 (load-file "$HOME/.config/doom/custom.el")
 
-(setq user-full-name "lordie"
+(setq user-full-name "chaoky"
       user-mail-address "levimanga@gmail.com"
-      doom-theme 'doom-dracula
       org-directory "~/org/"
-      display-line-numbers-type t
+      doom-theme 'doom-ephemeral
+      doom-font (font-spec :family "Iosevka" :size 15)
       save-interprogram-paste-before-kill t
       enable-local-variables t
-
-      projectile-indexing-method 'hybrid
-      ;;projectile-project-search-path (doom-files-in '("~/Projects/" "~/Projects/Learn/" "~/Projects/CTF/")  :depth 0 :type 'dirs)
-
-      ;;lsp-ui-doc-use-childframe nil
-      rustic-lsp-server 'rust-analyzer
-      ;;lsp-rust-analyzer-proc-macro-enable t
-      ;;lsp-rust-analyzer-cargo-load-out-dirs-from-check t
-
-      +format-with-lsp t
-      ;;default-frame-alist '((undecorated . t))
-
-      ;;term names :)
-      vterm-buffer-name "vterm"
-      vterm-buffer-name-string "%s"
-      vterm-shell "fish"
-      eshell-buffer-name "eshell"
-
-      ;;long lines boost
-      bidi-inhibit-bpa t
-      bidi-paragraph-direction 'left-to-right
+      default-directory "~/Projects/"
       )
 
-(setq-hook! '(typescript-mode-hook typescript-tsx-mode-hook js2-mode-hook) +format-with-lsp nil)
-
-;; (set-fontset-font t 'symbol "Twemoji") ;;😊
-(setq doom-font (font-spec :family "Iosevka SS17" :size 13)
-      doom-variable-pitch-font (font-spec :family "Iosevka SS17" :size 13)
-      ivy-posframe-font (font-spec :family "Iosevka SS17" :size 15))
-
 (use-package! boon
-  :config
+  :init
+  (require 'switch-window)
   (require 'boon-colemak)
   (boon-mode)
-  (general-define-key :keymaps 'boon-command-map
-                      "C-e" 'doom/escape
-                      "c" (general-simulate-key "C-c")
-                      "p" (general-simulate-key "C-c s b"))
-  (general-define-key :keymaps 'global-map
-                      "C-e" 'boon-set-command-state)
-  (general-define-key :keymaps 'boon-x-map
-                      "s" 'save-buffer
-                      "C-s" 'save-some-buffers
-                      "f" 'find-file))
-
-(use-package! persp-mode
-  :general (:keymaps 'boon-command-map
-            "1" '+workspace/switch-to-0
-            "2" '+workspace/switch-to-1
-            "3" '+workspace/switch-to-2
-            "4" '+workspace/switch-to-3))
-
-;; (use-package! ivy
-;;   :general
-;;   (:keymaps 'boon-command-map
-;;    "p" 'swiper)
-;;   (:keymaps 'boon-x-map
-;;    "b" '+ivy/switch-workspace-buffer
-;;    "B" '+ivy/switch-buffer
-;;    "C-b" '+ivy/switch-workspace-buffer-other-window)
-
-;;   :config
-;;   (setq counsel-projectile-remove-current-buffer t
-;;         counsel-projectile-preview-buffers t
-;;         counsel-switch-buffer-preview-virtual-buffers t
-;;         +ivy-buffer-preview t))
-
-(use-package! switch-window
-  :general (:keymaps 'boon-command-map
+  :config
+  (defadvice! +vterm-update-cursor-boon (orig-fn &rest args) :before #'boon-insert (vterm-goto-char (point)))
+  (fset 'boon-special-mode-p #'(lambda () nil)) ;;special mode sucks I can just press Q and change context
+  (setq boon-insert-conditions '((cl-search "emacs-everywhere" (buffer-name))))
+  :general
+  (:keymaps 'boon-command-map
+            "M-1" '+workspace/switch-to-0
+            "M-2" '+workspace/switch-to-1
+            "M-3" '+workspace/switch-to-2
+            "M-4" '+workspace/switch-to-3
             "C-w" 'switch-window-mvborder-up
             "C-r" 'switch-window-mvborder-down
             "C-a" 'switch-window-mvborder-left
             "C-s" 'switch-window-mvborder-right
-            "C-b" 'balance-windows)
-  :config
-  (setq switch-window-shortcut-style 'qwerty
-        switch-window-qwerty-shortcuts '("n" "e" "i" "o" "'")
-        switch-window-extra-map nil))
+            "C-b" 'balance-windows
+            "C-e" 'doom/escape
+            "c" (general-simulate-key "C-c")
+            "p" (general-simulate-key "C-c s b")
+            "D" 'lsp-describe-thing-at-point
+            )
 
-(use-package! rainbow-mode
-  :config (add-to-list 'minor-mode-list 'rainbow-mode))
+  (:keymaps 'boon-x-map
+            "s" 'save-buffer
+            "C-s" 'save-some-buffers
+            "f" 'find-file
+            "l" '+fold/toggle
+            )
+
+  (:keymaps 'global-map
+            "C-e" 'boon-set-command-state)
+  )
 
 (use-package! elcord
-  ;; :load-path "/home/lordie/Projects/elcord"
   :config
   (setq
    elcord-use-major-mode-as-main-icon t)
@@ -103,11 +60,12 @@
   (setq org-projectile-per-project-filepath "/docs/todo.org")
   (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
 
-(use-package! request)
+(use-package! ob-sql-mode :defer t)
+
+(use-package! wakatime-mode :config (global-wakatime-mode))
 
 (after! flycheck
-  (set-face-attribute 'flycheck-warning nil :underline nil)
-  )
+  (set-face-attribute 'flycheck-warning nil :underline nil))
 
 (after! tramp
   (setq tramp-inline-compress-start-size 1000)
@@ -119,24 +77,56 @@
   (setq projectile--mode-line "Projectile")
   (setq tramp-verbose 1))
 
-(use-package! ox-moderncv
-  :init (require 'ox-moderncv))
 
-;; (setq wl-copy-process nil)
-;; (defun wl-copy (text)
-;;   (setq wl-copy-process (make-process :name "wl-copy"
-;;                                       :buffer nil
-;;                                       :command '("wl-copy" "-f" "-n")
-;;                                       :connection-type 'pipe))
-;;   (process-send-string wl-copy-process text)
-;;   (process-send-eof wl-copy-process))
-;; (defun wl-paste ()
-;;   (if (and wl-copy-process (process-live-p wl-copy-process))
-;;       nil ; should return nil if we're the current paste owner
-;;     (shell-command-to-string "wl-paste -n")))
-;; (setq interprogram-cut-function 'wl-copy)
-;; (setq interprogram-paste-function 'wl-paste)
+(after! lsp-mode
+  (advice-add 'json-parse-string :around
+              (lambda (orig string &rest rest)
+                (apply orig (s-replace "\\u0000" "" string)
+                       rest)))
+  (advice-add 'json-parse-buffer :around
+              (lambda (orig &rest rest)
+                (while (re-search-forward "\\u0000" nil t)
+                  (replace-match ""))
+                (apply orig rest)))
+  ;; (advice-add #'lsp-hover :after (lambda () (setq lsp--hover-saved-bounds nil)))
+  (setq lsp-ui-doc-use-childframe nil)
+  )
 
-(use-package! ob-sql-mode)
-;; (use-package! activity-watch-mode
-;;   :config(global-activity-watch-mode))
+(after! switch-window
+  (setq
+   switch-window-shortcut-style 'qwerty
+   switch-window-qwerty-shortcuts '("n" "e" "i" "o" "'")
+   switch-window-extra-map nil))
+
+(after! projectile
+  (setq
+   projectile-project-search-path '(("~/Projects" . 3))
+   projectile-project-root-files-bottom-up (delete ".git" projectile-project-root-files-bottom-up)
+   projectile-project-root-files (cons ".git" projectile-project-root-files)
+   ;; projectile-globally-ignored-directories (append '("*node_modules" "node_modules" "*/node_modules") projectile-globally-ignored-directories)
+   projectile-ignored-project-function '(lambda (project-name) (cl-search "node_modules" project-name))))
+
+(setq-hook! '(typescript-mode-hook typescript-tsx-mode-hook js2-mode-hook) +format-with-lsp nil)
+
+(after! web-mode (setq web-mode-enable-auto-indentation nil))
+
+(after! vterm
+  (setq
+   vterm-buffer-name "vterm"
+   vterm-buffer-name-string "%s"
+   vterm-shell "fish"))
+
+(after! eshell (setq eshell-buffer-name "eshell"))
+
+(after! treemacs (setq treemacs-read-string-input 'from-minibuffer))
+
+(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+
+(after! rustic
+  (setq
+   lsp-disabled-clients '(rls)
+   lsp-rust-analyzer-diagnostics-disabled ["unresolved-proc-macro"]
+   lsp-rust-analyzer-cargo-watch-command "clippy"
+   lsp-rust-analyzer-server-display-inlay-hints nil
+   lsp-rust-analyzer-max-inlay-hint-length 9)
+  )
