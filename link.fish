@@ -1,4 +1,4 @@
-#!/usr/bin/fish
+#!/usr/bin/env fish
 
 for file in */*
     rm -r $HOME/.(string replace home/ '' $file)
