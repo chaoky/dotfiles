@@ -45,6 +45,8 @@ let
     firefox
     nodejs
     socat
+    starship
+    python3
   ];
 
   nodePackages = with pkgs.nodePackages; [
@@ -70,6 +72,22 @@ in
     profileExtra = ''
       export XDG_DATA_DIRS=$HOME/.home-manager-share:$XDG_DATA_DIRS
     '';
+  };
+
+  programs.fish = {
+    enable = true;
+    plugins = [
+      {
+        name = "bass";
+        src = pkgs.fetchFromGitHub {
+         owner = "edc";
+         repo = "bass";
+         rev = "v1.0";
+         hash = "sha256-XpB8u2CcX7jkd+FT3AYJtGwBtmNcLXtfMyT/z7gfyQw=";
+        };
+      }
+    ];
+    interactiveShellInit = builtins.readFile ./config.fish;
   };
 
   home.activation = {
