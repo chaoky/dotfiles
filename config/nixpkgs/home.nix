@@ -68,6 +68,12 @@ let
     setuptools
   ];
 
+  gnomePackages = with pkgs.gnomeExtensions; [
+    pano
+    monitor-window-switcher-2
+    appindicator
+  ];
+
   activityWatch = pkgs.callPackage /home/lordie/Projects/nixpkgs/pkgs/applications/misc/activitywatch { };
   localPackages = [
     activityWatch
@@ -82,8 +88,16 @@ in
   programs.bash.enable = true;
   programs.direnv.enable = true;
   programs.direnv.nix-direnv.enable = true;
-  home.packages = packages ++ nodePackages ++ pythonPackages ++ localPackages;
+  home.packages = packages ++ nodePackages ++ pythonPackages ++ localPackages ++ gnomePackages;
   fonts.fontconfig.enable = true;
+  targets.genericLinux.enable = true;
+  dconf.settings = {
+    "org/gnome/shell".enabled-extensions =
+      (map (extension: extension.extensionUuid) gnomePackages)
+      #NOTE popos only
+      #NOTE requires enabling the extension by hand once
+      ++ ["system76-power@system76.com"];
+  };
 
   programs.fish = {
     enable = true;
