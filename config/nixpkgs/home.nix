@@ -1,54 +1,56 @@
 { config, pkgs, ... }:
 
 let
-  emacspackages = with pkgs; [
+  packages = with pkgs; [
     ((emacsPackagesFor emacsUnstable).emacsWithPackages(epkgs: with epkgs; [ vterm ]))
+    #core doom deps
+    (ripgrep.override {withPCRE2 = true;})
+    gnutls
+    #Optional dependencies
+    fd
+    imagemagick
+    zstd
+    fava
     pinentry_emacs
     # :checkers spell
     (aspellWithDicts (ds: with ds; [ en en-computers en-science ]))
     # :tools editorconfig
-    editorconfig-core-c # per-project style config
+    editorconfig-core-c
     # :tools lookup & :lang org +roam
     sqlite
     # :lang latex & :lang org (latex previews)
     texlive.combined.scheme-medium
     # :lang beancount
     beancount
-  ];
-
-  packages = with pkgs; [
+    #fonts
+    emacs-all-the-icons-fonts
+    iosevka-bin
+    #dev deps
+    git
     binutils
     coreutils
-    git
-    (ripgrep.override {withPCRE2 = true;})
-    gnutls
-    imagemagick
-    zstd
-    fava
-    starship
-    iosevka-bin
     cmake
     wakatime
     tldr
+    starship
     fzf
-    discord
     rust-analyzer
-    nil
     metals
     deno
     mongodb-compass
+    nil
     dbeaver
-    furtherance
     beekeeper-studio
-    firefox
     nodejs
     socat
-    starship
     python3
     bat
-    fd
-    fontforge-gtk
     rustup
+    #other
+    discord
+    furtherance
+    firefox
+    fontforge-gtk
   ];
 
   nodePackages = with pkgs.nodePackages; [
@@ -67,6 +69,10 @@ let
   ];
 
   activityWatch = pkgs.callPackage /home/lordie/Projects/nixpkgs/pkgs/applications/misc/activitywatch { };
+  localPackages = [
+    activityWatch
+  ];
+
 in
 {
   home.username = "lordie";
@@ -76,10 +82,8 @@ in
   programs.bash.enable = true;
   programs.direnv.enable = true;
   programs.direnv.nix-direnv.enable = true;
-
-  home.sessionVariables = {
-    XDG_DATA_DIRS = "$HOME/.home-manager-share:$XDG_DATA_DIRS";
-  };
+  home.packages = packages ++ nodePackages ++ pythonPackages ++ localPackages;
+  fonts.fontconfig.enable = true;
 
   programs.fish = {
     enable = true;
@@ -120,9 +124,10 @@ in
       after = [ "writeBoundary" "createXdgUserDirectories" ];
       before = [ ];
       data = ''
-        rm -rf $HOME/.home-manager-share
-        mkdir -p $HOME/.home-manager-share
-        cp -Lr --no-preserve=mode,ownership ${config.home.homeDirectory}/.nix-profile/share/* $HOME/.home-manager-share
+        for f in applications mime icons sounds; do
+          mkdir -p $HOME/.local/share/$f
+          cp -ans --no-preserve=mode,ownership ${config.home.homeDirectory}/.nix-profile/share/$f/* $HOME/.local/share/$f
+        done
       '';
     };
   };
@@ -132,6 +137,4 @@ in
       url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
     }))
   ];
-
-  home.packages = packages ++ nodePackages ++ emacspackages ++ pythonPackages ++ [activityWatch];
 }
