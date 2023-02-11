@@ -5,7 +5,7 @@
       user-mail-address "levimanga@gmail.com"
       org-directory "~/org/"
       doom-theme 'doom-ephemeral
-      doom-font (font-spec :family "Iosevka" :size 15)
+      doom-font (font-spec :family "Iosevka" :size 16)
       save-interprogram-paste-before-kill t
       enable-local-variables t
       default-directory "~/Projects/"
@@ -15,6 +15,7 @@
   :init
   (require 'switch-window)
   (require 'boon-colemak)
+  (require 'vterm)
   (boon-mode)
   :config
   (defadvice! +vterm-update-cursor-boon (orig-fn &rest args) :before #'boon-insert (vterm-goto-char (point)))
@@ -35,6 +36,8 @@
             "c" (general-simulate-key "C-c")
             "p" (general-simulate-key "C-c s b")
             "D" 'lsp-describe-thing-at-point
+            "O" 'forward-sexp
+            "N" 'backward-sexp
             )
 
   (:keymaps 'boon-x-map
@@ -45,7 +48,8 @@
             )
 
   (:keymaps 'global-map
-            "C-e" 'boon-set-command-state)
+            "C-e" 'boon-set-command-state
+            )
   )
 
 (use-package! elcord

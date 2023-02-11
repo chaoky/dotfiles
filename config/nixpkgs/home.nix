@@ -25,9 +25,7 @@ let
     imagemagick
     zstd
     fava
-    fish
     starship
-    direnv
     iosevka-bin
     cmake
     wakatime
@@ -49,6 +47,8 @@ let
     python3
     bat
     fd
+    fontforge-gtk
+    rustup
   ];
 
   nodePackages = with pkgs.nodePackages; [
@@ -59,6 +59,11 @@ let
     yaml-language-server
     vscode-langservers-extracted
     bash-language-server
+    dockerfile-language-server-nodejs
+  ];
+
+  pythonPackages = with pkgs.python3Packages; [
+    setuptools
   ];
 
   activityWatch = pkgs.callPackage /home/lordie/Projects/nixpkgs/pkgs/applications/misc/activitywatch { };
@@ -68,12 +73,12 @@ in
   home.homeDirectory = "/home/lordie";
   home.stateVersion = "22.11";
   programs.home-manager.enable = true;
+  programs.bash.enable = true;
+  programs.direnv.enable = true;
+  programs.direnv.nix-direnv.enable = true;
 
-  programs.bash = {
-	  enable = true;
-    profileExtra = ''
-      export XDG_DATA_DIRS=$HOME/.home-manager-share:$XDG_DATA_DIRS
-    '';
+  home.sessionVariables = {
+    XDG_DATA_DIRS = "$HOME/.home-manager-share:$XDG_DATA_DIRS";
   };
 
   programs.fish = {
@@ -122,12 +127,11 @@ in
     };
   };
 
-
   nixpkgs.overlays = [
     (import (builtins.fetchTarball {
       url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
     }))
   ];
 
-  home.packages = packages ++ nodePackages ++ emacspackages ++ [activityWatch];
+  home.packages = packages ++ nodePackages ++ emacspackages ++ pythonPackages ++ [activityWatch];
 }
