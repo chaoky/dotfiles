@@ -2,7 +2,7 @@
 
 let
   packages = with pkgs; [
-    ((emacsPackagesFor emacsUnstable).emacsWithPackages(epkgs: with epkgs; [ vterm ]))
+    ((emacsPackagesFor emacsGit).emacsWithPackages(epkgs: with epkgs; [ vterm ]))
     #core doom deps
     (ripgrep.override {withPCRE2 = true;})
     gnutls
@@ -74,7 +74,7 @@ let
     appindicator
   ];
 
-  activityWatch = pkgs.callPackage /home/lordie/Projects/nixpkgs/pkgs/applications/misc/activitywatch { };
+  activityWatch = pkgs.callPackage ./local/activitywatch.nix { };
   localPackages = [
     activityWatch
   ];
