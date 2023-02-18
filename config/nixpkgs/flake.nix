@@ -8,28 +8,27 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-      nixpkgs.overlays = [
-        (import (builtins.fetchTarball {
-          url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
-        }))
-      ];
+    emacs = {
+      url = "github:nix-community/emacs-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { nixpkgs, home-manager, ... }:
-    let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-    in {
-      homeConfigurations.lordie = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-
-        # Specify your home configuration modules here, for example,
-        # the path to your home.nix.
-        modules = [ ./home.nix ];
-
-        # Optionally use extraSpecialArgs
-        # to pass through arguments to home.nix
+  outputs = { self, nixpkgs, home-manager, emacs, ... }: {
+    homeConfigurations = {
+      lordie = home-manager.lib.homeManagerConfiguration {
+        system = "x86_64-linux";
+        homeDirectory = "/home/lordie";
+        username = "lordie";
+        stateVersion = "22.11";
+        configuration = {
+          imports = [ ./home.nix ];
+          nixpkgs = {
+            overlays = [emacs.overlay];
+            config.allowUnfree = true;
+          };
+        };
       };
     };
+  };
 }

@@ -81,9 +81,6 @@ let
 
 in
 {
-  home.username = "lordie";
-  home.homeDirectory = "/home/lordie";
-  home.stateVersion = "22.11";
   programs.home-manager.enable = true;
   programs.bash.enable = true;
   programs.direnv.enable = true;
@@ -145,10 +142,4 @@ in
       '';
     };
   };
-
-  nixpkgs.overlays = [
-    (import (builtins.fetchTarball {
-      url = https://github.com/nix-community/emacs-overlay/archive/master.tar.gz;
-    }))
-  ];
 }
