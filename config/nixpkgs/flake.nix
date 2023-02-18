@@ -17,17 +17,14 @@
   outputs = { self, nixpkgs, home-manager, emacs, ... }: {
     homeConfigurations = {
       lordie = home-manager.lib.homeManagerConfiguration {
-        system = "x86_64-linux";
-        homeDirectory = "/home/lordie";
-        username = "lordie";
-        stateVersion = "22.11";
-        configuration = {
-          imports = [ ./home.nix ];
-          nixpkgs = {
-            overlays = [emacs.overlay];
-            config.allowUnfree = true;
-          };
-        };
+        pkgs = nixpkgs.legacyPackages."x86_64-linux";
+        modules = [
+          ./home.nix
+          {
+            nixpkgs.overlays = [emacs.overlay];
+            nixpkgs.config.allowUnfree = true;
+          }
+        ];
       };
     };
   };

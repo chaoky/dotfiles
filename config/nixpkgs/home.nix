@@ -81,6 +81,9 @@ let
 
 in
 {
+  home.username = "lordie";
+  home.homeDirectory = "/home/lordie";
+  home.stateVersion = "22.11";
   programs.home-manager.enable = true;
   programs.bash.enable = true;
   programs.direnv.enable = true;
