@@ -38,12 +38,21 @@
           discord.overlay
         ];
       };
+      nixConf = {
+        package = pkgs.nix;
+        settings.experimental-features = ["nix-command" "flakes"];
+      };
     in
       {
         homeConfigurations = {
           lordie = home-manager.lib.homeManagerConfiguration {
             inherit pkgs;
-            modules = [ ./home.nix ];
+            modules = [
+              ./home.nix
+              {
+                inherit nixConf;
+              }
+            ];
           };
         };
       };
