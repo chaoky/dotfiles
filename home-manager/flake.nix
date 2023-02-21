@@ -38,7 +38,7 @@
           discord.overlay
         ];
       };
-      nixConf = {
+      nix = {
         package = pkgs.nix;
         settings.experimental-features = ["nix-command" "flakes"];
       };
@@ -50,7 +50,7 @@
             modules = [
               ./home.nix
               {
-                inherit nixConf;
+                inherit nix;
               }
             ];
           };
