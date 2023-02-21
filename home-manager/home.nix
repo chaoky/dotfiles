@@ -2,7 +2,7 @@
 
 let
   packages = with pkgs; [
-    ((emacsPackagesFor emacsGit).emacsWithPackages(epkgs: with epkgs; [ vterm ]))
+    ((emacsPackagesFor emacsUnstable).emacsWithPackages(epkgs: with epkgs; [ vterm ]))
     #core doom deps
     (ripgrep.override {withPCRE2 = true;})
     gnutls
@@ -37,20 +37,21 @@ let
     rust-analyzer
     metals
     deno
-    mongodb-compass
     nil
-    dbeaver
-    beekeeper-studio
     nodejs
     socat
     python3
     bat
     rustup
-    #other
+    devbox
+    #ui
+    mongodb-compass
+    dbeaver
+    beekeeper-studio
+    fontforge-gtk
     discord
     furtherance
     firefox
-    fontforge-gtk
   ];
 
   nodePackages = with pkgs.nodePackages; [
@@ -101,6 +102,7 @@ in
 
   programs.fish = {
     enable = true;
+    interactiveShellInit  = builtins.readFile ./config.fish;
     plugins = [
       {
         name = "autopair";
@@ -130,7 +132,6 @@ in
         };
       }
     ];
-    interactiveShellInit = builtins.readFile ./config.fish;
   };
 
   home.activation = {
@@ -138,7 +139,7 @@ in
       after = [ "writeBoundary" "createXdgUserDirectories" ];
       before = [ ];
       data = ''
-        for f in applications mime icons sounds; do
+        for f in applications mime icons; do
           mkdir -p $HOME/.local/share/$f
           cp -ans --no-preserve=mode,ownership ${config.home.homeDirectory}/.nix-profile/share/$f/* $HOME/.local/share/$f
         done

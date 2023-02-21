@@ -1,7 +1,7 @@
 #!/usr/bin/env fish
 
-for file in */*
-    rm -r $HOME/.(string replace home/ '' $file)
+for file in config/* home/*
+    rm -ri $HOME/.(string replace home/ '' $file)
     ln -sv (realpath $file) $HOME/.(string replace home/ '' $file)
 end
 
