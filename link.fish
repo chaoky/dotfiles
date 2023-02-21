@@ -9,6 +9,4 @@ for file in config/* home/*
 end
 
 chmod 600 $HOME/.ssh/id_rsa
-# antibody bundle < ~/.zsh_plugins.txt > ~/.zsh_plugins.sh
-git config --global user.email "levimanga@gmail.com" && git config --global user.name lordie
 git remote set-url origin git@github.com:chaoky/dotfiles.git

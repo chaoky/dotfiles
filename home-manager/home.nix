@@ -26,7 +26,6 @@ let
     emacs-all-the-icons-fonts
     iosevka-bin
     #dev deps
-    git
     binutils
     coreutils
     cmake
@@ -132,6 +131,12 @@ in
         };
       }
     ];
+  };
+
+  programs.git = {
+    enable = true;
+    userEmail = "levimanga@gmail.com";
+    userName = "chaoky";
   };
 
   home.activation = {
