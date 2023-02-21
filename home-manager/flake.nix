@@ -15,9 +15,13 @@
       url = "github:emacs-mirror/emacs/emacs-29";
       flake = false;
     };
+    discord = {
+      url = "github:InternetUnexplorer/discord-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, emacs, emacs29-src, ... }:
+  outputs = { self, nixpkgs, home-manager, emacs, emacs29-src, discord, ... }:
     let
       pkgs = import nixpkgs {
         system = "x86_64-linux";
@@ -31,6 +35,7 @@
               src = emacs29-src;
 	          });
 	        })
+          discord.overlay
         ];
       };
     in
