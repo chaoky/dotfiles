@@ -46,11 +46,10 @@ let
     #ui
     mongodb-compass
     dbeaver
-    beekeeper-studio
     fontforge-gtk
     discord
-    furtherance
-    firefox
+    beekeeper-studio
+    firefox-devedition-bin
   ];
 
   nodePackages = with pkgs.nodePackages; [
@@ -81,22 +80,40 @@ let
 
 in
 {
-  home.username = "lordie";
-  home.homeDirectory = "/home/lordie";
-  home.stateVersion = "22.11";
-  programs.home-manager.enable = true;
-  programs.bash.enable = true;
-  programs.direnv.enable = true;
-  programs.direnv.nix-direnv.enable = true;
-  home.packages = packages ++ nodePackages ++ pythonPackages ++ localPackages ++ gnomePackages;
   fonts.fontconfig.enable = true;
   targets.genericLinux.enable = true;
+  home = {
+    username = "lordie";
+    homeDirectory = "/home/lordie";
+    stateVersion = "22.11";
+    packages =
+      packages
+      ++ nodePackages
+      ++ pythonPackages
+      ++ localPackages
+      ++ gnomePackages;
+    activation = {
+      linkDesktopApplications = {
+        after = [ "writeBoundary" "createXdgUserDirectories" ];
+        before = [ ];
+        data = "/usr/bin/update-desktop-database";
+      };
+    };
+  };
+
   dconf.settings = {
     "org/gnome/shell".enabled-extensions =
       (map (extension: extension.extensionUuid) gnomePackages)
       #NOTE popos only
       #NOTE requires enabling the extension by hand once
       ++ ["system76-power@system76.com"];
+  };
+
+  programs = {
+    home-manager.enable = true;
+    bash.enable = true;
+    direnv.enable = true;
+    direnv.nix-direnv.enable = true;
   };
 
   programs.fish = {
@@ -106,28 +123,28 @@ in
       {
         name = "autopair";
         src = pkgs.fetchFromGitHub {
-         owner = "jorgebucaran";
-         repo = "autopair.fish";
-         rev = "1.0.4";
-         hash = "sha256-s1o188TlwpUQEN3X5MxUlD/2CFCpEkWu83U9O+wg3VU=";
+          owner = "jorgebucaran";
+          repo = "autopair.fish";
+          rev = "1.0.4";
+          hash = "sha256-s1o188TlwpUQEN3X5MxUlD/2CFCpEkWu83U9O+wg3VU=";
         };
       }
       {
         name = "replay";
         src = pkgs.fetchFromGitHub {
-         owner = "jorgebucaran";
-         repo = "replay.fish";
-         rev = "1.2.1";
-         hash = "sha256-bM6+oAd/HXaVgpJMut8bwqO54Le33hwO9qet9paK1kY=";
+          owner = "jorgebucaran";
+          repo = "replay.fish";
+          rev = "1.2.1";
+          hash = "sha256-bM6+oAd/HXaVgpJMut8bwqO54Le33hwO9qet9paK1kY=";
         };
       }
       {
         name = "nix-env";
         src = pkgs.fetchFromGitHub {
-         owner = "lilyball";
-         repo = "nix-env.fish";
-         rev = "master";
-         hash = "sha256-RG/0rfhgq6aEKNZ0XwIqOaZ6K5S4+/Y5EEMnIdtfPhk=";
+          owner = "lilyball";
+          repo = "nix-env.fish";
+          rev = "master";
+          hash = "sha256-RG/0rfhgq6aEKNZ0XwIqOaZ6K5S4+/Y5EEMnIdtfPhk=";
         };
       }
     ];
@@ -137,18 +154,5 @@ in
     enable = true;
     userEmail = "levimanga@gmail.com";
     userName = "chaoky";
-  };
-
-  home.activation = {
-    linkDesktopApplications = {
-      after = [ "writeBoundary" "createXdgUserDirectories" ];
-      before = [ ];
-      data = ''
-        for f in applications mime icons; do
-          mkdir -p $HOME/.local/share/$f
-          cp -ans --no-preserve=mode,ownership ${config.home.homeDirectory}/.nix-profile/share/$f/* $HOME/.local/share/$f
-        done
-      '';
-    };
   };
 }
