@@ -8,6 +8,7 @@ alias pp 'xsel --clipboard --output'
 alias dps 'docker ps --format "table{{.Names}}\t{{.Status}}\t{{.Ports}}"'
 alias dbr 'docker run --rm -it $(docker build -q .)'
 alias home 'home-manager switch --flake ~/dotfiles/home-manager/#lordie'
+set -x DOCKER_HOST unix:///home/lordie/.docker/desktop/docker.sock
 
 function ns
   if test ! -e ./.envrc
