@@ -117,11 +117,10 @@
 (after! vterm
   (setq
    vterm-buffer-name "vterm"
-   vterm-buffer-name-string "%s"
+   vterm-buffer-name-string nil
    vterm-shell "fish"))
 
 (after! eshell (setq eshell-buffer-name "eshell"))
-
 (after! treemacs (setq treemacs-read-string-input 'from-minibuffer))
 
 (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)

@@ -16,7 +16,7 @@
  modeline
  nav-flash
  ophints
- (popup +all)
+ (popup +defaults)
  treemacs
  unicode
  (vc-gutter +pretty)
