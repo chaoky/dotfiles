@@ -1,6 +1,7 @@
 { pkgs, ... }:
+
 let
-  packages = import ./packages.nix { inherit pkgs; };
+  packages = import ./packages/packages.nix { inherit pkgs; };
 in
 {
   targets.genericLinux.enable = true;

@@ -74,6 +74,6 @@
   ];
 
   local = with pkgs; [
-    (callPackage ./local/activitywatch.nix { })
+    (callPackage ./activitywatch.nix { })
   ];
 }
