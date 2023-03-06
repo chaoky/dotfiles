@@ -2,37 +2,41 @@
 
 {
   system = with pkgs; [
+    wakatime
+    tldr
+    starship
+    fzf
+    bat
+  ];
+
+  emacs = with pkgs; [
     ((emacsPackagesFor emacsUnstable).emacsWithPackages(epkgs: with epkgs; [ vterm ]))
-    #core doom deps
+    #core
     (ripgrep.override {withPCRE2 = true;})
     gnutls
-    #Optional dependencies
     fd
     imagemagick
     zstd
     fava
     pinentry_emacs
-    # :checkers spell
-    (aspellWithDicts (ds: with ds; [ en en-computers en-science ]))
     # :tools editorconfig
     editorconfig-core-c
-    # :tools lookup & :lang org +roam
-    sqlite
+    # :checkers spell
+    (aspellWithDicts (ds: with ds; [ en en-computers en-science ]))
     # :lang latex & :lang org (latex previews)
     texlive.combined.scheme-medium
-    # :lang beancount
-    beancount
+    # :lang markdown
+    pandoc
     #fonts
     emacs-all-the-icons-fonts
     iosevka-bin
-    #dev deps
+  ];
+
+  dev = with pkgs; [
     binutils
     coreutils
+    sqlite
     cmake
-    wakatime
-    tldr
-    starship
-    fzf
     rust-analyzer
     metals
     deno
@@ -40,10 +44,10 @@
     nodejs
     socat
     python3
-    bat
     rustup
-    devbox
-    #ui
+  ];
+
+  ui = with pkgs; [
     mongodb-compass
     dbeaver
     fontforge-gtk
