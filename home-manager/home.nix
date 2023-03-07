@@ -4,14 +4,13 @@ let
   packages = import ./packages/packages.nix { inherit pkgs; };
 in
 {
+  imports = [ ./packages/docker.nix ];
   targets.genericLinux.enable = true;
   fonts.fontconfig.enable = true;
-  home.activation = {
-    linkDesktopApplications = {
-      after = [ "writeBoundary" "createXdgUserDirectories" ];
-      before = [ ];
-      data = "/usr/bin/update-desktop-database";
-    };
+  home.activation.updateDesktopDatabase = {
+    after = [ "writeBoundary" "createXdgUserDirectories" ];
+    before = [ ];
+    data = ''/usr/bin/update-desktop-database'';
   };
 
   home = {
@@ -45,4 +44,5 @@ in
     userEmail = "levimanga@gmail.com";
     userName = "chaoky";
   };
+  services.docker.enable = true;
 }
