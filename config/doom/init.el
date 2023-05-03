@@ -9,7 +9,6 @@
 
  :ui
  doom
- doom-quit
  hl-todo
  indent-guides
  (ligatures +extra)
@@ -17,9 +16,8 @@
  nav-flash
  ophints
  (popup +defaults)
- treemacs
- unicode
- (vc-gutter +pretty)
+ (treemacs +lsp)
+ (vc-gutter +pretty +diff-hl)
  vi-tilde-fringe
  (window-select +switch-window)
  workspaces
@@ -34,11 +32,12 @@
 
  :emacs
  (dired +icons)
+ electric
+ ibuffer
  undo
  vc
 
  :term
- eshell
  vterm
 
  :checkers
@@ -46,7 +45,6 @@
  (spell +everywhere +aspell)
 
  :tools
- (debugger +lsp)
  direnv
  (docker +lsp)
  editorconfig
@@ -58,36 +56,26 @@
  tree-sitter
 
  :lang
- nix
- (clojure +lsp)
- (csharp +lsp +tree-sitter)
- data
- (elixir +lsp +tree-sitter)
- emacs-lisp
- graphql
- (haskell +dante +lsp)
+ (haskell +dante +lsp +tree-sitter)
  (json +lsp +tree-sitter)
  (javascript +lsp +tree-sitter)
- (markdown +grip)
- nim
- (org +pretty +present +pandoc +noter)
- plantuml
- (purescript +lsp)
  (python +lsp +tree-sitter)
- rest
- (rust +lsp)
+ (rust +lsp +tree-sitter)
  (scala +lsp +tree-sitter)
- (sh +lsp +fish +powershell +tree-sitter)
  (web +lsp +tree-sitter)
- (yaml +lsp)
+ (yaml +lsp +tree-sitter)
+ (sh +fish +powershell +lsp +tree-sitter)
+ (nix +tree-sitter)
+ (graphql +lsp)
+ (org +pretty +present +pandoc +noter)
+ emacs-lisp
+ data
+ (markdown +grip)
+ rest
 
  :app
  irc
  everywhere
 
  :config
- (default +bindings +smartparens)
-
- :os
- tty
- )
+ (default +bindings +smartparens))
