@@ -45,6 +45,7 @@
     socat
     python3
     rustup
+    nixfmt
   ];
 
   ui = with pkgs; [
@@ -75,6 +76,7 @@
     pano
     monitor-window-switcher-2
     appindicator
+    espresso
   ];
 
   local = with pkgs; [

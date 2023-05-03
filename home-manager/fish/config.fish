@@ -30,6 +30,9 @@ end
 
 starship init fish | source
 direnv hook fish | source
+fish_add_path /home/linuxbrew/.linuxbrew/bin
+fish_add_path /home/.cargo/bin
+
 
 if [ "$INSIDE_EMACS" = vterm ]
     source $EMACS_VTERM_PATH/etc/emacs-vterm.fish
