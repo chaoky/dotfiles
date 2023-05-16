@@ -10,4 +10,4 @@ end
 
 chmod 600 $HOME/.ssh/id_rsa
 git remote set-url origin git@github.com:chaoky/dotfiles.git
-home-manager switch --flake ~/dotfiles/home-manager/#lordie
+home-manager switch --flake ~/dotfiles/home-manager/#chaoky

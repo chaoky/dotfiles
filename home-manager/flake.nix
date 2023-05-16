@@ -45,7 +45,7 @@
     in
       {
         homeConfigurations = {
-          lordie = home-manager.lib.homeManagerConfiguration {
+          chaoky = home-manager.lib.homeManagerConfiguration {
             inherit pkgs;
             modules = [
               ./home.nix
