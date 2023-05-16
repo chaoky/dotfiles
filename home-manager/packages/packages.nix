@@ -72,13 +72,6 @@
     setuptools
   ];
 
-  gnome = with pkgs.gnomeExtensions; [
-    pano
-    monitor-window-switcher-2
-    appindicator
-    espresso
-  ];
-
   local = with pkgs; [
     (callPackage ./activitywatch.nix { })
   ];

@@ -1,37 +1,29 @@
 { pkgs, ... }:
 
-let
-  packages = import ./packages/packages.nix { inherit pkgs; };
-in
-{
-  imports = [ ./packages/docker.nix ];
-  targets.genericLinux.enable = true;
+let packages = import ./packages/packages.nix { inherit pkgs; };
+in {
+  imports = [ ./packages/docker.nix ./packages/gnome.nix ];
   fonts.fontconfig.enable = true;
-  home.activation.updateDesktopDatabase = {
-    after = [ "writeBoundary" "createXdgUserDirectories" ];
-    before = [ ];
-    data = ''/usr/bin/update-desktop-database'';
-  };
+
+  # services.docker.enable = true;
+  # programs.gnome.enable = true;
 
   home = {
-    username = "lordie";
-    homeDirectory = "/home/lordie";
+    username = "chaoky";
+    homeDirectory = "/home/chaoky";
     stateVersion = "22.11";
     packages = with builtins; (concatLists (attrValues packages));
   };
 
-  dconf.settings = {
-    "org/gnome/shell".enabled-extensions =
-      (map (extension: extension.extensionUuid) packages.gnome)
-      #NOTE popos only
-      #NOTE requires enabling the extension by hand once
-      ++ ["system76-power@system76.com"];
-  };
-
   programs = {
     home-manager.enable = true;
-    bash.enable = true;
     fish = import ./fish/fish.nix { inherit pkgs; };
+  };
+
+  programs.bash = {
+    enable = true;
+    profileExtra =
+      "${pkgs.xorg.setxkbmap}/bin/setxkbmap -layout us -variant colemak";
   };
 
   programs.direnv = {
@@ -44,5 +36,4 @@ in
     userEmail = "levimanga@gmail.com";
     userName = "chaoky";
   };
-  services.docker.enable = true;
 }
