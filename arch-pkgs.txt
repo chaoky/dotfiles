@@ -1,0 +1,10 @@
+inetutils
+cmake
+ttf-all-the-icons
+ripgrep
+starship
+direnv
+fisher
+insomnia-bin
+speedtest-cli
+wakatime
