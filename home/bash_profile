@@ -1,0 +1,5 @@
+[[ -f ~/.bashrc ]] && . ~/.bashrc
+export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/gcr/ssh
+export DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2; exit;}'):0.0
+export GDK_BACKEND=x11
+setxkbmap us -variant colemak -model pc105

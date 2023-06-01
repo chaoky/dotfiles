@@ -18,5 +18,12 @@ end
 
 chmod 600 $HOME/.ssh/id_rsa
 git remote set-url origin git@github.com:chaoky/dotfiles.git
+
+git config --global user.name "chaoky"
+git config --global user.email "levimanga@gmail.com"
+
 yay -S --needed --noconfirm - <arch-pkgs.txt
+
+sudo usermod -aG docker $USER
+
 #home-manager switch --flake ~/dotfiles/home-manager/#chaoky
