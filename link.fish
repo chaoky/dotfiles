@@ -19,9 +19,12 @@ end
 chmod 600 $HOME/.ssh/id_rsa
 git remote set-url origin git@github.com:chaoky/dotfiles.git
 
-git config --global user.name "chaoky"
-git config --global user.email "levimanga@gmail.com"
+if ! test -f ~/.wakatime.cfg
+    cp wakatime.cfg ~/.wakatime.cfg
+end
 
+git config --global user.name chaoky
+git config --global user.email "levimanga@gmail.com"
 
 sudo usermod -aG docker $USER
 
