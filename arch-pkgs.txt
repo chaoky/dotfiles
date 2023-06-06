@@ -40,3 +40,4 @@ shfmt
 python-grip
 pandoc
 docker
+trash-cli
