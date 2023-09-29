@@ -61,11 +61,11 @@
             )
   )
 
-(use-package! elcord
-  :config
-  (setq
-   elcord-use-major-mode-as-main-icon t)
-  (elcord-mode t))
+;; (use-package! elcord
+;;   :config
+;;   (setq
+;;    elcord-use-major-mode-as-main-icon t)
+;;   (elcord-mode t))
 
 (use-package! ob-sql-mode :defer t)
 
@@ -87,6 +87,9 @@
        nil "typescript")
      format-all--mode-table)))
 
+(after! typescript-mode
+  (setq +format-with-lsp nil))
+
 (use-package! protobuf-mode)
 
 (after! flycheck
@@ -97,7 +100,9 @@
    lsp-disabled-clients '(rls)
    ;; lsp-rust-analyzer-diagnostics-disabled ["unresolved-proc-macro"]
    lsp-rust-analyzer-cargo-watch-command "clippy"
+   lsp-rust-analyzer-cargo-watch-args "-Zunstable-options"
    lsp-rust-analyzer-server-display-inlay-hints nil
+   +format-with-lsp t
    ))
 
 (after! switch-window

@@ -1,0 +1,10 @@
+[Unit]
+Description=wsl vsock x11
+
+[Service]
+User=root
+Restart=always
+ExecStart=/bin/bash -c 'mount -o remount,rw /tmp/.X11-unix && socat -b65536 UNIX-LISTEN:/tmp/.X11-unix/X1,fork,mode=777 VSOCK-CONNECT:2:6000'
+
+[Install]
+WantedBy=multi-user.target

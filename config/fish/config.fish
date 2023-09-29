@@ -9,12 +9,17 @@ alias dps 'docker ps --format "table{{.Names}}\t{{.Status}}\t{{.Ports}}"'
 alias dbr 'docker run --rm -it $(docker build -q .)'
 alias hm 'home-manager switch --flake ~/dotfiles/home-manager/#chaoky'
 
-starship init fish | source
-direnv hook fish | source
-fish_add_path /home/linuxbrew/.linuxbrew/bin
-fish_add_path /home/.cargo/bin
+set EDITOR emacsclient
+set PNPM_HOME "/home/chaoky/.local/share/pnpm"
+fish_add_path /home/chaoky/.local/share/pnpm
 
+fish_add_path /home/linuxbrew/.linuxbrew/bin
+fish_add_path ~/.cargo/bin
+fish_add_path ~/.bun/bin
 
 if [ "$INSIDE_EMACS" = vterm ]
     source $EMACS_VTERM_PATH/etc/emacs-vterm.fish
 end
+
+starship init fish | source
+direnv hook fish | source
