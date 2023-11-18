@@ -1,5 +1,8 @@
 #!/usr/bin/env fish
 
+git clone --depth 1 https://github.com/AstroNvim/AstroNvim ~/.config/nvim &
+git clone --depth 1 https://github.com/doomemacs/doomemacs ~/.config/emacs &
+
 for file in (find $HOME -maxdepth 2 -lname '*dotfiles*')
     unlink $file
 end
