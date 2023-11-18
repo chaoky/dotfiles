@@ -8,7 +8,10 @@
 (package! wakatime-mode)
 (package! prisma-mode :recipe (:host github :repo "pimeys/emacs-prisma-mode" :branch "main"))
 
-(package! tsi :recipe (:host github :repo "orzechowskid/tsi.el"))
-(package! tsx-mode :recipe (:host github :repo "orzechowskid/tsx-mode.el" :branch "emacs28"))
+;; (package! tsi :recipe (:host github :repo "orzechowskid/tsi.el"))
+;; (package! css-in-js-mode :recipe (:host github :repo "orzechowskid/tree-sitter-css-in-js"))
+;; (package! tsx-mode :recipe (:host github :repo "orzechowskid/tsx-mode.el"))
 
 (package! protobuf-mode)
+(package! typescript-mode :disable t)
+(package! treesit-auto)

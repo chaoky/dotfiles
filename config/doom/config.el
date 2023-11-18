@@ -11,20 +11,17 @@
       default-directory "~/Projects/"
       )
 
-;;show wrapped text right bellow
-(setq +word-wrap-extra-indent 0)
-(other-window 0)
-;;line wrap on `=`
+(setq +word-wrap-extra-indent 0) ;;show wrapped text right bellow
 (setq word-wrap-by-category t)
-(modify-category-entry ?= ?| (standard-category-table))
+(modify-category-entry ?= ?| (standard-category-table)) ;;line wrap on `=`
 
 (use-package! boon
   :init
   (require 'switch-window)
   (require 'boon-colemak)
   (require 'vterm)
-  (boon-mode)
   :config
+  (boon-mode)
   (defadvice! +vterm-update-cursor-boon (orig-fn &rest args) :before #'boon-insert (vterm-goto-char (point)))
   (fset 'boon-special-mode-p #'(lambda () nil)) ;;special mode sucks I can just press Q and change context
   (setq boon-insert-conditions '((cl-search "emacs-everywhere" (buffer-name))))
@@ -42,7 +39,7 @@
             "C-e" 'doom/escape
             "c" (general-simulate-key "C-c")
             "p" (general-simulate-key "C-c s b")
-            "D" 'lsp-describe-thing-at-point
+            "D" 'lsp-ui-doc-glance
             "O" 'forward-sexp
             "N" 'backward-sexp
             "L" 'beginning-of-visual-line
@@ -61,34 +58,29 @@
             )
   )
 
-;; (use-package! elcord
-;;   :config
-;;   (setq
-;;    elcord-use-major-mode-as-main-icon t)
-;;   (elcord-mode t))
+(use-package! ob-sql-mode)
 
-(use-package! ob-sql-mode :defer t)
+(use-package! treesit-auto
+  :config
+  (global-treesit-auto-mode))
 
 (use-package! wakatime-mode :config (global-wakatime-mode))
 
-(use-package! tsx-mode
-  :hook (tsx-mode . rainbow-delimiters-mode)
-  :init
-  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-mode))
-  (after! all-the-icons
-    (add-to-list 'all-the-icons-mode-icon-alist
-                 '(tsx-mode all-the-icons-fileicon "tsx" :v-adjust -0.1 :face all-the-icons-cyan-alt)))
-  (setq-hook! 'tsx-mode-hook +format-with-lsp nil)
+(use-package! typescript-ts-mode
+  :mode (("\\.ts\\'" . typescript-ts-mode)
+         ("\\.tsx\\'" . tsx-ts-mode))
+  :config
+  (add-hook! '(typescript-ts-mode-hook tsx-ts-mode-hook) #'lsp!)
+  (add-hook! '(typescript-ts-mode-hook tsx-ts-mode-hook) #'lsp!)
+  (setq-hook! '(typescript-ts-mode-hook tsx-ts-mode-hook) +format-with-lsp nil)
   (after! format-all
     (format-all--pushhash
      'tsx-mode
      '(prettier closure
        (t)
        nil "typescript")
-     format-all--mode-table)))
-
-(after! typescript-mode
-  (setq +format-with-lsp nil))
+     format-all--mode-table))
+  )
 
 (use-package! protobuf-mode)
 
@@ -125,7 +117,7 @@
    projectile-project-search-path '(("~/Projects" . 3))
    projectile-project-root-files-bottom-up (delete ".git" projectile-project-root-files-bottom-up)
    projectile-project-root-files (cons ".git" projectile-project-root-files)
-   ;; projectile-globally-ignored-directories (append '("*node_modules" "node_modules" "*/node_modules") projectile-globally-ignored-directories)
+   projectile-globally-ignored-directories (append '("*node_modules") projectile-globally-ignored-directories)
    ;; projectile-ignored-project-function '(lambda (project-name) (cl-search "node_modules" project-name))
    ))
 
@@ -138,8 +130,7 @@
    vterm-shell "fish"))
 
 (after! treemacs
-  (setq treemacs-read-string-input 'from-minibuffer)
-  (treemacs-project-follow-mode t))
+  (setq treemacs-read-string-input 'from-minibuffer))
 
 (after! lsp-mode
   (advice-add 'json-parse-buffer :around
@@ -148,3 +139,8 @@
                   (while (re-search-forward "\\\\u0000" nil t)
                     (replace-match "")))
                 (apply orig rest))))
+
+(after! json-mode
+  (setq-hook! 'json-mode-hook
+    +format-with-lsp nil
+    +format-with 'prettier))
