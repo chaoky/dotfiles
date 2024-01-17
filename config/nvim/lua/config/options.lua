@@ -4,3 +4,4 @@
 
 vim.o.timeoutlen = 0
 vim.o.showtabline = 0
+vim.o.swapfile = 0
