@@ -104,6 +104,31 @@ return {
         { hl = { fg = "pink" }, provider = tabnum },
         status.component.nav(),
       }
+
+      opts.winbar = {
+        init = function(self) self.bufnr = vim.api.nvim_get_current_buf() end,
+        {
+          status.component.separated_path {
+            path_func = status.provider.filename { modify = ":.:h" },
+          },
+          status.component.file_info {
+            file_icon = false,
+            filename = {},
+            filetype = false,
+            file_modified = false,
+            file_read_only = false,
+            hl = status.hl.get_attributes("winbar", true),
+            surround = false,
+            update = "BufEnter",
+          },
+          status.component.breadcrumbs {
+            icon = { hl = true },
+            hl = status.hl.get_attributes("winbar", true),
+            prefix = true,
+            padding = { left = 0 },
+          },
+        },
+      }
     end,
   },
 
@@ -192,12 +217,16 @@ return {
             ["<A-5>"] = { function() switchOrCreateTab(5) end },
             ["<leader>O"] = { "<C-W>c", desc = "Close window" },
             ["<leader>o"] = { "<C-W>W", desc = "Other window" },
-            ["~"] = "<cmd>:bprevious<cr>",
-            ["<leader>b"] = { function() require("telescope.builtin").buffers {} end, desc = "Buffers", nowait = true },
-            k = { vim.lsp.buf.hover },
+            ["<leader>b"] = {
+              function() require("telescope.builtin").buffers { ignore_current_buffer = true } end,
+              desc = "Buffers",
+            },
+            k = { vim.lsp.buf.hover, desc = "Lsp Hover" },
+            m = { "<cmd>b#<cr>", desc = "previous buffer" },
           },
           t = {
             ["<Esc>"] = { "<C-\\><C-n>" },
+            ["<Del>"] = { "<Esc>" },
           },
         },
       },
