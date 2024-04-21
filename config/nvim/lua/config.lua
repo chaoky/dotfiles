@@ -1,7 +1,13 @@
 local function switchOrCreateTab(tabNum)
-  local status = pcall(vim.api.nvim_tabpage_get_number, tabNum)
-  if status == false then vim.api.nvim_command "tabnew" end
-  vim.api.nvim_set_current_tabpage(tabNum)
+  local status = pcall(vim.cmd.tabn, tabNum)
+  if status then return end
+
+  local last_tab = vim.fn.tabpagenr "$"
+  for _ = last_tab, tabNum - 1 do
+    vim.cmd.tabnew {}
+  end
+
+  vim.cmd.tabn(tabNum)
 end
 
 ---@type LazySpec
@@ -75,16 +81,7 @@ return {
 
   {
     "rebelot/heirline.nvim",
-    dependencies = { { "linrongbin16/lsp-progress.nvim", opts = {} } },
     opts = function(_, opts)
-      local LspProgress = {
-        provider = require("lsp-progress").progress,
-        update = {
-          "User",
-          pattern = "LspProgressStatusUpdated",
-          callback = vim.schedule_wrap(function() vim.cmd "redrawstatus" end),
-        },
-      }
       local function tabnum() return "%3(" .. vim.fn.tabpagenr() .. "%)" end
       local status = require "astroui.status"
       opts.statusline = { -- statusline
@@ -97,11 +94,10 @@ return {
         status.component.fill(),
         status.component.cmd_info(),
         status.component.fill(),
-        LspProgress,
         status.component.lsp(),
         status.component.virtual_env(),
         status.component.treesitter(),
-        { hl = { fg = "pink" }, provider = tabnum },
+        { hl = { fg = "pink" }, provider = tabnum, update = "TabEnter" },
         status.component.nav(),
       }
 
@@ -129,6 +125,25 @@ return {
           },
         },
       }
+    end,
+  },
+
+  {
+    "folke/noice.nvim",
+    opts = function(_, opts)
+      local utils = require "astrocore"
+      return utils.extend_tbl(opts, {
+        routes = {
+          {
+            filter = {
+              event = "msg_show",
+              kind = "",
+              find = "written",
+            },
+            opts = { skip = true },
+          },
+        },
+      })
     end,
   },
 
@@ -186,7 +201,7 @@ return {
             T = { "yiw" },
           },
           [{ "n", "t" }] = {
-            ["<C-t>"] = { "<cmd>ToggleTerm<cr>", desc = "Toggle Term" },
+            ["<C-t>"] = { '<Cmd>execute v:count . "ToggleTerm"<CR>', desc = "Toggle Term" },
           },
           n = {
             ["<leader>fp"] = {
@@ -206,7 +221,7 @@ return {
               desc = "Files git",
             },
             ["<leader><leader>"] = {
-              function() require("telescope.builtin").find_files {} end,
+              function() require("telescope.builtin").find_files { hidden = true } end,
               desc = "Search files",
             },
             ["<leader>tt"] = { "<cmd>terminal<cr>", desc = "In buffer" },
@@ -222,11 +237,12 @@ return {
               desc = "Buffers",
             },
             k = { vim.lsp.buf.hover, desc = "Lsp Hover" },
+            --TODO: limit it to current tab
+            --TODO: exclude buffers from slip windows
             m = { "<cmd>b#<cr>", desc = "previous buffer" },
           },
-          t = {
-            ["<Esc>"] = { "<C-\\><C-n>" },
-            ["<Del>"] = { "<Esc>" },
+          [{ "t", "i" }] = {
+            ["<C-e>"] = { "<C-\\><C-n>" },
           },
         },
       },
