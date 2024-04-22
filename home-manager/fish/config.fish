@@ -1,7 +1,22 @@
 #!/usr/bin/env fish
 set fish_greeting
+if [ "$INSIDE_EMACS" = vterm ]
+    source $EMACS_VTERM_PATH/etc/emacs-vterm.fish
+end
 
-# alias kc '/usr/bin/keychain -q --nogui $HOME/.ssh/id_rsa && source $HOME/.keychain/stanbot-15-fish'
+fish_add_path ~/.cargo/bin
+
+set PNPM_HOME "/home/chaoky/.local/share/pnpm"
+fish_add_path "$PNPM_HOME"
+
+set BUN_INSTALL ~/.bun
+fish_add_path ~/.bun/bin
+
+-set -gx PAGER cat
+# set -gx SSH_AUTH_SOCK $XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh
+# set -gx DISPLAY :1.0
+# set -gx GDK_BACKEND x11
+
 alias ls 'ls --color=auto'
 alias yk 'xsel --clipboard --input'
 alias pp 'xsel --clipboard --output'
@@ -28,12 +43,6 @@ function ns
   end
 end
 
+jump shell fish | source
 starship init fish | source
 direnv hook fish | source
-fish_add_path /home/linuxbrew/.linuxbrew/bin
-fish_add_path /home/.cargo/bin
-
-
-if [ "$INSIDE_EMACS" = vterm ]
-    source $EMACS_VTERM_PATH/etc/emacs-vterm.fish
-end

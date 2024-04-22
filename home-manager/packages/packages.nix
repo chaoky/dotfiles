@@ -1,78 +1,54 @@
 { pkgs }:
-
+with pkgs;
 {
-  system = with pkgs; [
-    wakatime
-    tldr
+  system = [
+    gnutls
+    binutils
+    unzip
+    coreutils
+    fd
+    (ripgrep.override {withPCRE2 = true;})
     starship
     fzf
     bat
-  ];
-
-  emacs = with pkgs; [
-    ((emacsPackagesFor emacsUnstable).emacsWithPackages(epkgs: with epkgs; [ vterm ]))
-    #core
-    (ripgrep.override {withPCRE2 = true;})
-    gnutls
-    fd
-    imagemagick
-    zstd
-    fava
-    pinentry_emacs
-    # :tools editorconfig
-    editorconfig-core-c
-    # :checkers spell
-    (aspellWithDicts (ds: with ds; [ en en-computers en-science ]))
-    # :lang latex & :lang org (latex previews)
-    texlive.combined.scheme-medium
-    # :lang markdown
-    pandoc
-    #fonts
-    emacs-all-the-icons-fonts
-    iosevka-bin
-  ];
-
-  dev = with pkgs; [
-    binutils
-    coreutils
-    sqlite
-    cmake
-    rust-analyzer
-    metals
-    deno
-    nil
-    nodejs
     socat
-    python3
-    rustup
-    nixfmt
+    (aspellWithDicts (ds: with ds; [ en en-computers en-science ]))
+    (nerdfonts.override { fonts = [ "Iosevka" ]; })
+    alacritty
   ];
 
-  ui = with pkgs; [
+  dev = [
+    wakatime
+    tldr
+    cmake
+    gcc
+    python3
+    tree-sitter 
+    lazygit
+    nodejs
+    cargo
+    neovim
+  ];
+
+  # emacs = [
+  #   ((emacsPackagesFor emacsUnstable).emacsWithPackages(epkgs: with epkgs; [ vterm ]))
+  #   imagemagick
+  #   zstd
+  #   fava
+  #   editorconfig-core-c
+  #   texlive.combined.scheme-medium
+  #   pandoc
+  #   emacs-all-the-icons-fonts
+  #   sqlite
+  # ];
+
+  ui = [
     mongodb-compass
     dbeaver
     fontforge-gtk
     discord
-    beekeeper-studio
+    microsoft-edge
     firefox-devedition-bin
-  ];
-
-  node = with pkgs.nodePackages; [
-    typescript-language-server
-    typescript
-    pnpm
-    prettier
-    yaml-language-server
-    vscode-langservers-extracted
-    bash-language-server
-    dockerfile-language-server-nodejs
-  ];
-
-  python = with pkgs.python3Packages; [
-    setuptools
-  ];
-
-  local = with pkgs; [
-    (callPackage ./activitywatch.nix { })
+    stremio
   ];
 }
