@@ -1,17 +1,16 @@
 { config, lib, pkgs, ... }:
 with lib;
 let
-  cfg = config.services.docker;
-  docker = pkgs.docker;
+  cfg = config.local.docker;
 in
 {
-  options.services.docker = {
+  options.local.docker = {
     enable = mkEnableOption "docker module";
   };
 
   config = mkIf cfg.enable {
     home = {
-      packages = [ docker ];
+      packages = [ pkgs.docker ];
       #NIX users hate him
       activation.dockerDeamon = {
         after = [ "writeBoundary" "createXdgUserDirectories" ];

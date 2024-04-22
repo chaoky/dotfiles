@@ -1,15 +1,16 @@
 { config, lib, pkgs, ... }:
 with lib;
 let
-  cfg = config.programs.gnome;
+  cfg = config.local.gnome;
   extensions = with pkgs.gnomeExtensions; [
     pano
     monitor-window-switcher-2
     appindicator
     espresso
   ];
-in {
-  options.programs.gnome = { enable = mkEnableOption "gnome module"; };
+in
+{
+  options.local.gnome = { enable = mkEnableOption "gnome module"; };
   config = mkIf cfg.enable {
     home.packages = extensions;
     targets.genericLinux.enable = true;

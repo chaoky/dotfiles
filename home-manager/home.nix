@@ -1,23 +1,33 @@
-{ pkgs, ... }:
-
+{ pkgs, lib, config, ... }:
+with lib;
 let packages = import ./packages/packages.nix { inherit pkgs; };
-in {
-  imports = [ ./packages/docker.nix ./packages/gnome.nix ];
-  fonts.fontconfig.enable = true;
+in
+{
+  imports = [
+    # ./docker.nix
+    # ./gnome.nix
+    ./fish/fish.nix
+    ./bin.nix
+    ./sway.nix
+    {
+      options.wsl = mkOption {
+        type = types.bool;
+      };
+      config = mkIf (!config.wsl) {
+        local.sway.enable = true;
+      };
+    }
+  ];
 
-  # services.docker.enable = true;
-  # programs.gnome.enable = true;
+  local.fish.enable = true;
+  local.bin.enable = true;
+  fonts.fontconfig.enable = true;
+  programs.home-manager.enable = true;
 
   home = {
     username = "chaoky";
     homeDirectory = "/home/chaoky";
     stateVersion = "22.11";
-    packages = with builtins; (concatLists (attrValues packages));
-  };
-
-  programs = {
-    home-manager.enable = true;
-    fish = import ./fish/fish.nix { inherit pkgs; };
   };
 
   programs.bash = {
@@ -35,60 +45,5 @@ in {
     enable = true;
     userEmail = "levimanga@gmail.com";
     userName = "chaoky";
-  };
-
-  wayland.windowManager.sway = {
-    enable = true;
-    config = {
-      modifier = "Mod4";
-      terminal = "alacritty"; 
-      startup = [
-        { command = "microsoft-edge"; }
-      ];
-      defaultWorkspace = "workspace number 1";
-      bars = [{
-      mode = "dock";
-      hiddenState = "hide";
-      position = "top";
-      workspaceButtons = true;
-      workspaceNumbers = true;
-      statusCommand = "${pkgs.i3status}/bin/i3status";
-      fonts = {
-        names = [ "monospace" ];
-        size = 8.0;
-      };
-      trayOutput = "primary";
-      colors = {
-        background = "#000000";
-        statusline = "#ffffff";
-        separator = "#666666";
-        focusedWorkspace = {
-          border = "#4c7899";
-          background = "#285577";
-          text = "#ffffff";
-        };
-        activeWorkspace = {
-          border = "#333333";
-          background = "#5f676a";
-          text = "#ffffff";
-        };
-        inactiveWorkspace = {
-          border = "#333333";
-          background = "#222222";
-          text = "#888888";
-        };
-        urgentWorkspace = {
-          border = "#2f343a";
-          background = "#900000";
-          text = "#ffffff";
-        };
-        bindingMode = {
-          border = "#2f343a";
-          background = "#900000";
-          text = "#ffffff";
-        };
-      };
-    }];
-    };
   };
 }

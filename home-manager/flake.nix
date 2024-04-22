@@ -7,14 +7,6 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # emacs = {
-    #   url = "github:nix-community/emacs-overlay";
-    #   inputs.nixpkgs.follows = "nixpkgs";
-    # };
-    # emacs29-src = {
-    #   url = "github:emacs-mirror/emacs/emacs-29";
-    #   flake = false;
-    # };
     discord = {
       url = "github:InternetUnexplorer/discord-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -26,34 +18,28 @@
       pkgs = import nixpkgs {
         system = "x86_64-linux";
         config.allowUnfree = true;
-        overlays = [
-         #  emacs.overlay
-         #  (final : prev: {
-	        #   emacs29 = prev.emacsGit.overrideAttrs (old : {
-	        #     name = "emacs29";
-         #      version = "29.0-${emacs29-src.shortRev}";
-         #      src = emacs29-src;
-	        #   });
-	        # })
-          discord.overlay
-        ];
+        overlays = [ discord.overlay ];
       };
-      nix = {
-        package = pkgs.nix;
-        settings.experimental-features = ["nix-command" "flakes"];
-      };
+      init = pkgs.writeShellScriptBin "init" ''
+        export NIXPKGS_ALLOW_UNFREE=1
+        {
+          echo "experimental-features = nix-command flakes impure-derivations"
+          echo "substituters = https://cache.nixos.org https://nix-community.cachix.org"
+        } > ~/.config/nix/nix.conf
+        GIT_ROOT="$(git rev-parse --show-toplevel)"
+        ${pkgs.home-manager}/bin/home-manager -b backup init --switch $GIT_ROOT/home-manager
+      '';
     in
-      {
-        homeConfigurations = {
-          chaoky = home-manager.lib.homeManagerConfiguration {
-            inherit pkgs;
-            modules = [
-              ./home.nix
-              {
-                inherit nix;
-              }
-            ];
-          };
+    {
+      homeConfigurations = {
+        chaoky = home-manager.lib.homeManagerConfiguration {
+          inherit pkgs;
+          modules = [ ./home.nix { wsl = true; } ];
         };
       };
+      apps."x86_64-linux".default = {
+        type = "app";
+        program = "${init}/bin/init";
+      };
+    };
 }
