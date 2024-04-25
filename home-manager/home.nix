@@ -1,39 +1,54 @@
 { pkgs, lib, config, ... }:
 with lib;
-let packages = import ./packages/packages.nix { inherit pkgs; };
+let
+  packages = import ./packages/packages.nix { inherit pkgs; };
+  wsl = {
+    options.wsl = mkOption {
+      type = types.bool;
+    };
+    config = mkIf (!config.wsl) {
+      local.sway.enable = true;
+    };
+  };
 in
 {
-  imports = [
-    # ./docker.nix
-    # ./gnome.nix
-    ./fish/fish.nix
-    ./bin.nix
-    ./sway.nix
-    {
-      options.wsl = mkOption {
-        type = types.bool;
-      };
-      config = mkIf (!config.wsl) {
-        local.sway.enable = true;
-      };
-    }
-  ];
-
-  local.fish.enable = true;
+  imports = [ ./bin.nix ./sway.nix wsl ];
   local.bin.enable = true;
   fonts.fontconfig.enable = true;
+  programs.starship.enable = true;
+  programs.zoxide.enable = true;
+  programs.carapace.enable = true;
   programs.home-manager.enable = true;
 
-  home = {
+  home = rec {
     username = "chaoky";
     homeDirectory = "/home/chaoky";
     stateVersion = "22.11";
+    sessionVariables = {
+      PAGER = "more";
+      SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh";
+      PNPM_HOME = "/home/chaoky/.local/share/pnpm";
+      BUN_INSTALL = "~/.bun";
+    };
+    sessionPath = [
+      sessionVariables.PNPM_HOME
+      "${sessionVariables.BUN_INSTALL}/bin"
+      "~/.cargo/bin"
+    ];
+    shellAliases = {
+      ls = "ls --color=auto";
+      yk = "xsel --clipboard --input";
+      pp = "xsel --clipboard --output";
+      dps = "docker ps --format 'table{{.Names}}\t{{.Status}}\t{{.Ports}}'";
+      dbr = "docker run --rm -it (docker build -q .)";
+      hm = "home-manager switch --flake ~/dotfiles/home-manager/#chaoky";
+    };
   };
 
-  programs.bash = {
+  programs.zsh = {
     enable = true;
-    profileExtra =
-      "${pkgs.xorg.setxkbmap}/bin/setxkbmap -layout us -variant colemak";
+    syntaxHighlighting.enable = true;
+    autosuggestion.enable = true;
   };
 
   programs.direnv = {
