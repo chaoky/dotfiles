@@ -40,7 +40,7 @@ in
       yk = "xsel --clipboard --input";
       pp = "xsel --clipboard --output";
       dps = "docker ps --format 'table{{.Names}}\t{{.Status}}\t{{.Ports}}'";
-      dbr = "docker run --rm -it (docker build -q .)";
+      dbr = "docker run --rm -it $(docker build -q .)";
       hm = "home-manager switch --flake ~/dotfiles/home-manager/#chaoky";
     };
   };
@@ -49,6 +49,13 @@ in
     enable = true;
     syntaxHighlighting.enable = true;
     autosuggestion.enable = true;
+    initExtra = ''
+      # unfuck direnv nix shell
+      NIX_PATHS=$(echo $PATH | tr ':' '\n' | grep "/nix/" | tail -n +2 | tr '\n' ':')
+      if [[ $NIX_PATHS ]]; then
+        PATH=$NIX_PATHS$PATH
+      fi
+    '';
   };
 
   programs.direnv = {
