@@ -8,7 +8,6 @@ in
   config = mkIf cfg.enable {
     home.packages = with pkgs; [
       alacritty
-      wl-clipboard
     ];
     wayland.windowManager.sway = {
       enable = true;

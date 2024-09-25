@@ -25,6 +25,24 @@ let
     cargo
     neovim
     direnv
+    wl-clipboard
+    trashy
+    lua
+    lua51Packages.luarocks-nix
+    deno
+  ];
+  lsp = with pkgs.nodePackages; [
+    typescript-language-server
+    typescript
+    pnpm
+    prettier
+    yaml-language-server
+    vscode-langservers-extracted
+    bash-language-server
+    dockerfile-language-server-nodejs
+    nixfmt
+    nil
+    rust-analyzer
   ];
   extra = mkIf (!config.wsl) [
     mongodb-compass
@@ -40,6 +58,6 @@ in
 {
   options.local.bin = { enable = mkEnableOption "bin module"; };
   config = mkIf cfg.enable {
-    home.packages = mkMerge [ core extra ];
+    home.packages = mkMerge [ core extra lsp ];
   };
 }
