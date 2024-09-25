@@ -10,6 +10,14 @@ local function switchOrCreateTab(tabNum)
   vim.cmd.tabn(tabNum)
 end
 
+-- require("lspconfig").koka.setup {}
+
+vim.filetype.add {
+  extension = {
+    kk = "koka",
+  },
+}
+
 ---@type LazySpec
 return {
   {
@@ -20,10 +28,21 @@ return {
   { "wakatime/vim-wakatime" },
 
   {
+    "nvim-neo-tree/neo-tree.nvim",
+    opts = function(_, opts)
+      opts.window.mappings.t = "copy_to_clipboard"
+      opts.window.mappings.T = "copy_selector"
+      opts.window.mappings.y = ""
+      opts.window.mappings.Y = ""
+    end,
+  },
+
+  {
     "folke/which-key.nvim",
     init = function()
       local presets = require "which-key.plugins.presets"
       presets.operators["y"] = nil
+      presets.operators["yy"] = nil
     end,
   },
 
@@ -35,24 +54,6 @@ return {
   {
     "nvim-telescope/telescope-file-browser.nvim",
     dependencies = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" },
-  },
-
-  {
-    "ahmedkhalf/project.nvim",
-    main = "project_nvim",
-    opts = {
-      show_hidden = true,
-      silent_chdir = true,
-      detection_methods = { "pattern" },
-      patterns = { ".git", "Cargo.toml", "package.json", ".envrc", "moon.yml", "neovim.yml" },
-      scope_chdir = "tab",
-    },
-  },
-
-  -- scope buffers to tab
-  {
-    "tiagovla/scope.nvim",
-    opts = {},
   },
 
   -- clipobar history
@@ -128,23 +129,52 @@ return {
     end,
   },
 
+  -- {
+  --   "dense-analysis/ale",
+  --   config = function()
+  --     local g = vim.g
+  --     g.ale_fix_on_save = 1
+  --     g.ale_fixers = { "biome" }
+  --     g.ale_linters = { ["*"] = { "biome" } }
+  --   end,
+  -- },
+
   {
-    "folke/noice.nvim",
-    opts = function(_, opts)
-      local utils = require "astrocore"
-      return utils.extend_tbl(opts, {
-        routes = {
-          {
-            filter = {
-              event = "msg_show",
-              kind = "",
-              find = "written",
-            },
-            opts = { skip = true },
-          },
+    "kawre/leetcode.nvim",
+    build = ":TSUpdate html",
+    dependencies = {
+      "nvim-telescope/telescope.nvim",
+      "nvim-lua/plenary.nvim", -- required by telescope
+      "MunifTanjim/nui.nvim",
+
+      -- optional
+      "nvim-treesitter/nvim-treesitter",
+      "rcarriga/nvim-notify",
+      "nvim-tree/nvim-web-devicons",
+    },
+    opts = {},
+  },
+
+  {
+    "nvim-treesitter/nvim-treesitter",
+    opts = function(self, opts)
+      local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
+      parser_config.koka = {
+        install_info = {
+          url = "https://github.com/mtoohey31/tree-sitter-koka",
+          files = { "src/parser.c", "src/scanner.c" },
+          branch = "main",
+          generate_requires_npm = false,
+          requires_generate_from_grammar = false,
         },
-      })
+        filetype = "koka",
+      }
     end,
+  },
+
+  {
+    "JoosepAlviste/nvim-ts-context-commentstring",
+    lazy = false,
   },
 
   {
@@ -152,18 +182,14 @@ return {
     ---@type AstroLSPOpts
     opts = {
       features = {
-        autoformat = true,
+        autoformat = false,
         codelens = true,
         inlay_hints = true,
         semantic_tokens = true,
       },
-      formatting = {
-        disabled = {
-          "lua_ls",
-        },
-      },
       servers = {
         "relay_lsp",
+        "koka",
       },
       ---@diagnostic disable: missing-fields
       config = {
@@ -213,23 +239,15 @@ return {
             T = { "yiw" },
           },
           [{ "n", "t" }] = {
-            ["<C-t>"] = { '<Cmd>execute v:count . "ToggleTerm"<CR>', desc = "Toggle Term" },
+            ["<C-t>"] = { '<Cmd>execute v:count . "ToggleTerm direction=float"<CR>', desc = "Toggle Term" },
           },
           n = {
-            ["<leader>fp"] = {
-              function() require("telescope").extensions.projects.projects {} end,
-              desc = "Project",
-            },
-            ["<leader>f~"] = {
-              function() require("telescope").extensions.file_browser.file_browser { cwd = "~", hidden = true } end,
-              desc = "File in home",
-            },
             ["<leader>fd"] = {
               function() require("telescope").extensions.file_browser.file_browser { cwd = "%:p:h", hidden = true } end,
               desc = "File in dir",
             },
             ["<leader>fg"] = {
-              function() require("telescope.builtin").git_files {} end,
+              function() require("telescope.builtin").git_files { hidden = true } end,
               desc = "Files git",
             },
             ["<leader><leader>"] = {
@@ -242,18 +260,14 @@ return {
             ["<A-3>"] = { function() switchOrCreateTab(3) end },
             ["<A-4>"] = { function() switchOrCreateTab(4) end },
             ["<A-5>"] = { function() switchOrCreateTab(5) end },
-            ["<leader>O"] = { "<C-W>c", desc = "Close window" },
-            ["<leader>o"] = { "<C-W>W", desc = "Other window" },
             ["<leader>b"] = {
               function() require("telescope.builtin").buffers { ignore_current_buffer = true } end,
               desc = "Buffers",
             },
             k = { vim.lsp.buf.hover, desc = "Lsp Hover" },
-            --TODO: limit it to current tab
-            --TODO: exclude buffers from slip windows
             m = { "<cmd>b#<cr>", desc = "previous buffer" },
           },
-          [{ "t", "i" }] = {
+          [{ "t" }] = {
             ["<C-e>"] = { "<C-\\><C-n>" },
           },
         },
