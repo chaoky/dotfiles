@@ -165,6 +165,18 @@ return {
       servers = {
         "relay_lsp",
       },
+      ---@diagnostic disable: missing-fields
+      config = {
+        rust_analyzer = {
+          init_options = {
+            ["rust_analyzer"] = {
+              cargo = {
+                targetDir = true,
+              },
+            },
+          },
+        },
+      },
     },
 
     {

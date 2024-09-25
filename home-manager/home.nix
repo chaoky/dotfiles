@@ -12,8 +12,10 @@ let
   };
 in
 {
-  imports = [ ./bin.nix ./sway.nix wsl ];
+  imports = [ ./bin.nix ./sway.nix ./emacs.nix wsl ];
   local.bin.enable = true;
+  local.emacs.enable = true;
+
   fonts.fontconfig.enable = true;
   programs.starship.enable = true;
   programs.zoxide.enable = true;
