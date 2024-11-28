@@ -4,6 +4,7 @@ with lib;
 let
   cfg = config.local.bin;
   core = [
+    helix
     gnutls
     binutils
     unzip
@@ -40,6 +41,8 @@ let
     vscode-langservers-extracted
     bash-language-server
     dockerfile-language-server-nodejs
+    lua-language-server
+    stylua
     nixfmt
     nil
     rust-analyzer
