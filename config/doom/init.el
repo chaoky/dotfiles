@@ -3,8 +3,11 @@
 
 
 (doom!
+ :os 
+  tty
+
  :completion
- company
+ (corfu +orderless) 
  (vertico +icons)
 
  :ui

@@ -3,12 +3,12 @@
 
 (setq user-full-name "chaoky"
       user-mail-address "levimanga@gmail.com"
-      org-directory "~/org/"
-      doom-theme 'doom-ephemeral
+      ORG-directory "~/org/"
+      doom-theme 'doom-rouge
       doom-font (font-spec :family "Iosevka" :size 16)
       save-interprogram-paste-before-kill t
       enable-local-variables t
-      default-directory "~/Projects/"
+      default-directory "~/projects/"
       )
 
 (setq +word-wrap-extra-indent 0) ;;show wrapped text right bellow
@@ -36,7 +36,6 @@
             "C-a" 'switch-window-mvborder-left
             "C-s" 'switch-window-mvborder-right
             "C-b" 'balance-windows
-            "C-e" 'doom/escape
             "c" (general-simulate-key "C-c")
             "p" (general-simulate-key "C-c s b")
             "D" 'lsp-ui-doc-glance
@@ -54,6 +53,10 @@
             )
 
   (:keymaps 'global-map
+            "C-e" (general-simulate-key "C-g")
+            )
+
+  (:keymaps 'boon-insert-map
             "C-e" 'boon-set-command-state
             )
   )
@@ -114,7 +117,7 @@
 
 (after! projectile
   (setq
-   projectile-project-search-path '(("~/Projects" . 3))
+   projectile-project-search-path '(("~/projects" . 3))
    projectile-project-root-files-bottom-up (delete ".git" projectile-project-root-files-bottom-up)
    projectile-project-root-files (cons ".git" projectile-project-root-files)
    projectile-globally-ignored-directories (append '("*node_modules") projectile-globally-ignored-directories)
@@ -127,7 +130,7 @@
 (after! vterm
   (setq
    vterm-buffer-name "vterm"
-   vterm-shell "fish"))
+   vterm-shell "zsh"))
 
 (after! treemacs
   (setq treemacs-read-string-input 'from-minibuffer))

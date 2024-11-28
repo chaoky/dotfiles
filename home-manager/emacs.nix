@@ -4,8 +4,7 @@ with lib;
 let
   cfg = config.local.emacs;
   emacs = [
-    emacs29-pgtk
-    emacsPackages.vterm
+    libvterm
     #core
     (ripgrep.override {withPCRE2 = true;})
     gnutls
@@ -30,6 +29,10 @@ in
 {
   options.local.emacs = { enable = mkEnableOption "emacs module"; };
   config = mkIf cfg.enable {
-    home.packages = emacs;
+    programs.emacs = {
+      enable = true;
+      package = emacs29;
+      extraPackages = epkgs: with epkgs; [ vterm treesit-grammars.with-all-grammars ];
+    };
   };
 }
