@@ -41,5 +41,12 @@
         type = "app";
         program = "${init}/bin/init";
       };
+      nixosConfigurations.default = nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs;};
+        modules = [
+          ./configuration.nix
+          home-manager.nixosModules.default
+        ];
+      };
     };
 }
