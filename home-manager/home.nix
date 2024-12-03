@@ -1,18 +1,15 @@
 { pkgs, lib, config, ... }:
 with lib;
 let
-  packages = import ./packages/packages.nix { inherit pkgs; };
-  wsl = {
-    options.wsl = mkOption {
-      type = types.bool;
-    };
-    config = mkIf (!config.wsl) {
-      local.sway.enable = true;
-    };
-  };
+   wsl = {
+     options.wsl = mkOption {
+       type = types.bool;
+       default = false;
+     };
+   };
 in
 {
-  imports = [ ./bin.nix ./sway.nix ./emacs.nix wsl ];
+  imports = [ ./bin.nix ./emacs.nix wsl ];
   local.bin.enable = true;
   local.emacs.enable = true;
 
@@ -23,8 +20,8 @@ in
   programs.home-manager.enable = true;
 
   home = rec {
-    username = "chaoky";
-    homeDirectory = "/home/chaoky";
+    username = "leo";
+    homeDirectory = "/home/leo";
     stateVersion = "22.11";
     sessionVariables = {
       PAGER = "more";

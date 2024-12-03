@@ -13,10 +13,11 @@
     };
   };
 
-  outputs = { self, nixpkgs, home-manager, discord, ... }:
+  outputs = { self, nixpkgs, home-manager, discord }:
     let
+     system = "x86_64-linux";
       pkgs = import nixpkgs {
-        system = "x86_64-linux";
+        inherit system;
         config.allowUnfree = true;
         overlays = [ discord.overlay ];
       };
@@ -37,16 +38,13 @@
           modules = [ ./home.nix { wsl = true; } ];
         };
       };
-      apps."x86_64-linux".default = {
+      apps.${system}.default = {
         type = "app";
         program = "${init}/bin/init";
       };
       nixosConfigurations.default = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
-        modules = [
-          ./configuration.nix
-          home-manager.nixosModules.default
-        ];
+        inherit pkgs system;
+        modules = [ home-manager.nixosModules.default ./configuration.nix ];
       };
     };
 }

@@ -49,7 +49,7 @@ let
   ];
   extra = mkIf (!config.wsl) [
     mongodb-compass
-    dbeaver
+    dbeaver-bin
     fontforge-gtk
     discord
     microsoft-edge

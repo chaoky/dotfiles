@@ -1,4 +1,4 @@
-{ config, pkgs, home, lib, ... }:
+{ config, pkgs, home, ... }:
 
 {
   imports =
@@ -74,9 +74,11 @@
     extraGroups = [ "networkmanager" "wheel" ];
   };
 
-  home-manager.users.leo = import ./home.nix { inherit pkgs config lib; };
-  home-manager.useGlobalPkgs = true;
-	  
+  home-manager = {
+    extraSpecialArgs = { inputs = { inherit pkgs; }; };
+    users = { leo = home; }; 
+  };
+
   environment.systemPackages = with pkgs; [
      gnomeExtensions.appindicator
   ];
