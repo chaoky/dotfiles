@@ -1,20 +1,21 @@
-{ config, pkgs, home, lib, ... }:
+{
+  config,
+  pkgs,
+  home,
+  lib,
+  ...
+}:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
-
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "stanbot-nix";
-  
+
   # Enable networking
   networking.networkmanager.enable = true;
-  
+
   services.flatpak.enable = true;
 
   # Set your time zone.
@@ -46,8 +47,8 @@
   services.xserver = {
     xkb = {
       layout = "br";
-      variant = "thinkpad";  
-    };   
+      variant = "thinkpad";
+    };
   };
 
   # Configure console keymap
@@ -71,14 +72,17 @@
   users.users.leo = {
     isNormalUser = true;
     description = "leo";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
   };
 
-  home-manager.users.leo = import ./home.nix { inherit pkgs config lib; };
+  home-manager.users.leo = import ../modules/home.nix;
   home-manager.useGlobalPkgs = true;
-	  
+
   environment.systemPackages = with pkgs; [
-     gnomeExtensions.appindicator
+    gnomeExtensions.appindicator
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

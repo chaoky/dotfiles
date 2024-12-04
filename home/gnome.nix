@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
 let
   cfg = config.local.gnome;
@@ -10,7 +15,9 @@ let
   ];
 in
 {
-  options.local.gnome = { enable = mkEnableOption "gnome module"; };
+  options.local.gnome = {
+    enable = mkEnableOption "gnome module";
+  };
   config = mkIf cfg.enable {
     home.packages = extensions;
     targets.genericLinux.enable = true;

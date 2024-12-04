@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
 let
   cfg = config.local.docker;
@@ -13,7 +18,10 @@ in
       packages = [ pkgs.docker ];
       #NIX users hate him
       activation.dockerDeamon = {
-        after = [ "writeBoundary" "createXdgUserDirectories" ];
+        after = [
+          "writeBoundary"
+          "createXdgUserDirectories"
+        ];
         before = [ ];
         data = ''
           /usr/bin/sudo /usr/bin/systemctl enable ${docker.out}/etc/systemd/system/docker.service

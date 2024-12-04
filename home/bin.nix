@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with pkgs;
 with lib;
 let
@@ -14,7 +19,13 @@ let
     fzf
     bat
     socat
-    (aspellWithDicts (ds: with ds; [ en en-computers en-science ]))
+    (aspellWithDicts (
+      ds: with ds; [
+        en
+        en-computers
+        en-science
+      ]
+    ))
     wakatime
     tldr
     cmake
@@ -59,8 +70,14 @@ let
   ];
 in
 {
-  options.local.bin = { enable = mkEnableOption "bin module"; };
+  options.local.bin = {
+    enable = mkEnableOption "bin module";
+  };
   config = mkIf cfg.enable {
-    home.packages = mkMerge [ core extra lsp ];
+    home.packages = mkMerge [
+      core
+      extra
+      lsp
+    ];
   };
 }

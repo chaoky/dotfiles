@@ -1,15 +1,25 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 with lib;
+with builtins;
 let
-   wsl = {
-     options.wsl = mkOption {
-       type = types.bool;
-       default = false;
-     };
-   };
+  wsl = {
+    options.wsl = mkOption {
+      type = types.bool;
+      default = false;
+    };
+  };
 in
 {
-  imports = [ ./bin.nix ./emacs.nix wsl ];
+  imports = [
+    ./bin.nix
+    ./emacs.nix
+    wsl
+  ];
   local.bin.enable = true;
   local.emacs.enable = true;
 
@@ -26,7 +36,7 @@ in
     sessionVariables = {
       PAGER = "more";
       SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh";
-      PNPM_HOME = "/home/chaoky/.local/share/pnpm";
+      PNPM_HOME = "/home/leo/.local/share/pnpm";
       BUN_INSTALL = "~/.bun";
     };
     sessionPath = [
@@ -40,7 +50,7 @@ in
       pp = "xsel --clipboard --output";
       dps = "docker ps --format 'table{{.Names}}\t{{.Status}}\t{{.Ports}}'";
       dbr = "docker run --rm -it $(docker build -q .)";
-      hm = "home-manager switch --flake ~/dotfiles/home-manager/#chaoky";
+      hm = "nix run ~/dotfiles#switch";
     };
   };
 
@@ -66,5 +76,38 @@ in
     enable = true;
     userEmail = "levimanga@gmail.com";
     userName = "chaoky";
+  };
+
+  programs.tmux = {
+    enable = true;
+    extraConfig = readFile ../config/tmux/tmux.conf;
+  };
+
+  home.file.".config/doom" = {
+    source = ../config/doom;
+    recursive = true;
+  };
+
+  home.file.".fonts" = {
+    source = ../config/fonts;
+    recursive = true;
+  };
+
+  home.file.".config/nvim" = {
+    source = ../config/nvim;
+    recursive = true;
+  };
+
+  home.file.".ssh" = {
+    source = ../config/ssh;
+    recursive = true;
+  };
+
+  home.file.".wakatime.cfg2" = {
+    text = ''
+      [settings]
+      api_url=https://waka.flamingo.moe/api
+      api_key=????
+    '';
   };
 }
