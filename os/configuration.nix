@@ -78,8 +78,9 @@
     ];
   };
 
-  home-manager.users.leo = import ../modules/home.nix;
+  home-manager.users.leo = import ../home/home.nix;
   home-manager.useGlobalPkgs = true;
+  home-manager.backupFileExtension = "backup";
 
   environment.systemPackages = with pkgs; [
     gnomeExtensions.appindicator

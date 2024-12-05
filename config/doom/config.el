@@ -4,7 +4,7 @@
 (setq user-full-name "chaoky"
       user-mail-address "levimanga@gmail.com"
       ORG-directory "~/org/"
-      doom-theme 'doom-rouge
+      doom-theme 'doom-one
       doom-font (font-spec :family "Iosevka" :size 16)
       save-interprogram-paste-before-kill t
       enable-local-variables t
