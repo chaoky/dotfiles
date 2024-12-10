@@ -42,6 +42,7 @@ let
     lua
     lua51Packages.luarocks-nix
     deno
+    dasel
   ];
   lsp = with pkgs.nodePackages; [
     typescript-language-server
@@ -66,7 +67,12 @@ let
     microsoft-edge
     firefox-devedition-bin
     stremio
-    (nerdfonts.override { fonts = [ "Iosevka" ]; })
+    (nerdfonts.override {
+      fonts = [
+        "Iosevka"
+        "NerdFontsSymbolsOnly"
+      ];
+    })
   ];
 in
 {

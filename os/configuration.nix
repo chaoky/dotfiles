@@ -72,12 +72,14 @@
   users.users.leo = {
     isNormalUser = true;
     description = "leo";
+    shell = pkgs.zsh;
     extraGroups = [
       "networkmanager"
       "wheel"
     ];
   };
 
+  programs.zsh.enable = true;
   home-manager.users.leo = import ../home/home.nix;
   home-manager.useGlobalPkgs = true;
   home-manager.backupFileExtension = "backup";

@@ -63,6 +63,7 @@
  (web +lsp +tree-sitter)
  (yaml +lsp +tree-sitter)
  (sh +fish +powershell +lsp +tree-sitter)
+ (nix +tree-sitter +lsp)
  (graphql +lsp)
  (org +present)
  (markdown +grip)

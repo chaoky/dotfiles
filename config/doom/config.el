@@ -3,12 +3,11 @@
 
 (setq user-full-name "chaoky"
       user-mail-address "levimanga@gmail.com"
-      ORG-directory "~/org/"
+      org-directory "~/org/"
       doom-theme 'doom-one
-      doom-font (font-spec :family "Iosevka" :size 16)
+      doom-font (font-spec :family "Iosevka NF" :size 16)
       save-interprogram-paste-before-kill t
       enable-local-variables t
-      default-directory "~/projects/"
       )
 
 (setq +word-wrap-extra-indent 0) ;;show wrapped text right bellow

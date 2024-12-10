@@ -29,6 +29,13 @@ in
   programs.carapace.enable = true;
   programs.home-manager.enable = true;
 
+  nix = {
+    settings.experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+  };
+
   home = rec {
     username = "leo";
     homeDirectory = "/home/leo";
@@ -83,31 +90,33 @@ in
     extraConfig = readFile ../config/tmux/tmux.conf;
   };
 
-  home.file.".config/doom" = {
-    source = ../config/doom;
-    recursive = true;
-  };
+  home.file = {
+    ".config/doom" = {
+      source = config.lib.file.mkOutOfStoreSymlink "/home/leo/dotfiles/config/doom";
+      recursive = true;
+    };
 
-  home.file.".fonts" = {
-    source = ../config/fonts;
-    recursive = true;
-  };
+    ".fonts" = {
+      source = ../config/fonts;
+      recursive = true;
+    };
 
-  home.file.".config/nvim" = {
-    source = ../config/nvim;
-    recursive = true;
-  };
+    ".config/nvim" = {
+      source = ../config/nvim;
+      recursive = true;
+    };
 
-  home.file.".ssh" = {
-    source = ../config/ssh;
-    recursive = true;
-  };
+    ".ssh" = {
+      source = ../config/ssh;
+      recursive = true;
+    };
 
-  home.file.".wakatime.cfg2" = {
-    text = ''
-      [settings]
-      api_url=https://waka.flamingo.moe/api
-      api_key=????
-    '';
+    ".wakatime.cfg2" = {
+      text = ''
+        [settings]
+        api_url=https://waka.flamingo.moe/api
+        api_key=????
+      '';
+    };
   };
 }
