@@ -13,6 +13,7 @@ let
       default = false;
     };
   };
+  mkConfigSymlink = config: config.lib.file.mkOutOfStoreSymlink "/home/leo/dotfiles/config/${config}";
 in
 {
   imports = [
@@ -65,6 +66,7 @@ in
     enable = true;
     syntaxHighlighting.enable = true;
     autosuggestion.enable = true;
+    historySubstringSearch.enable = true;
     initExtra = ''
       # unfuck direnv nix shell
       NIX_PATHS=$(echo $PATH | tr ':' '\n' | grep "/nix/" | tail -n +2 | tr '\n' ':')
@@ -91,26 +93,9 @@ in
   };
 
   home.file = {
-    ".config/doom" = {
-      source = config.lib.file.mkOutOfStoreSymlink "/home/leo/dotfiles/config/doom";
-      recursive = true;
-    };
-
-    ".fonts" = {
-      source = ../config/fonts;
-      recursive = true;
-    };
-
-    ".config/nvim" = {
-      source = ../config/nvim;
-      recursive = true;
-    };
-
-    ".ssh" = {
-      source = ../config/ssh;
-      recursive = true;
-    };
-
+    ".config/doom".source = mkConfigSymlink "doom";
+    ".config/nvim".source = mkConfigSymlink "nvim";
+    ".ssh".source = mkConfigSymlink "ssh";
     ".wakatime.cfg2" = {
       text = ''
         [settings]
