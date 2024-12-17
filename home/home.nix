@@ -13,7 +13,7 @@ let
       default = false;
     };
   };
-  mkConfigSymlink = config: config.lib.file.mkOutOfStoreSymlink "/home/leo/dotfiles/config/${config}";
+  mkConfigSymlink = x: config.lib.file.mkOutOfStoreSymlink "/home/leo/dotfiles/config/${x}";
 in
 {
   imports = [
@@ -31,6 +31,7 @@ in
   programs.home-manager.enable = true;
 
   nix = {
+    package = pkgs.nix;
     settings.experimental-features = [
       "nix-command"
       "flakes"
