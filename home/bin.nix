@@ -43,21 +43,21 @@ let
     lua51Packages.luarocks-nix
     deno
     dasel
+    pnpm
+    prettierd
+    stylua
   ];
   lsp = with pkgs.nodePackages; [
-    typescript-language-server
-    typescript
-    pnpm
-    prettier
-    yaml-language-server
-    vscode-langservers-extracted
-    bash-language-server
-    dockerfile-language-server-nodejs
+    koka
+    nixd
     lua-language-server
-    stylua
-    nixfmt
-    nil
     rust-analyzer
+    vtsls
+    vscode-langservers-extracted
+    yaml-language-server
+    terraform-ls
+    harper
+    dockerfile-language-server-nodejs
   ];
   extra = mkIf (!config.wsl) [
     mongodb-compass
