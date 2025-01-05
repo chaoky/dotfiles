@@ -36,27 +36,15 @@ vim.opt.scrolloff = 10
 vim.opt.tabstop = 2
 vim.opt.foldlevel = 99999999 -- For UFO
 vim.opt.showmode = false
-
--- Sync clipboard
-vim.schedule(function()
-	vim.opt.clipboard = "unnamedplus"
-end)
+vim.opt.clipboard = "unnamedplus"
 
 vim.keymap.set("n", "<C-e>", "<cmd>nohlsearch<CR>", { desc = "Clear highlights" })
-vim.keymap.set({ "t", "i", "v" }, "<C-e>", "<C-\\><C-n>", { desc = "Switch to nomal mode" })
-
--- Highlight when yanking text
-vim.api.nvim_create_autocmd("TextYankPost", {
-	desc = "Highlight when yanking (copying) text",
-	group = vim.api.nvim_create_augroup("kickstart-highlight-yank", { clear = true }),
-	callback = function()
-		vim.highlight.on_yank()
-	end,
-})
+vim.keymap.set({ "t", "i", "v", "x" }, "<C-e>", "<C-\\><C-n>", { desc = "Switch to nomal mode" })
 
 vim.filetype.add({
 	extension = {
 		kk = "koka",
+		purs = "purescript",
 	},
 })
 
@@ -90,9 +78,35 @@ local function fargs(func, args)
 		"!dist",
 		"-g",
 		"!.git",
+		"-g",
+		"!.spago",
+		"-g",
+		"!.psci_modules",
+		"-g",
+		"!output",
+		"-g",
+		"!generated-docs",
 	}
-	args.additional_args =
-		{ "--no-ignore", "--hidden", "-g", "!node_modules", "-g", "!target", "-g", "!dist", "-g", "!.git" }
+	args.additional_args = {
+		"--no-ignore",
+		"--hidden",
+		"-g",
+		"!node_modules",
+		"-g",
+		"!target",
+		"-g",
+		"!dist",
+		"-g",
+		"!.git",
+		"-g",
+		"!.spago",
+		"-g",
+		"!.psci_modules",
+		"-g",
+		"!output",
+		"-g",
+		"!generated-docs",
+	}
 
 	if args.all == false then
 		args.find_command = nil
@@ -197,25 +211,6 @@ require("lazy").setup({
 			end,
 		},
 
-		{ -- File tree
-			"nvim-neo-tree/neo-tree.nvim",
-			dependencies = {
-				"nvim-lua/plenary.nvim",
-				"nvim-tree/nvim-web-devicons",
-				"MunifTanjim/nui.nvim",
-			},
-			opts = {
-				filesystem = {
-					follow_current_file = {
-						enabled = true,
-					},
-				},
-				buffers = {
-					follow_current_file = { enabled = true },
-				},
-			},
-		},
-
 		{ -- Key discovery menu
 			"folke/which-key.nvim",
 			opts = function()
@@ -228,6 +223,7 @@ require("lazy").setup({
 				end
 
 				return {
+					icons = { rules = false, mappings = false },
 					spec = {
 						{ "<leader>d", desc = "Document" },
 						{ "<leader>df", format, desc = "Format" },
@@ -261,15 +257,14 @@ require("lazy").setup({
 
 						{ "<leader>m", desc = "Manage" },
 						{ "<leader>mu", "<cmd>Lazy update<cr>", desc = "Update" },
-						{ "<leader>mt", "<cmd>Neotree toggle<cr>", desc = "Toggle Tree" },
 						{ "<leader>mh", "<cmd>Telescope help_tags<cr>", desc = "Help" },
 
 						{ "<leader>s", desc = "Source Control" },
-						{ "<leader>sg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
+						{ "<leader>ss", "<cmd>LazyGit<cr>", desc = "LazyGit" },
 						{ "<leader>sb", "<cmd>Gitsigns blame_line<cr>", desc = "Blame" },
 
 						{ "<leader>p", te.projects.projects, desc = "Projects" },
-						{ "<leader>o", "<cmd>Telescope frecency<CR>", desc = "Old" },
+						{ "<leader>o", te.frecency.frecency, desc = "Old" },
 						{
 							"<leader><leader>",
 							function()
@@ -277,16 +272,21 @@ require("lazy").setup({
 							end,
 							desc = "Buffers",
 						},
-						{ "<leader>n", "<cmd>Noice dismiss<cr>", desc = "Notification dismiss" },
+						{ "<leader>n", "<cmd>Noice dismiss<cr>", desc = "Notification" },
 						{ "<leader>k", "<cmd>bp|bd # !<cr>", desc = "Kill Buffer" },
-
-						{ "<C-p>", "<cmd>Telescope neoclip<CR>", desc = "Neoclip" },
+						{ "<leader>r", "<cmd>Telescope resume<cr>", desc = "Resume" },
 
 						{ "gd", tb.lsp_definitions, desc = "Definition" },
 						{ "gr", tb.lsp_references, desc = "References" },
 						{ "gI", tb.lsp_implementations, desc = "Implementation" },
 						{ "gD", vim.lsp.buf.declaration, desc = "Declaration" },
+
+						{ "p", "<Plug>(YankyPutAfter)", desc = "Paste" },
+						{ "P", "<Plug>(YankyPreviousEntry)", desc = "Paste Previous" },
+						{ ";", vim.diagnostic.open_float, desc = "Diagnostic" },
+
 						{ "U", "<cmd>Telescope undo<cr>", desc = "Undo History" },
+						{ "m", "<Cmd>e#<CR>", desc = "Move to Alternate" },
 
 						{
 							"<C-t>",
@@ -359,6 +359,7 @@ require("lazy").setup({
 												or mapAbs(selections),
 										})
 									end,
+									["<C-e>"] = false,
 								},
 							},
 						},
@@ -371,6 +372,9 @@ require("lazy").setup({
 								["33"] = select_n(2),
 								["44"] = select_n(3),
 								["55"] = select_n(4),
+							},
+							n = {
+								["<C-e>"] = "close",
 							},
 						},
 					},
@@ -418,23 +422,8 @@ require("lazy").setup({
 		},
 
 		{ -- Clipboard history
-			"AckslD/nvim-neoclip.lua",
-			dependencies = { "nvim-telescope/telescope.nvim" },
-			config = function()
-				require("neoclip").setup({
-					keys = {
-						on_paste = {
-							set_reg = true,
-						},
-						telescope = {
-							i = {
-								paste = "<cr>",
-							},
-						},
-					},
-				})
-				require("telescope").load_extension("neoclip")
-			end,
+			"gbprod/yanky.nvim",
+			opts = { highlight = { timer = 200 } },
 		},
 
 		{ -- Lsp configs
@@ -443,6 +432,16 @@ require("lazy").setup({
 				require("lspconfig").koka.setup({})
 				require("lspconfig").nixd.setup({})
 				require("lspconfig").lua_ls.setup({})
+				require("lspconfig").purescriptls.setup({
+					settings = {
+						purescript = {
+							addSpagoSources = true,
+						},
+					},
+					flags = {
+						debounce_text_changes = 150,
+					},
+				})
 				require("lspconfig").rust_analyzer.setup({
 					init_options = {
 						["rust_analyzer"] = {
@@ -482,7 +481,7 @@ require("lazy").setup({
 
 		{ -- Tree-sitter configs
 			"nvim-treesitter/nvim-treesitter",
-			opts = function()
+			config = function()
 				local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
 				parser_config.koka = {
 					install_info = {
@@ -494,12 +493,22 @@ require("lazy").setup({
 					},
 					filetype = "koka",
 				}
-				return {
-					ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "markdown", "markdown_inline" },
+
+				require("nvim-treesitter.configs").setup({
+					ensure_installed = {
+						"c",
+						"lua",
+						"vim",
+						"vimdoc",
+						"query",
+						"markdown",
+						"markdown_inline",
+						"purescript",
+					},
 					auto_install = true,
 					highlight = { enable = true },
 					indent = { enable = true },
-				}
+				})
 			end,
 		},
 
@@ -563,6 +572,10 @@ require("lazy").setup({
 						{ name = "path" },
 					},
 				})
+
+				local capabilities = vim.lsp.protocol.make_client_capabilities()
+				capabilities =
+					vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
 			end,
 		},
 	},

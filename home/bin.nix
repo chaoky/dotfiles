@@ -9,6 +9,7 @@ with lib;
 let
   cfg = config.local.bin;
   core = [
+    gh
     helix
     gnutls
     binutils
@@ -47,6 +48,8 @@ let
     prettierd
     stylua
     lsof
+    openjdk
+    sbt
   ];
   lsp = with pkgs.nodePackages; [
     koka
@@ -59,6 +62,8 @@ let
     terraform-ls
     harper
     dockerfile-language-server-nodejs
+    purescript
+    purescript-language-server
   ];
   extra = mkIf (!config.wsl) [
     mongodb-compass
