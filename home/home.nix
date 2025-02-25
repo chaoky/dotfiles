@@ -31,7 +31,7 @@ in
   programs.home-manager.enable = true;
 
   nix = {
-    package = pkgs.nix;
+    package = mkIf config.wsl pkgs.nix;
     settings.experimental-features = [
       "nix-command"
       "flakes"

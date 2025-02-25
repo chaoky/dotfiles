@@ -46,6 +46,7 @@ let
     pnpm
     prettierd
     stylua
+    lsof
   ];
   lsp = with pkgs.nodePackages; [
     koka
@@ -67,12 +68,11 @@ let
     microsoft-edge
     firefox-devedition-bin
     stremio
-    (nerdfonts.override {
-      fonts = [
-        "Iosevka"
-        "NerdFontsSymbolsOnly"
-      ];
-    })
+    nerd-fonts.iosevka
+    nerd-fonts.symbols-only
+    gnome-tweaks
+    caffeine-ng
+    slack
   ];
 in
 {
