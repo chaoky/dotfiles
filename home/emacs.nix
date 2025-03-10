@@ -44,7 +44,6 @@ in
   config = mkIf cfg.enable {
     programs.emacs = {
       enable = true;
-      package = emacs29;
       extraPackages =
         epkgs: with epkgs; [
           vterm
