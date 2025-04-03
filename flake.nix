@@ -18,8 +18,12 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    discord = {
-      url = "github:InternetUnexplorer/discord-overlay";
+    zen-browser = {
+      url = "github:0xc000022070/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    lix-module = {
+      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.92.0-3.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -29,14 +33,16 @@
       self,
       nixpkgs,
       home-manager,
-      discord,
+      zen-browser,
+      lix-module,
     }:
     let
       system = "x86_64-linux";
+      zen-overlay = final: _: { zen-browser = zen-browser.packages."${system}"; };
       pkgs = import nixpkgs {
         inherit system;
         config.allowUnfree = true;
-        overlays = [ discord.overlay ];
+        overlays = [ zen-overlay  ];
       };
       switch = pkgs.writeShellScriptBin "switch" ''
         ${pkgs.home-manager}/bin/home-manager switch -b backup --flake ~/dotfiles
@@ -69,6 +75,7 @@
       nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
         inherit pkgs system;
         modules = [
+          lix-module.nixosModules.default
           home-manager.nixosModules.default
           ./os/hardware-desktop.nix
           ./os/configuration.nix

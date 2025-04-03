@@ -78,6 +78,7 @@ let
     gnome-tweaks
     caffeine-ng
     slack
+    zen-browser.twilight
   ];
 in
 {
