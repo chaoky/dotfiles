@@ -57,13 +57,23 @@
         ];
       };
 
-      nixosConfigurations.default = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
         inherit pkgs system;
         modules = [
           home-manager.nixosModules.default
-          ./os/hardware.nix
+          ./os/hardware-laptop.nix.nix
           ./os/configuration.nix
         ];
       };
+
+      nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
+        inherit pkgs system;
+        modules = [
+          home-manager.nixosModules.default
+          ./os/hardware-desktop.nix
+          ./os/configuration.nix
+        ];
+      };
+
     };
 }
