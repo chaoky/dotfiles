@@ -79,6 +79,7 @@ let
     caffeine-ng
     slack
     zen-browser.twilight
+    alacritty
   ];
 in
 {

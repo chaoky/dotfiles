@@ -5,10 +5,12 @@
     extra-substituters = [
       "https://cache.nixos.org"
       "https://nix-community.cachix.org"
+      "https://cosmic.cachix.org/" 
     ];
     extra-trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE=" 
     ];
   };
 
@@ -26,6 +28,7 @@
       url = "https://git.lix.systems/lix-project/nixos-module/archive/2.92.0-3.tar.gz";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
   };
 
   outputs =
@@ -35,6 +38,7 @@
       home-manager,
       zen-browser,
       lix-module,
+      nixos-cosmic,
     }:
     let
       system = "x86_64-linux";
@@ -45,7 +49,15 @@
         overlays = [ zen-overlay  ];
       };
       switch = pkgs.writeShellScriptBin "switch" ''
-        ${pkgs.home-manager}/bin/home-manager switch -b backup --flake ~/dotfiles
+        if [ $1 = "hm" ]; then
+          ${pkgs.home-manager}/bin/home-manager switch -b backup --flake ~/dotfiles
+        elif [ $1 = "desktop" ]; then
+          sudo nixos-rebuild switch --flake ~/dotfiles#desktop --accept-flake-config
+        elif [  $1 = "latop"  ]; then
+          sudo nixos-rebuild switch --flake ~/dotfiles#laptop --accept-flake-config
+        else
+          echo "argument of hm, desktop or laptop required"
+        fi
       '';
     in
     {
@@ -77,6 +89,7 @@
         modules = [
           lix-module.nixosModules.default
           home-manager.nixosModules.default
+          nixos-cosmic.nixosModules.default
           ./os/hardware-desktop.nix
           ./os/configuration.nix
         ];
