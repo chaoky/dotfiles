@@ -24,7 +24,13 @@ in
   local.bin.enable = true;
   local.emacs.enable = true;
 
-  fonts.fontconfig.enable = true;
+  fonts.fontconfig = {
+    enable = true;
+    defaultFonts.monospace = [ "Iosevka Nerd Font Mono" ];
+    defaultFonts.serif = [ "FreeSerif" ];
+    defaultFonts.sansSerif = [ "Fira Sans" ];
+  };
+
   programs.starship.enable = true;
   programs.zoxide.enable = true;
   programs.carapace.enable = true;
