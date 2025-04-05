@@ -44,11 +44,14 @@
   # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
+  environment.systemPackages = with pkgs; [
+    gnomeExtensions.appindicator
+  ];
 
   # Enable Cosmic Desktop https://github.com/lilyinstarlight/nixos-cosmic
-  services.desktopManager.cosmic.enable = true;
-  services.displayManager.cosmic-greeter.enable = true;
-  environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1;
+  # services.desktopManager.cosmic.enable = true;
+  # services.displayManager.cosmic-greeter.enable = true;
+  # environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1;
   systemd.packages = [ pkgs.observatory ];
   systemd.services.monitord.wantedBy = [ "multi-user.target" ];
 
@@ -93,10 +96,6 @@
   home-manager.users.leo = import ../home/home.nix;
   home-manager.useGlobalPkgs = true;
   home-manager.backupFileExtension = "backup";
-
-  environment.systemPackages = with pkgs; [
-    gnomeExtensions.appindicator
-  ];
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
