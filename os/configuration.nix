@@ -44,8 +44,11 @@
   # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
-  environment.systemPackages = with pkgs; [
-    gnomeExtensions.appindicator
+  services.gnome.gnome-keyring.enable = true;
+  environment.systemPackages = with pkgs.gnomeExtensions; [
+    appindicator
+    pano
+    espresso
   ];
 
   # Enable Cosmic Desktop https://github.com/lilyinstarlight/nixos-cosmic
