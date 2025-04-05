@@ -80,6 +80,9 @@ let
     slack
     zen-browser.twilight
     alacritty
+    ghostty
+    vscode
+    lutris
   ];
 in
 {
