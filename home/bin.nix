@@ -78,11 +78,14 @@ let
     gnome-tweaks
     caffeine-ng
     slack
-    zen-browser.twilight
+    zen-browser.beta
     alacritty
     ghostty
     vscode
     lutris
+    redisinsight
+    kitty
+    easyeffects
   ];
 in
 {
