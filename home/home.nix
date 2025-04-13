@@ -65,7 +65,7 @@ in
       pp = "xsel --clipboard --output";
       dps = "docker ps --format 'table{{.Names}}\t{{.Status}}\t{{.Ports}}'";
       dbr = "docker run --rm -it $(docker build -q .)";
-      hm = "nix run ~/dotfiles#switch";
+      switch = "nix run ~/dotfiles#switch";
     };
   };
 
