@@ -50,6 +50,7 @@ let
     lsof
     openjdk
     sbt
+    unison-ucm
   ];
   lsp = with pkgs.nodePackages; [
     koka
@@ -78,7 +79,7 @@ let
     gnome-tweaks
     caffeine-ng
     slack
-    zen-browser.beta
+    zen-browser.default
     alacritty
     ghostty
     vscode
@@ -86,6 +87,14 @@ let
     redisinsight
     kitty
     easyeffects
+    yt-dlp
+    rhythmbox
+    lollypop
+    ffmpeg
+    xsel
+    xclip
+    qbittorrent
+    vlc
   ];
 in
 {

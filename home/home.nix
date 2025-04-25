@@ -50,7 +50,7 @@ in
     stateVersion = "22.11";
     sessionVariables = {
       PAGER = "more";
-      SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh";
+      # SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh";
       PNPM_HOME = "/home/leo/.local/share/pnpm";
       BUN_INSTALL = "~/.bun";
     };
@@ -74,7 +74,7 @@ in
     syntaxHighlighting.enable = true;
     autosuggestion.enable = true;
     historySubstringSearch.enable = true;
-    initExtra = ''
+    initContent = ''
       # unfuck direnv nix shell
       NIX_PATHS=$(echo $PATH | tr ':' '\n' | grep "/nix/" | tail -n +2 | tr '\n' ':')
       if [[ $NIX_PATHS ]]; then
@@ -106,7 +106,7 @@ in
     ".wakatime.cfg2" = {
       text = ''
         [settings]
-        api_url=https://waka.flamingo.moe/api
+        api_url=https://waka.leo.camp/api
         api_key=????
       '';
     };
