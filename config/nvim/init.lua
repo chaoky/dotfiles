@@ -463,6 +463,7 @@ require("lazy").setup({
 				require("lspconfig").terraformls.setup({})
 				-- require("lspconfig").harper_ls.setup({})
 				require("lspconfig").dockerls.setup({})
+				require("lspconfig").unison.setup({})
 			end,
 		},
 
@@ -477,6 +478,19 @@ require("lazy").setup({
 					javascript = { "prettierd", "prettier", "biome", stop_after_first = true },
 				},
 			},
+		},
+
+		{
+			-- Unison
+			"unisonweb/unison",
+			branch = "trunk",
+			config = function(plugin)
+				vim.opt.rtp:append(plugin.dir .. "/editor-support/vim")
+				require("lazy.core.loader").packadd(plugin.dir .. "/editor-support/vim")
+			end,
+			init = function(plugin)
+				require("lazy.core.loader").ftdetect(plugin.dir .. "/editor-support/vim")
+			end,
 		},
 
 		{ -- Tree-sitter configs
@@ -495,16 +509,6 @@ require("lazy").setup({
 				}
 
 				require("nvim-treesitter.configs").setup({
-					ensure_installed = {
-						"c",
-						"lua",
-						"vim",
-						"vimdoc",
-						"query",
-						"markdown",
-						"markdown_inline",
-						"purescript",
-					},
 					auto_install = true,
 					highlight = { enable = true },
 					indent = { enable = true },
