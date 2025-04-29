@@ -79,7 +79,7 @@
         inherit pkgs system;
         modules = [
           home-manager.nixosModules.default
-          ./os/hardware-laptop.nix.nix
+          ./os/hardware-laptop.nix
           ./os/configuration.nix
         ];
       };
