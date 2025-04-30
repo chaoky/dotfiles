@@ -95,6 +95,7 @@ let
     xclip
     qbittorrent
     vlc
+    bruno
   ];
 in
 {

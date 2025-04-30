@@ -5,12 +5,12 @@
     extra-substituters = [
       "https://cache.nixos.org"
       "https://nix-community.cachix.org"
-      "https://cosmic.cachix.org/" 
+      "https://cosmic.cachix.org/"
     ];
     extra-trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE=" 
+      "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE="
     ];
   };
 
@@ -46,32 +46,27 @@
       pkgs = import nixpkgs {
         inherit system;
         config.allowUnfree = true;
-        overlays = [ zen-overlay  ];
+        overlays = [ zen-overlay ];
       };
-      switch = pkgs.writeShellScriptBin "switch" ''
-        if [ $1 = "hm" ]; then
-          ${pkgs.home-manager}/bin/home-manager switch -b backup --flake ~/dotfiles
-        elif [ $1 = "desktop" ]; then
-          sudo nixos-rebuild switch --flake ~/dotfiles#desktop --accept-flake-config
-        elif [  $1 = "latop"  ]; then
-          sudo nixos-rebuild switch --flake ~/dotfiles#laptop --accept-flake-config
-        else
-          echo "argument of hm, desktop or laptop required"
-        fi
-      '';
+      switch =
+        hw:
+        pkgs.writeShellScriptBin "switch" (
+          {
+            "desktop" = "sudo nixos-rebuild switch --flake ~/dotfiles#desktop --accept-flake-config";
+            "laptop" = "sudo nixos-rebuild switch --flake ~/dotfiles#laptop --accept-flake-config";
+            "wsl" = "${pkgs.home-manager}/bin/home-manager switch -b backup --flake ~/dotfiles";
+          }
+          ."${hw}"
+        );
     in
     {
-      formatter.${system} = pkgs.nixfmt-rfc-style;
-      apps.${system}.switch = {
-        type = "app";
-        program = "${switch}/bin/switch";
-      };
-
+      formatter.${system} = pkgs.nixfmt-tree;
       homeConfigurations.leo = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         modules = [
           ./home/home.nix
           { wsl = true; }
+          { home.packages = [ (switch "wsl") ]; }
         ];
       };
 
@@ -81,6 +76,7 @@
           home-manager.nixosModules.default
           ./os/hardware-laptop.nix
           ./os/configuration.nix
+          { environment.systemPackages = [ (switch "laptop") ]; }
         ];
       };
 
@@ -92,6 +88,7 @@
           nixos-cosmic.nixosModules.default
           ./os/hardware-desktop.nix
           ./os/configuration.nix
+          { environment.systemPackages = [ (switch "desktop") ]; }
         ];
       };
 
