@@ -38,7 +38,6 @@ let
     cargo
     neovim
     direnv
-    wl-clipboard
     trashy
     lua
     lua51Packages.luarocks-nix
@@ -71,7 +70,6 @@ let
     dbeaver-bin
     fontforge-gtk
     discord
-    microsoft-edge
     firefox-devedition-bin
     stremio
     nerd-fonts.iosevka
@@ -80,7 +78,6 @@ let
     caffeine-ng
     slack
     zen-browser.default
-    alacritty
     ghostty
     vscode
     lutris
@@ -88,8 +85,6 @@ let
     kitty
     easyeffects
     yt-dlp
-    rhythmbox
-    lollypop
     ffmpeg
     xsel
     xclip
