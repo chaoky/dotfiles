@@ -29,6 +29,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
@@ -39,6 +43,7 @@
       zen-browser,
       lix-module,
       nixos-cosmic,
+      nix-index-database,
     }:
     let
       system = "x86_64-linux";
@@ -89,6 +94,8 @@
           ./os/hardware-desktop.nix
           ./os/configuration.nix
           { environment.systemPackages = [ (switch "desktop") ]; }
+          nix-index-database.nixosModules.nix-index
+          { programs.nix-index-database.comma.enable = true; }
         ];
       };
 

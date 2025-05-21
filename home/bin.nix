@@ -8,7 +8,13 @@ with pkgs;
 with lib;
 let
   cfg = config.local.bin;
+  mediatoascii = pkgs.callPackage ../pkg/media-to-ascii.nix {};
   core = [
+    mediatoascii 
+    imagemagick
+    editorconfig-core-c
+    bc
+    jq
     gh
     helix
     gnutls
@@ -17,6 +23,8 @@ let
     coreutils
     fd
     (ripgrep.override { withPCRE2 = true; })
+    texlive.combined.scheme-medium
+    pandoc
     fzf
     bat
     socat
@@ -50,6 +58,8 @@ let
     openjdk
     sbt
     unison-ucm
+    tmux
+    tmuxPlugins.dracula
   ];
   lsp = with pkgs.nodePackages; [
     koka
@@ -66,6 +76,14 @@ let
     purescript-language-server
   ];
   extra = mkIf (!config.wsl) [
+    gdlauncher-carbon
+    prismlauncher
+    gimp3
+    blender
+    inkscape
+    krita
+    libreoffice-fresh
+    scribus
     mongodb-compass
     dbeaver-bin
     fontforge-gtk
@@ -81,6 +99,9 @@ let
     ghostty
     vscode
     lutris
+    wineWowPackages.stable
+    winetricks
+    wineWayland
     redisinsight
     kitty
     easyeffects
@@ -91,6 +112,8 @@ let
     qbittorrent
     vlc
     bruno
+    tiled
+    ldtk
   ];
 in
 {

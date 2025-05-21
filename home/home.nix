@@ -97,10 +97,11 @@ in
     enable = true;
     extraConfig = readFile ../config/tmux/tmux.conf;
   };
-
   home.file = {
     ".config/doom".source = mkConfigSymlink "doom";
     ".config/nvim".source = mkConfigSymlink "nvim";
+    ".config/tmux".source = mkConfigSymlink "tmux";
+    ".config/ghostty".source = mkConfigSymlink "ghostty";
     ".ssh".source = mkConfigSymlink "ssh";
     ".wakatime.cfg2" = {
       text = ''
