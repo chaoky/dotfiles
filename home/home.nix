@@ -93,10 +93,6 @@ in
     userName = "chaoky";
   };
 
-  programs.tmux = {
-    enable = true;
-    extraConfig = readFile ../config/tmux/tmux.conf;
-  };
   home.file = {
     ".config/doom".source = mkConfigSymlink "doom";
     ".config/nvim".source = mkConfigSymlink "nvim";
