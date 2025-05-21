@@ -22,7 +22,7 @@ in
     wsl
   ];
   local.bin.enable = true;
-  local.emacs.enable = true;
+  local.emacs.enable = false;
 
   fonts.fontconfig = {
     enable = true;
