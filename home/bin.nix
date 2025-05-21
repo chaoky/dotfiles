@@ -8,7 +8,9 @@ with pkgs;
 with lib;
 let
   cfg = config.local.bin;
+  mediatoascii = pkgs.callPackage ../pkg/media-to-ascii.nix {};
   core = [
+    mediatoascii 
     gh
     helix
     gnutls
