@@ -1,1 +1,5 @@
-keybind=clear 
+keybind = alt+one=ignore
+keybind = alt+two=ignore
+keybind = alt+three=ignore
+keybind = alt+four=ignore
+keybind = alt+five=ignore
