@@ -76,6 +76,8 @@ let
     purescript-language-server
   ];
   extra = mkIf (!config.wsl) [
+    gdlauncher-carbon
+    prismlauncher
     gimp3
     blender
     inkscape

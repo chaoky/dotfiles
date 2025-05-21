@@ -12,6 +12,15 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "stanbot-nix";
+  networking.firewall= {
+    enable = true;
+    allowedTCPPorts = [ 12345 8080 ];
+    allowedUDPPorts = [ 12345 8080 ];
+  };
+  services.zerotierone = {
+    enable = true;
+    joinNetworks = [ "e4da7455b230f52a" ];
+  };
 
   # Enable networking
   networking.networkmanager.enable = true;
