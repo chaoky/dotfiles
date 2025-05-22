@@ -8,10 +8,7 @@ with pkgs;
 with lib;
 let
   cfg = config.local.bin;
-  mediatoascii = pkgs.callPackage ../pkg/media-to-ascii.nix {};
   core = [
-    mediatoascii 
-    imagemagick
     editorconfig-core-c
     bc
     jq
@@ -77,13 +74,11 @@ let
   ];
   extra = mkIf (!config.wsl) [
     gdlauncher-carbon
-    prismlauncher
-    gimp3
-    blender
-    inkscape
     krita
+    gimp3
+    inkscape
+    blender
     libreoffice-fresh
-    scribus
     mongodb-compass
     dbeaver-bin
     fontforge-gtk
@@ -103,8 +98,6 @@ let
     winetricks
     wineWayland
     redisinsight
-    kitty
-    easyeffects
     yt-dlp
     ffmpeg
     xsel

@@ -6,7 +6,7 @@
   nix-update-script,
   clang,
   pkg-config,
- }:
+}:
 
 rustPlatform.buildRustPackage rec {
   pname = "mediatoascii-cli";
