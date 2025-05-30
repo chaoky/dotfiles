@@ -70,7 +70,12 @@ in
     userEmail = "levimanga@gmail.com";
     userName = "chaoky";
   };
-
+  
+  programs.neovim = {
+    enable = true;
+    defaultEditor = true;
+  };
+  
   home.file = {
     ".config/doom".source = mkConfigSymlink "doom";
     ".config/nvim".source = mkConfigSymlink "nvim";

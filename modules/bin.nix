@@ -10,7 +10,7 @@ with lib;
 let
   cfg = config.local.bin;
   core = [
-    editorconfig-core-c bc jq gh neovim helix gnutls binutils unzip coreutils fd
+    editorconfig-core-c bc jq gh helix gnutls binutils unzip coreutils fd
     (ripgrep.override { withPCRE2 = true; }) texlive.combined.scheme-medium
     pandoc fzf bat socat (aspellWithDicts ( ds: with ds; [ en en-computers en-science ]))
     wakatime tldr cmake gcc python3 tree-sitter lazygit nodejs cargo direnv trashy
