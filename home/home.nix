@@ -53,6 +53,7 @@ in
       # SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh";
       PNPM_HOME = "/home/leo/.local/share/pnpm";
       BUN_INSTALL = "~/.bun";
+      EDITOR = "nvim";
     };
     sessionPath = [
       sessionVariables.PNPM_HOME

@@ -1,44 +1,52 @@
 if true then
   return {
+    {
+      "willothy/flatten.nvim",
+      config = true,
+      lazy = false,
+      priority = 1001,
+    },
     { "wakatime/vim-wakatime" },
+    { "akinsho/toggleterm.nvim", lazy = false, version = "*", config = true },
     {
       "kawre/leetcode.nvim",
       opts = {
         lang = "rust",
+        plugins = {
+          non_standalone = true,
+        },
         injector = {
           ["rust"] = {
             before = { "fn main(){}", "struct Solution;" },
-          }, ---@type table<lc.lang, lc.inject>
-        },
-        hooks = {
-          ---@type fun(question: lc.ui.Question)[]
-          ["question_enter"] = {
-            function(question)
-              local problem_dir = vim.fn.stdpath("data") .. "/leetcode/Cargo.toml"
-              local content = [[
-                [package]
-                name = "leetcode"
-                edition = "2024"
-
-                [lib]
-                name = "%s"
-                path = "%s"
-              ]]
-
-              local file = io.open(problem_dir, "w")
-              if file then
-                local formatted = (content:gsub(" +", "")):format(question.q.frontend_id, question:path())
-                file:write(formatted)
-                file:close()
-              else
-                print("Failed to open file: " .. problem_dir)
-              end
-            end,
           },
         },
       },
     },
-    { "mason-org/mason.nvim", enabled = false },
+
+    -- extra lang
+    {
+      "unisonweb/unison",
+      branch = "trunk",
+      config = function(plugin)
+        vim.opt.rtp:append(plugin.dir .. "/editor-support/vim")
+        require("lazy.core.loader").packadd(plugin.dir .. "/editor-support/vim")
+      end,
+      init = function(plugin)
+        require("lazy.core.loader").ftdetect(plugin.dir .. "/editor-support/vim")
+      end,
+    },
+    {
+      "neovim/nvim-lspconfig",
+      opts = {
+        servers = {
+          nixd = {},
+        },
+      },
+    },
+
+    -- nix compat
+    { "mason-org/mason.nvim", opts = { PATH = "append" } },
+    { "mason-org/mason-lspconfig.nvim", enabled = false },
   }
 end
 
