@@ -1,48 +1,29 @@
 {
-  pkgs,
-  lib,
   config,
   ...
 }:
-with lib;
-with builtins;
 let
-  wsl = {
-    options.wsl = mkOption {
-      type = types.bool;
-      default = false;
-    };
-  };
   mkConfigSymlink = x: config.lib.file.mkOutOfStoreSymlink "/home/leo/dotfiles/config/${x}";
 in
 {
   imports = [
     ./bin.nix
     ./emacs.nix
-    wsl
+    ./font.nix
   ];
   local.bin.enable = true;
   local.emacs.enable = false;
-
-  fonts.fontconfig = {
-    enable = true;
-    defaultFonts.monospace = [ "Iosevka Nerd Font Mono" ];
-    defaultFonts.serif = [ "FreeSerif" ];
-    defaultFonts.sansSerif = [ "Fira Sans" ];
-  };
+  local.font.enable = true;
 
   programs.starship.enable = true;
   programs.zoxide.enable = true;
   programs.carapace.enable = true;
   programs.home-manager.enable = true;
 
-  nix = {
-    package = mkIf config.wsl pkgs.nix;
-    settings.experimental-features = [
-      "nix-command"
-      "flakes"
-    ];
-  };
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   home = rec {
     username = "leo";

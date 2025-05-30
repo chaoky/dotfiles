@@ -37,13 +37,12 @@
 
   outputs =
     {
-      self,
       nixpkgs,
       home-manager,
       zen-browser,
       lix-module,
-      nixos-cosmic,
       nix-index-database,
+      ...
     }:
     let
       system = "x86_64-linux";
@@ -65,23 +64,40 @@
         );
     in
     {
-      formatter.${system} = pkgs.nixfmt-tree;
+      formatter.${system} = pkgs.nixfmt-tree.override {
+        settings.formatter.nixfmt.excludes = [ "*bin.nix" ];
+      };
       homeConfigurations.leo = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         modules = [
           ./home/home.nix
-          { wsl = true; }
-          { home.packages = [ (switch "wsl") ]; }
+          {
+            home.packages = [ (switch "wsl") ];
+            local.bin = {
+              gui = false;
+              games = false;
+            };
+            nix.package = pkgs.nix;
+          }
         ];
       };
 
       nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
         inherit pkgs system;
         modules = [
+          lix-module.nixosModules.default
           home-manager.nixosModules.default
+          nix-index-database.nixosModules.nix-index
           ./os/hardware-laptop.nix
           ./os/configuration.nix
-          { environment.systemPackages = [ (switch "laptop") ]; }
+          {
+            environment.systemPackages = [ (switch "laptop") ];
+            programs.nix-index-database.comma.enable = true;
+            home-manager.users.leo.local.bin = {
+              gui = true;
+              games = false;
+            };
+          }
         ];
       };
 
@@ -90,14 +106,18 @@
         modules = [
           lix-module.nixosModules.default
           home-manager.nixosModules.default
-          nixos-cosmic.nixosModules.default
+          nix-index-database.nixosModules.nix-index
           ./os/hardware-desktop.nix
           ./os/configuration.nix
-          { environment.systemPackages = [ (switch "desktop") ]; }
-          nix-index-database.nixosModules.nix-index
-          { programs.nix-index-database.comma.enable = true; }
+          {
+            environment.systemPackages = [ (switch "desktop") ];
+            programs.nix-index-database.comma.enable = true;
+            home-manager.users.leo.local.bin = {
+              gui = true;
+              games = true;
+            };
+          }
         ];
       };
-
     };
 }
