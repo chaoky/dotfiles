@@ -10,10 +10,10 @@ with lib;
 let
   cfg = config.local.bin;
   core = [
-    editorconfig-core-c bc jq gh helix gnutls binutils unzip coreutils fd
+    editorconfig-core-c bc jq gh neovim helix gnutls binutils unzip coreutils fd
     (ripgrep.override { withPCRE2 = true; }) texlive.combined.scheme-medium
     pandoc fzf bat socat (aspellWithDicts ( ds: with ds; [ en en-computers en-science ]))
-    wakatime tldr cmake gcc python3 tree-sitter lazygit nodejs cargo neovim direnv trashy
+    wakatime tldr cmake gcc python3 tree-sitter lazygit nodejs cargo direnv trashy
     lua lua51Packages.luarocks-nix deno dasel pnpm prettierd stylua lsof openjdk sbt unison-ucm
     tmux tmuxPlugins.dracula koka nixd lua-language-server rust-analyzer vtsls vscode-langservers-extracted
     yaml-language-server vscode-js-debug terraform-ls harper dockerfile-language-server-nodejs purescript
@@ -37,8 +37,8 @@ in
   config = mkIf cfg.enable {
     home.packages = mkMerge [
       core
-      (mkIf (!cfg.gui) gui)
-      (mkIf (!cfg.games) games)
+      (mkIf (cfg.gui) gui)
+      (mkIf (cfg.games) games)
     ];
   };
 }
