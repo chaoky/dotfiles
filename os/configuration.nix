@@ -108,7 +108,7 @@
   };
 
   programs.zsh.enable = true;
-  home-manager.users.leo = import ../home/home.nix;
+  home-manager.users.leo = import ../home.nix;
   home-manager.useGlobalPkgs = true;
   home-manager.backupFileExtension = "backup";
 

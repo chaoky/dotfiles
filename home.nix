@@ -1,18 +1,14 @@
 {
   config,
+  lib,
   ...
 }:
 let
   mkConfigSymlink = x: config.lib.file.mkOutOfStoreSymlink "/home/leo/dotfiles/config/${x}";
 in
 {
-  imports = [
-    ./bin.nix
-    ./emacs.nix
-    ./font.nix
-  ];
+  imports = lib.fileset.toList ./modules;
   local.bin.enable = true;
-  local.emacs.enable = false;
   local.font.enable = true;
 
   programs.starship.enable = true;
