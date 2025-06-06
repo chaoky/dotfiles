@@ -17,7 +17,7 @@ let
     lua lua51Packages.luarocks-nix deno dasel pnpm prettierd stylua lsof openjdk sbt unison-ucm
     tmux tmuxPlugins.dracula koka nixd lua-language-server rust-analyzer vtsls vscode-langservers-extracted
     yaml-language-server vscode-js-debug terraform-ls harper dockerfile-language-server-nodejs purescript
-    purescript-language-server ffmpeg xsel xclip yt-dlp
+    purescript-language-server ffmpeg xsel xclip yt-dlp ruff basedpyright
   ];
   gui = [
     krita gimp3 inkscape blender libreoffice-fresh fontforge-gtk tiled ldtk obs-studio
