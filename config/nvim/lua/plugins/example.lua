@@ -43,7 +43,7 @@ if true then
         },
       },
     },
-
+    
     -- nix compat
     { "mason-org/mason.nvim", opts = { PATH = "append" } },
     { "mason-org/mason-lspconfig.nvim", enabled = false },
