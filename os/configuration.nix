@@ -48,6 +48,8 @@
     LC_TIME = "pt_BR.UTF-8";
   };
 
+  hardware.keyboard.qmk.enable = true;
+
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
