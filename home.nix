@@ -70,12 +70,12 @@ in
     userEmail = "levimanga@gmail.com";
     userName = "chaoky";
   };
-  
+
   programs.neovim = {
     enable = true;
     defaultEditor = true;
   };
-  
+
   home.file = {
     ".config/doom".source = mkConfigSymlink "doom";
     ".config/nvim".source = mkConfigSymlink "nvim";
@@ -90,4 +90,14 @@ in
       '';
     };
   };
+  #https://github.com/NixOS/nixpkgs/issues/12757
+  home.activation.linkDesktopFiles = lib.hm.dag.entryAfter [ "installPackages" ] ''
+    if [ -d "${config.home.profileDirectory}/share/applications" ]; then
+      rm -rf ${config.home.homeDirectory}/.local/share/applications
+      mkdir -p ${config.home.homeDirectory}/.local/share/applications
+      for file in ${config.home.profileDirectory}/share/applications/*; do
+        ln -sf "$file" ${config.home.homeDirectory}/.local/share/applications/
+      done
+    fi
+  '';
 }
