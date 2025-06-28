@@ -49,7 +49,9 @@
       zen-overlay = final: _: { zen-browser = zen-browser.packages."${system}"; };
       pkgs = import nixpkgs {
         inherit system;
-        config.allowUnfree = true;
+        config = {
+          allowUnfree = true;
+        };
         overlays = [ zen-overlay ];
       };
       switch =
@@ -67,6 +69,7 @@
       formatter.${system} = pkgs.nixfmt-tree.override {
         settings.formatter.nixfmt.excludes = [ "*bin.nix" ];
       };
+
       homeConfigurations.leo = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         modules = [

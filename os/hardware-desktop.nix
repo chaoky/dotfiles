@@ -31,6 +31,21 @@
     fsType = "ext4";
   };
 
+  fileSystems."/media/games_the_second" = {
+    device = "/dev/disk/by-uuid/AE1A56D11A5695E5";
+    fsType = "ntfs";
+  };
+
+  fileSystems."/media/games_the_third" = {
+    device = "/dev/disk/by-uuid/5ACC76BACC768FCD";
+    fsType = "ntfs";
+  };
+
+  fileSystems."/media/old_and_slow" = {
+    device = "/dev/disk/by-uuid/A41A22F51A22C3E0";
+    fsType = "ntfs";
+  };
+
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/665B-A1CC";
     fsType = "vfat";

@@ -8,16 +8,43 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  services.samba = {
+    enable = true;
+    openFirewall = true;
+    shares = {
+      public = {
+        path = "/home/leo";
+        writable = "true";
+      };
+    };
+  };
+
+  services.avahi = {
+    enable = true;
+    publish.enable = true;
+    publish.userServices = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
+
+  services.samba-wsdd = {
+    enable = true;
+    openFirewall = true;
+  };
+
   networking.hostName = "stanbot-nix";
   networking.firewall = {
-    enable = true;
+    enable = false;
+    allowPing = true;
     allowedTCPPorts = [
       12345
       8080
+      2056
     ];
     allowedUDPPorts = [
       12345
       8080
+      2056
     ];
   };
   services.zerotierone = {
