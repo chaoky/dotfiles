@@ -32,6 +32,7 @@ let
   ];
   games = [
     gdlauncher-carbon lutris wineWowPackages.stable winetricks wineWayland
+    (pkgs.callPackage ../pkg/ktools.nix {})
   ];
 in
 {
