@@ -28,11 +28,10 @@ let
     tiled ldtk obs-studio mongodb-compass dbeaver-bin
     redisinsight discord slack gnome-tweaks caffeine-ng ghostty
     zen-browser.default stremio qbittorrent vlc bruno vscode
-    zed-editor chromium via
+    zed-editor chromium via aseprite libresprite
   ];
   games = [
     gdlauncher-carbon lutris wineWowPackages.stable winetricks wineWayland
-    (pkgs.callPackage ../pkg/ktools.nix {})
   ];
 in
 {

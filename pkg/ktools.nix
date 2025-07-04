@@ -6,6 +6,7 @@
   pkg-config,
   cmake,
   imagemagick,
+  libzip,
 }:
 
 stdenv.mkDerivation {
@@ -23,7 +24,10 @@ stdenv.mkDerivation {
     cmake
     pkg-config
   ];
-  buildInputs = [ imagemagick.dev ];
+  buildInputs = [
+    imagemagick.dev
+    libzip.dev
+  ];
   cmakeFlags = [ "-DCMAKE_BUILD_TYPE=Release" ];
 
   passthru = {
