@@ -111,4 +111,25 @@
     dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
     localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
   };
+
+  services.pipewire.extraConfig.pipewire = {
+    "10-my-loopback" = {
+      "context.modules" = [
+        {
+          name = "libpipewire-module-loopback";
+          args = {
+            "node.description" = "swapped left and right channels";
+            "capture.props" = {
+              "media.class" = "Audio/Sink";
+              "node.name" = "swapped";
+              "audio.position" = "FL, FR";
+            };
+            "playback.props" = {
+              "audio.position" = "FR, FL";
+            };
+          };
+        }
+      ];
+    };
+  };
 }
