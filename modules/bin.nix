@@ -21,7 +21,7 @@ let
     vscode-langservers-extracted yaml-language-server vscode-js-debug
     terraform-ls harper dockerfile-language-server-nodejs purescript
     purescript-language-server ffmpeg xsel xclip yt-dlp ruff
-    basedpyright rust-analyzer
+    basedpyright rust-analyzer unrar
   ];
   gui = [
     krita gimp3 inkscape blender libreoffice-fresh fontforge-gtk 
