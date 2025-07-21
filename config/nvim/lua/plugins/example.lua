@@ -22,6 +22,20 @@ if true then
         },
       },
     },
+    {
+      "folke/snacks.nvim",
+      ---@class snacks.Config
+      opts = {
+        picker = {
+          sources = {
+            explorer = {
+              hidden = true,
+              ignored = true,
+            },
+          },
+        },
+      },
+    },
 
     -- extra lang
     {
@@ -43,10 +57,17 @@ if true then
         },
       },
     },
-    
+
     -- nix compat
     { "mason-org/mason.nvim", opts = { PATH = "append" } },
     { "mason-org/mason-lspconfig.nvim", enabled = false },
+
+    --dumb
+    {
+      "mistricky/codesnap.nvim",
+      build = "make",
+      opts = { watermark = "", bg_x_padding = 30, bg_y_padding = 30, mac_window_bar = false },
+    },
   }
 end
 

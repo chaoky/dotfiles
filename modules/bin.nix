@@ -21,14 +21,14 @@ let
     vscode-langservers-extracted yaml-language-server vscode-js-debug
     terraform-ls harper dockerfile-language-server-nodejs purescript
     purescript-language-server ffmpeg xsel xclip yt-dlp ruff
-    basedpyright rust-analyzer unrar
+    basedpyright rust-analyzer unrar psmisc gnumake
   ];
   gui = [
     krita gimp3 inkscape blender libreoffice-fresh fontforge-gtk 
     tiled ldtk obs-studio mongodb-compass dbeaver-bin
     redisinsight discord slack gnome-tweaks caffeine-ng ghostty
     zen-browser.default stremio qbittorrent vlc bruno vscode
-    zed-editor chromium via aseprite libresprite
+    zed-editor chromium via aseprite libresprite firefox-devedition
   ];
   games = [
     gdlauncher-carbon lutris wineWowPackages.stable winetricks wineWayland
