@@ -56,7 +56,7 @@
       };
       switch =
         hw:
-        pkgs.writeShellScriptBin "switch" (
+        pkgs.writeShellScriptBin "nix-switch" (
           {
             "desktop" = "sudo nixos-rebuild switch --flake ~/dotfiles#desktop --accept-flake-config";
             "laptop" = "sudo nixos-rebuild switch --flake ~/dotfiles#laptop --accept-flake-config";
