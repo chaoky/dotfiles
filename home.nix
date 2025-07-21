@@ -13,7 +13,6 @@ in
 
   programs.starship.enable = true;
   programs.zoxide.enable = true;
-  programs.carapace.enable = true;
   programs.home-manager.enable = true;
 
   nix.settings.experimental-features = [
@@ -57,8 +56,23 @@ in
       if [[ $NIX_PATHS ]]; then
         PATH=$NIX_PATHS$PATH
       fi
+
+      # auto nix develop
+      nix_flake_cd() {
+        if [[ -f "flake.nix" && -z "$NIX_SHELL_LEVEL" ]]; then
+          export NIX_SHELL_LEVEL=1
+          nix develop --impure
+          export NIX_SHELL_LEVEL=
+        fi
+      }
+
+      autoload -U add-zsh-hook
+      add-zsh-hook chpwd nix_flake_cd && nix_flake_cd
     '';
   };
+
+  programs.fish.enable = true;
+  programs.bash.enable = true;
 
   programs.direnv = {
     enable = true;
@@ -81,6 +95,7 @@ in
     ".config/nvim".source = mkConfigSymlink "nvim";
     ".config/tmux".source = mkConfigSymlink "tmux";
     ".config/ghostty".source = mkConfigSymlink "ghostty";
+    ".config/helix".source = mkConfigSymlink "helix";
     ".ssh".source = mkConfigSymlink "ssh";
     ".wakatime.cfg2" = {
       text = ''
