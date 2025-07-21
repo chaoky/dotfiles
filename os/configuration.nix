@@ -52,6 +52,9 @@
     joinNetworks = [ "e4da7455b230f52a" ];
   };
 
+  programs._1password-gui.enable = true;
+  programs._1password.enable = true;
+
   # Enable networking
   networking.networkmanager.enable = true;
 
@@ -89,7 +92,8 @@
   environment.systemPackages = with pkgs.gnomeExtensions; [
     appindicator
     pano
-    espresso
+    vertical-workspaces
+    places-status-indicator
   ];
 
   # Enable Cosmic Desktop https://github.com/lilyinstarlight/nixos-cosmic
@@ -140,6 +144,11 @@
   home-manager.users.leo = import ../home.nix;
   home-manager.useGlobalPkgs = true;
   home-manager.backupFileExtension = "backup";
+
+  programs.nix-ld = {
+    enable = true;
+    libraries = [ pkgs.stdenv.cc.cc.lib ];
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
