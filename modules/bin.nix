@@ -29,6 +29,7 @@ let
     redisinsight discord slack gnome-tweaks caffeine-ng ghostty
     zen-browser.default stremio qbittorrent vlc bruno vscode
     zed-editor chromium via aseprite libresprite firefox-devedition
+    insomnia
   ];
   games = [
     gdlauncher-carbon lutris wineWowPackages.stable winetricks wineWayland
