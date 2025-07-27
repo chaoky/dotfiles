@@ -24,15 +24,14 @@ let
     basedpyright rust-analyzer unrar psmisc gnumake
   ];
   gui = [
-    krita gimp3 inkscape blender libreoffice-fresh fontforge-gtk 
-    tiled ldtk obs-studio mongodb-compass dbeaver-bin
     redisinsight discord slack gnome-tweaks caffeine-ng ghostty
-    zen-browser.default stremio qbittorrent vlc bruno vscode
-    zed-editor chromium via aseprite libresprite firefox-devedition
-    insomnia
+    stremio qbittorrent vlc vscode chromium via
+    firefox-devedition insomnia mongodb-compass dbeaver-bin
   ];
   games = [
     gdlauncher-carbon lutris wineWowPackages.stable winetricks wineWayland
+    krita gimp3 inkscape blender libreoffice-fresh fontforge-gtk
+    tiled ldtk obs-studio aseprite
   ];
 in
 {
