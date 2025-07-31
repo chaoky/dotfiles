@@ -27,11 +27,12 @@ let
     redisinsight discord slack gnome-tweaks caffeine-ng ghostty
     stremio qbittorrent vlc vscode chromium via
     firefox-devedition insomnia mongodb-compass dbeaver-bin
+    code-cursor spotify
   ];
   games = [
     gdlauncher-carbon lutris wineWowPackages.stable winetricks wineWayland
     krita gimp3 inkscape blender libreoffice-fresh fontforge-gtk
-    tiled ldtk obs-studio aseprite
+    tiled ldtk obs-studio aseprite ryubing
   ];
 in
 {
