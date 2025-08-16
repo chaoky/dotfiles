@@ -13,10 +13,9 @@ let
     editorconfig-core-c bc jq gh helix gnutls binutils
     unzip fd (ripgrep.override { withPCRE2 = true; }) texlive.combined.scheme-medium
     pandoc fzf bat socat coreutils wakatime tldr 
-    (aspellWithDicts ( ds: with ds; [ en en-computers en-science ])) cmake gcc 
-    python3 tree-sitter lazygit nodejs cargo direnv 
-    lua lua51Packages.luarocks-nix deno dasel pnpm prettierd 
-    stylua lsof openjdk sbt unison-ucm trashy
+    cmake gcc python3 tree-sitter lazygit nodejs cargo
+    direnv lua lua51Packages.luarocks-nix deno dasel pnpm prettierd 
+    stylua lsof openjdk sbt trashy
     tmux tmuxPlugins.dracula koka nixd lua-language-server  vtsls
     vscode-langservers-extracted yaml-language-server vscode-js-debug
     terraform-ls harper dockerfile-language-server-nodejs purescript
@@ -25,9 +24,8 @@ let
   ];
   gui = [
     redisinsight discord slack gnome-tweaks caffeine-ng ghostty
-    stremio qbittorrent vlc vscode chromium via
-    firefox-devedition insomnia mongodb-compass dbeaver-bin
-    code-cursor spotify
+    stremio qbittorrent vlc chromium firefox-devedition
+    mongodb-compass dbeaver-bin postman code-cursor spotify
   ];
   games = [
     gdlauncher-carbon lutris wineWowPackages.stable winetricks wineWayland
