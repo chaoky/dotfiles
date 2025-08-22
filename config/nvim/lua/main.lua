@@ -124,14 +124,6 @@ require("lazy").setup({
 			end,
 		},
 
-		{ -- Find projects
-			"ahmedkhalf/project.nvim",
-			config = function()
-				require("project_nvim").setup({})
-				require("telescope").load_extension("projects")
-			end,
-		},
-
 		{ -- Fuzzy finder
 			"nvim-telescope/telescope.nvim",
 			event = "VimEnter",
