@@ -138,7 +138,13 @@ M.keys = { -- Key discovery menu
 					desc = "Buffers",
 				},
 				{ "<leader>n", "<cmd>Noice dismiss<cr>", desc = "Notification" },
-				{ "<leader>k", "<cmd>bp|bd # !<cr>", desc = "Kill Buffer" },
+				{
+					"<leader>k",
+					function()
+						Snacks.bufdelete()
+					end,
+					desc = "Kill Buffer",
+				},
 				{ "<leader>r", "<cmd>Telescope resume<cr>", desc = "Resume" },
 
 				{ "gd", tb.lsp_definitions, desc = "Definition" },

@@ -41,6 +41,7 @@ require("lazy").setup({
 	spec = {
 		require("keys").keys,
 		{ "akinsho/toggleterm.nvim", lazy = false, version = "*", config = true },
+		{ "folke/snacks.nvim", lazy = false, opts = {} },
 		{ "brianhuster/unnest.nvim", lazy = false, priority = 1001 },
 		{ "kdheepak/lazygit.nvim", lazy = true, cmd = { "LazyGit" } },
 		{
