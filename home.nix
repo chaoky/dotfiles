@@ -68,6 +68,10 @@ in
 
       autoload -U add-zsh-hook
       add-zsh-hook chpwd nix_flake_cd && nix_flake_cd
+
+      nvr() {
+        nvim --server /tmp/nvim.single --remote-send "<cmd>:ToggleTerm<cr> | <cmd>:edit $1<cr>"
+      }
     '';
   };
 

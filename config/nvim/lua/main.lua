@@ -22,6 +22,8 @@ vim.opt.showmode = false
 vim.opt.clipboard = "unnamedplus"
 vim.opt.showtabline = 0
 
+pcall(vim.fn.serverstart, "/tmp/nvim.single")
+
 vim.keymap.set("n", "<C-e>", "<cmd>nohlsearch<CR>", { desc = "Clear highlights" })
 vim.keymap.set({ "t", "i", "v", "x" }, "<C-e>", "<C-\\><C-n>", { desc = "Switch to nomal mode" })
 
