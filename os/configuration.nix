@@ -78,16 +78,11 @@
     LC_TIME = "pt_BR.UTF-8";
   };
 
-  hardware.keyboard.qmk.enable = true;
-
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
-
   virtualisation.docker.enable = true;
 
   # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome.enable = true;
   services.gnome.gnome-keyring.enable = true;
   environment.systemPackages = with pkgs.gnomeExtensions; [
     appindicator
@@ -149,14 +144,6 @@
     enable = true;
     libraries = [ pkgs.stdenv.cc.cc.lib ];
   };
-
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
 
   system.stateVersion = "23.11";
 }
