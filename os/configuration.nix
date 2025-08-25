@@ -7,6 +7,7 @@
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   services.samba = {
     enable = true;
@@ -99,12 +100,11 @@
   # systemd.services.monitord.wantedBy = [ "multi-user.target" ];
 
   # Configure keymap in X11
-  services.xserver = {
-    xkb = {
-      layout = "br";
-      variant = "thinkpad";
-    };
+  services.xserver.xkb = {
+    layout = "us";
+    variant = "colemak";
   };
+
 
   # Configure console keymap
   console.keyMap = "br-abnt2";
