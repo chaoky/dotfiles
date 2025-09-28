@@ -27,7 +27,7 @@ in
     sessionVariables = {
       PAGER = "more";
       # SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh";
-      PNPM_HOME = "/home/leo/.local/share/pnpm";
+      PNPM_HOME = "~/.local/share/pnpm";
       BUN_INSTALL = "~/.bun";
       EDITOR = "nvim";
     };
@@ -68,10 +68,6 @@ in
 
       autoload -U add-zsh-hook
       add-zsh-hook chpwd nix_flake_cd && nix_flake_cd
-
-      nvr() {
-        nvim --server /tmp/nvim.single --remote-send "<cmd>:ToggleTerm<cr> | <cmd>:edit $1<cr>"
-      }
     '';
   };
 

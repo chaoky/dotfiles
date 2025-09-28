@@ -57,10 +57,10 @@
         hw:
         pkgs.writeShellScriptBin "nix-switch" (
           {
-            "desktop" = "sudo nixos-rebuild switch --flake ~/dotfiles#desktop --accept-flake-config";
-            "laptop" = "sudo nixos-rebuild switch --flake ~/dotfiles#laptop --accept-flake-config";
-            "zenbook" = "sudo nixos-rebuild switch --flake ~/dotfiles#zenbook --accept-flake-config";
-            "wsl" = "${pkgs.home-manager}/bin/home-manager switch -b backup --flake ~/dotfiles";
+            "desktop" = "sudo nixos-rebuild switch --flake ~/dotfiles#desktop --accept-flake-config $@";
+            "laptop" = "sudo nixos-rebuild switch --flake ~/dotfiles#laptop --accept-flake-config $@";
+            "zenbook" = "sudo nixos-rebuild switch --flake ~/dotfiles#zenbook --accept-flake-config $@";
+            "wsl" = "${pkgs.home-manager}/bin/home-manager switch -b backup --flake ~/dotfile $@";
           }
           ."${hw}"
         );
@@ -122,7 +122,7 @@
           }
         ];
       };
-    
+
       nixosConfigurations.zenbook = nixpkgs.lib.nixosSystem {
         inherit pkgs system;
         modules = [
@@ -136,7 +136,7 @@
             programs.nix-index-database.comma.enable = true;
             home-manager.users.leo.local.bin = {
               gui = true;
-              games = false;
+              games = true;
             };
           }
         ];

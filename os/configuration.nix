@@ -56,6 +56,21 @@
   programs._1password-gui.enable = true;
   programs._1password.enable = true;
 
+  programs.obs-studio = {
+    enable = true;
+    enableVirtualCamera = true;
+    plugins = with pkgs.obs-studio-plugins; [
+      obs-vaapi # optional AMD hardware acceleration
+    ];
+  };
+
+  programs.steam = {
+    enable = true;
+    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
+    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+  };
+
   # Enable networking
   networking.networkmanager.enable = true;
 
@@ -105,7 +120,6 @@
     variant = "colemak";
   };
 
-
   # Configure console keymap
   console.keyMap = "br-abnt2";
 
@@ -121,6 +135,23 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+    extraConfig.pipewire = {
+      "99-echo-cancel.conf" = {
+        "context.modules" = [
+          {
+            name = "libpipewire-module-echo-cancel";
+            args = {
+              "library.name" = "aec/libspa-aec-webrtc";
+              "monitor.mode" = true;
+              "capture.props" = {
+                "node.force-quantum" = 200;
+                "node.passive" = true;
+              };
+            };
+          }
+        ];
+      };
+    };
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.

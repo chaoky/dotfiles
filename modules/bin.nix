@@ -9,6 +9,9 @@ with nodePackages;
 with lib;
 let
   cfg = config.local.bin;
+  nvr = pkgs.writeShellScriptBin "nvr" ''
+    nvim --server $NVIM --remote-tab $(realpath $1)
+  '';
   core = [
     editorconfig-core-c bc jq gh helix gnutls binutils
     unzip fd (ripgrep.override { withPCRE2 = true; }) texlive.combined.scheme-medium
@@ -20,17 +23,18 @@ let
     vscode-langservers-extracted yaml-language-server vscode-js-debug
     terraform-ls harper dockerfile-language-server-nodejs purescript
     purescript-language-server ffmpeg xsel xclip yt-dlp ruff
-    basedpyright rust-analyzer unrar psmisc gnumake
+    basedpyright rust-analyzer unrar psmisc gnumake nvr alsa-utils helvum
   ];
   gui = [
     redisinsight discord slack gnome-tweaks caffeine-ng ghostty
-    stremio qbittorrent vlc chromium firefox-devedition
+    qbittorrent vlc chromium firefox-devedition insomnia brave
     mongodb-compass dbeaver-bin postman code-cursor spotify
+    stremio
   ];
   games = [
     gdlauncher-carbon lutris wineWowPackages.stable winetricks wineWayland
     krita gimp3 inkscape blender libreoffice-fresh fontforge-gtk
-    tiled ldtk obs-studio aseprite ryubing
+    tiled ldtk aseprite ryubing
   ];
 in
 {

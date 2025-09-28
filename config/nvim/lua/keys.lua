@@ -1,4 +1,5 @@
 local M = {}
+---@module	'snacks'
 
 local function relativeCwd()
 	local _, cwd = pcall(vim.fn.expand, "%:p:h")
@@ -126,8 +127,21 @@ M.keys = { -- Key discovery menu
 				{ "<leader>mh", "<cmd>Telescope help_tags<cr>", desc = "Help" },
 
 				{ "<leader>s", desc = "Source Control" },
-				{ "<leader>ss", "<cmd>LazyGit<cr>", desc = "LazyGit" },
+				{
+					"<leader>ss",
+					function()
+						Snacks.lazygit.open({ cwd = gitCwd() })
+					end,
+					desc = "LazyGit",
+				},
 				{ "<leader>sb", "<cmd>Gitsigns blame_line<cr>", desc = "Blame" },
+				{
+					"<leader>sf",
+					function()
+						Snacks.lazygit.log_file()
+					end,
+					desc = "File Log",
+				},
 
 				{ "<leader>o", te.frecency.frecency, desc = "Old" },
 				{
@@ -162,7 +176,7 @@ M.keys = { -- Key discovery menu
 				{
 					"<C-t>",
 					function()
-						require("toggleterm").toggle(vim.v.count, nil, relativeCwd(), "float")
+						require("toggleterm").toggle(vim.v.count, nil, gitCwd(), "float")
 					end,
 					mode = { "n", "t" },
 					desc = "Toggle Term",
