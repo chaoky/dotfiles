@@ -5,29 +5,22 @@
     extra-substituters = [
       "https://cache.nixos.org"
       "https://nix-community.cachix.org"
-      "https://cosmic.cachix.org/"
       "https://install.determinate.systems"
     ];
     extra-trusted-public-keys = [
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
       "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-      "cosmic.cachix.org-1:Dya9IyXD4xdBehWjrkPv6rtxpmMdRel02smYzA85dPE="
       "cache.flakehub.com-3:hJuILl5sVK4iKm86JzgdXW12Y2Hwd5G07qKtHTOcDCM="
     ];
   };
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    zen-browser = {
-      url = "github:0xc000022070/zen-browser-flake";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
-    nixos-cosmic.url = "github:lilyinstarlight/nixos-cosmic";
     nix-index-database = {
       url = "github:nix-community/nix-index-database";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -38,20 +31,17 @@
     {
       nixpkgs,
       home-manager,
-      zen-browser,
       determinate,
       nix-index-database,
       ...
     }:
     let
       system = "x86_64-linux";
-      zen-overlay = final: _: { zen-browser = zen-browser.packages."${system}"; };
       pkgs = import nixpkgs {
         inherit system;
         config = {
           allowUnfree = true;
         };
-        overlays = [ zen-overlay ];
       };
       switch =
         hw:
