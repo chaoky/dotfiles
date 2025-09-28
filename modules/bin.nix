@@ -29,7 +29,6 @@ let
     redisinsight discord slack gnome-tweaks caffeine-ng ghostty
     qbittorrent vlc chromium firefox-devedition insomnia brave
     mongodb-compass dbeaver-bin postman code-cursor spotify
-    stremio
   ];
   games = [
     gdlauncher-carbon lutris wineWowPackages.stable winetricks wineWayland
