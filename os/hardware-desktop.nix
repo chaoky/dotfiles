@@ -106,47 +106,4 @@
     # Optionally, you may need to select the appropriate driver version for your specific GPU.
     package = config.boot.kernelPackages.nvidiaPackages.latest;
   };
-
-  services.pipewire = {
-    extraConfig.pipewire = {
-      "10-my-loopback" = {
-        "context.modules" = [
-          {
-            name = "libpipewire-module-loopback";
-            args = {
-              "node.description" = "swapped left and right channels";
-              "capture.props" = {
-                "media.class" = "Audio/Sink";
-                "node.name" = "swapped";
-                "audio.position" = "FL, FR";
-              };
-              "playback.props" = {
-                "audio.position" = "FR, FL";
-              };
-            };
-          }
-        ];
-      };
-    };
-
-    wireplumber.extraConfig = {
-      "99-disable-suspend" = {
-        "monitor.alsa.rules" = [
-          {
-            matches = [
-              { "node.name" = "~alsa_input.*"; }
-              { "node.name" = "~alsa_output.*"; }
-            ];
-            actions = {
-              update-props = {
-                "session.suspend-timeout-seconds" = 0;
-              };
-            };
-          }
-        ];
-      };
-    };
-
-  };
-
 }
