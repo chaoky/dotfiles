@@ -9,6 +9,16 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
+  # Enable Bluetooth
+  hardware.xpadneo.enable = true; #xbox controller
+  hardware.bluetooth.settings.General = {
+    experimental = true; # show battery
+    Privacy = "device";
+    JustWorksRepairing = "always";
+    Class = "0x000100";
+    FastConnectable = true;
+  };
+
   services.samba = {
     enable = true;
     openFirewall = true;
@@ -66,9 +76,10 @@
 
   programs.steam = {
     enable = true;
-    remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
-    dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
-    localNetworkGameTransfers.openFirewall = true; # Open ports in the firewall for Steam Local Network Game Transfers
+    remotePlay.openFirewall = true;
+    dedicatedServer.openFirewall = true;
+    localNetworkGameTransfers.openFirewall = true;
+    gamescopeSession.enable = true;
   };
 
   # Enable networking
@@ -108,9 +119,9 @@
   ];
 
   # Enable Cosmic Desktop https://github.com/lilyinstarlight/nixos-cosmic
-  # services.desktopManager.cosmic.enable = true;
+  services.desktopManager.cosmic.enable = true;
   # services.displayManager.cosmic-greeter.enable = true;
-  # environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1;
+  environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1;
   # systemd.packages = [ pkgs.observatory ];
   # systemd.services.monitord.wantedBy = [ "multi-user.target" ];
 
@@ -127,7 +138,6 @@
   services.printing.enable = true;
 
   # Enable sound with pipewire.
-  # sound.enable = true;
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
