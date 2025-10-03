@@ -1,5 +1,6 @@
 {
   pkgs,
+  config,
   ...
 }:
 
@@ -9,14 +10,20 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  # Enable Bluetooth
-  hardware.xpadneo.enable = true; #xbox controller
-  hardware.bluetooth.settings.General = {
-    experimental = true; # show battery
-    Privacy = "device";
-    JustWorksRepairing = "always";
-    Class = "0x000100";
-    FastConnectable = true;
+  #xbox controller
+  hardware.bluetooth.settings = {
+    General = {
+      Privacy = "device";
+      JustWorksRepairing = "always";
+      Class = "0x000100";
+      FastConnectable = true;
+    };
+  };
+
+  boot = {
+    extraModprobeConfig = ''
+      options bluetooth disable_ertm=Y
+    '';
   };
 
   services.samba = {
