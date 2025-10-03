@@ -171,7 +171,13 @@
     };
   };
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  nix.settings = {
+    trusted-users = [
+      "root"
+      "leo"
+    ];
+  };
+
   users.users.leo = {
     isNormalUser = true;
     description = "leo";

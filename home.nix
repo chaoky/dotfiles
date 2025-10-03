@@ -15,10 +15,13 @@ in
   programs.zoxide.enable = true;
   programs.home-manager.enable = true;
 
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
+  nix.settings = {
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+    accept-flake-config = true;
+  };
 
   home = rec {
     username = "leo";
