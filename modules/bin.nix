@@ -24,6 +24,7 @@ let
     terraform-ls harper dockerfile-language-server-nodejs purescript
     purescript-language-server ffmpeg xsel xclip yt-dlp ruff
     basedpyright rust-analyzer unrar psmisc gnumake nvr alsa-utils helvum
+    nix-tree
   ];
   gui = [
     redisinsight discord slack gnome-tweaks caffeine-ng ghostty

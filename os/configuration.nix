@@ -130,9 +130,12 @@
   # environment.sessionVariables.COSMIC_DATA_CONTROL_ENABLED = 1;
 
   # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "colemak";
+  services.xserver = {
+    enable = true;
+    xkb = {
+      layout = "us";
+      variant = "colemak";
+    };
   };
 
   # Configure console keymap
