@@ -1,6 +1,6 @@
 {
   pkgs,
-  config,
+  lib,
   ...
 }:
 
@@ -95,7 +95,7 @@
   services.flatpak.enable = true;
 
   # Set your time zone.
-  time.timeZone = "America/Bahia";
+  time.timeZone = lib.mkForce null;
 
   # Select internationalisation properties.
   i18n.defaultLocale = "en_US.UTF-8";
