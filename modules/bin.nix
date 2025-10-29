@@ -29,7 +29,7 @@ let
   gui = [
     redisinsight discord slack gnome-tweaks caffeine-ng ghostty
     qbittorrent vlc chromium firefox-devedition insomnia brave
-    mongodb-compass dbeaver-bin postman code-cursor spotify
+    mongodb-compass dbeaver-bin postman code-cursor spotify gnome-frog
   ];
   games = [
     gdlauncher-carbon lutris wineWowPackages.stable winetricks wineWayland
