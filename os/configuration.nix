@@ -181,7 +181,7 @@
   users.users.leo = {
     isNormalUser = true;
     description = "leo";
-    shell = pkgs.zsh;
+    shell = pkgs.fish;
     extraGroups = [
       "networkmanager"
       "wheel"
@@ -190,6 +190,7 @@
   };
 
   programs.zsh.enable = true;
+  programs.fish.enable = true;
   home-manager.users.leo = import ../home.nix;
   home-manager.useGlobalPkgs = true;
   home-manager.backupFileExtension = "backup";
