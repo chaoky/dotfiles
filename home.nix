@@ -69,8 +69,8 @@ in
         fi
       }
 
-      autoload -U add-zsh-hook
-      add-zsh-hook chpwd nix_flake_cd && nix_flake_cd
+      # autoload -U add-zsh-hook
+      # add-zsh-hook chpwd nix_flake_cd && nix_flake_cd
     '';
   };
 
