@@ -52,6 +52,7 @@
 
   networking.hostName = "stanbot-nix";
   networking.firewall = {
+    checkReversePath = false;
     enable = false;
     allowPing = true;
     allowedTCPPorts = [
@@ -65,6 +66,7 @@
       2056
     ];
   };
+
   services.zerotierone = {
     enable = true;
     joinNetworks = [ "e4da7455b230f52a" ];
@@ -118,11 +120,13 @@
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
   services.gnome.gnome-keyring.enable = true;
-  environment.systemPackages = with pkgs.gnomeExtensions; [
+  environment.systemPackages = with pkgs; with gnomeExtensions; [
     appindicator
     pano
     vertical-workspaces
     places-status-indicator
+    wireguard-tools
+    protonvpn-gui
   ];
 
   # services.desktopManager.cosmic.enable = true;
