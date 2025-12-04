@@ -84,8 +84,10 @@ in
 
   programs.git = {
     enable = true;
-    userEmail = "levimanga@gmail.com";
-    userName = "chaoky";
+    settings = {
+      user.email = "levimanga@gmail.com";
+      user.name = "chaoky";
+    };
   };
 
   programs.neovim = {

@@ -10,31 +10,11 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  #xbox controller
-  hardware.bluetooth.settings = {
-    General = {
-      Privacy = "device";
-      JustWorksRepairing = "always";
-      Class = "0x000100";
-      FastConnectable = true;
-    };
-  };
-
-  boot = {
-    extraModprobeConfig = ''
-      options bluetooth disable_ertm=Y
-    '';
-  };
+  hardware.bluetooth.enable = true;
 
   services.samba = {
     enable = true;
     openFirewall = true;
-    shares = {
-      public = {
-        path = "/home/leo";
-        writable = "true";
-      };
-    };
   };
 
   services.avahi = {
@@ -53,7 +33,7 @@
   networking.hostName = "stanbot-nix";
   networking.firewall = {
     checkReversePath = false;
-    enable = false;
+    enable = true;
     allowPing = true;
     allowedTCPPorts = [
       12345
@@ -156,23 +136,6 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    extraConfig.pipewire = {
-      "99-echo-cancel.conf" = {
-        "context.modules" = [
-          {
-            name = "libpipewire-module-echo-cancel";
-            args = {
-              "library.name" = "aec/libspa-aec-webrtc";
-              "monitor.mode" = true;
-              "capture.props" = {
-                "node.force-quantum" = 200;
-                "node.passive" = true;
-              };
-            };
-          }
-        ];
-      };
-    };
   };
 
   nix.settings = {

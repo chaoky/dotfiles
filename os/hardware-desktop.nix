@@ -31,14 +31,14 @@
     fsType = "ext4";
   };
 
-  fileSystems."/media/games_the_second" = {
-    device = "/dev/disk/by-uuid/AE1A56D11A5695E5";
-    fsType = "ntfs";
+  fileSystems."/media/mid" = {
+    device = "/dev/disk/by-uuid/39c35311-3514-418b-a83b-0bc2fffb0a1d";
+    fsType = "ext4";
   };
 
-  fileSystems."/media/games_the_third" = {
-    device = "/dev/disk/by-uuid/5ACC76BACC768FCD";
-    fsType = "ntfs";
+  fileSystems."/media/tiny" = {
+    device = "/dev/disk/by-uuid/fe5647ae-b71a-4026-a2e9-54cbff322b25";
+    fsType = "ext4";
   };
 
   fileSystems."/media/old_and_slow" = {
