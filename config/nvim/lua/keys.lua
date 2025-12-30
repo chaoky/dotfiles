@@ -89,11 +89,20 @@ M.keys = { -- Key discovery menu
 			require("conform").format({ async = true, lsp_format = "fallback" })
 		end
 
+		local function format_all_buffers()
+			for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+				if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].modifiable and vim.bo[buf].buftype == "" then
+					require("conform").format({ bufnr = buf, async = true, lsp_format = "fallback" })
+				end
+			end
+		end
+
 		return {
 			icons = { rules = false, mappings = false },
 			spec = {
 				{ "<leader>d", desc = "Document" },
 				{ "<leader>df", format, desc = "Format" },
+				{ "<leader>dF", format_all_buffers, desc = "Format All" },
 				{ "<leader>de", "<cmd>Telescope diagnostics<CR>", desc = "Errors" },
 				{ "<leader>dg", "<cmd>Telescope current_buffer_fuzzy_find<CR>", desc = "Grep" },
 				{ "<leader>dd", require("dropbar.api").pick, desc = "Dropbar" },
