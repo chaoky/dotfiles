@@ -14,6 +14,7 @@ config.colors = {
 	foreground = "silver",
 }
 config.color_scheme = 'One Dark (Gogh)'
-config.cursor_blink_rate = 600
+config.cursor_blink_rate = 500
+config.animation_fps = 1
 
 return config
