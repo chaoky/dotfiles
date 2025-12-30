@@ -18,7 +18,7 @@ let
     pandoc fzf bat socat coreutils wakatime-cli tldr 
     cmake gcc python3 tree-sitter lazygit nodejs cargo
     direnv lua lua51Packages.luarocks-nix deno dasel pnpm prettierd 
-    stylua lsof openjdk sbt trashy wezterm
+    stylua lsof openjdk sbt trashy wezterm easyeffects
     tmux tmuxPlugins.dracula koka nixd lua-language-server  vtsls
     vscode-langservers-extracted yaml-language-server vscode-js-debug
     terraform-ls harper dockerfile-language-server purescript
