@@ -32,7 +32,6 @@ in
       # SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh";
       PNPM_HOME = "~/.local/share/pnpm";
       BUN_INSTALL = "~/.bun";
-      EDITOR = "nvim";
     };
     sessionPath = [
       sessionVariables.PNPM_HOME
@@ -101,6 +100,7 @@ in
     ".config/tmux".source = mkConfigSymlink "tmux";
     ".config/ghostty".source = mkConfigSymlink "ghostty";
     ".config/helix".source = mkConfigSymlink "helix";
+    ".config/wezterm".source = mkConfigSymlink "wezterm";
     ".ssh".source = mkConfigSymlink "ssh";
     ".wakatime.cfg2" = {
       text = ''
