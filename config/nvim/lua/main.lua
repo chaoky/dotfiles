@@ -321,24 +321,38 @@ require("lazy").setup({
 
 		{ -- Tree-sitter configs
 			"nvim-treesitter/nvim-treesitter",
+			lazy = false,
+			build = ":TSUpdate",
 			config = function()
-				local parser_config = require("nvim-treesitter.parsers").get_parser_configs()
-				parser_config.koka = {
-					install_info = {
-						url = "https://github.com/mtoohey31/tree-sitter-koka",
-						files = { "src/parser.c", "src/scanner.c" },
-						branch = "main",
-						generate_requires_npm = false,
-						requires_generate_from_grammar = false,
-					},
-					filetype = "koka",
-				}
-
-				require("nvim-treesitter.configs").setup({
-					auto_install = true,
-					highlight = { enable = true },
-					indent = { enable = true },
+				-- Add koka
+				vim.api.nvim_create_autocmd("User", {
+					pattern = "TSUpdate",
+					callback = function()
+						require("nvim-treesitter.parsers").koka = {
+							install_info = {
+								url = "https://github.com/koka-community/tree-sitter-koka",
+								queries = "queries",
+							},
+						}
+					end,
 				})
+
+				-- Highlighting
+				vim.api.nvim_create_autocmd("FileType", {
+					pattern = { "<filetype>" },
+					callback = function()
+						vim.treesitter.start()
+					end,
+				})
+
+				-- Folds
+				vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
+				vim.wo[0][0].foldmethod = "expr"
+
+				-- Indentation
+				vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+
+				require("nvim-treesitter").install({ "rust", "typescript", "javascript", "koka" })
 			end,
 		},
 
