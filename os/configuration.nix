@@ -10,7 +10,21 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  hardware.bluetooth.enable = true;
+  #xbox controller
+  hardware.bluetooth.settings = {
+    General = {
+      Privacy = "device";
+      JustWorksRepairing = "always";
+      Class = "0x000100";
+      FastConnectable = true;
+    };
+  };
+
+  boot = {
+    extraModprobeConfig = ''
+      options bluetooth disable_ertm=Y
+    '';
+  };
 
   services.samba = {
     enable = true;
@@ -102,8 +116,6 @@
   services.gnome.gnome-keyring.enable = true;
   environment.systemPackages = with pkgs; with gnomeExtensions; [
     appindicator
-    pano
-    vertical-workspaces
     places-status-indicator
     wireguard-tools
     protonvpn-gui
