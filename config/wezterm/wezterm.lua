@@ -9,12 +9,29 @@ config.window_padding = {
 	top = 0,
 	bottom = 0,
 }
+
 config.colors = {
 	background = "#282c34",
 	foreground = "silver",
 }
-config.color_scheme = 'One Dark (Gogh)'
+config.color_scheme = "One Dark (Gogh)"
 config.cursor_blink_rate = 500
 config.animation_fps = 1
+
+wezterm.on("update-status", function(window, pane)
+	local info = pane:get_foreground_process_info()
+	if info == nil then
+		return
+	end
+	if info.name == "nvim" then
+		window:set_config_overrides({
+			window_padding = { left = 0, right = 0, top = 0, bottom = 0 },
+		})
+	else
+		window:set_config_overrides({
+			window_padding = { left = "1cell", right = "1cell", top = "1cell", bottom = "1cell" },
+		})
+	end
+end)
 
 return config
