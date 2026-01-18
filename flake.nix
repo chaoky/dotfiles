@@ -37,6 +37,7 @@
     }:
     let
       system = "x86_64-linux";
+      lib = nixpkgs.lib;
       pkgs = import nixpkgs {
         inherit system;
         config = {
@@ -54,6 +55,13 @@
           }
           ."${hw}"
         );
+      modules = lib.fileset.toList ./modules;
+      baseline = modules ++ [
+        determinate.nixosModules.default
+        home-manager.nixosModules.default
+        nix-index-database.nixosModules.nix-index
+
+      ];
     in
     {
       formatter.${system} = pkgs.nixfmt-tree.override {
@@ -63,13 +71,9 @@
       homeConfigurations.leo = home-manager.lib.homeManagerConfiguration {
         inherit pkgs;
         modules = [
-          ./home/home.nix
+          ./home.nix
           {
             home.packages = [ (switch "wsl") ];
-            local.bin = {
-              gui = false;
-              games = false;
-            };
             nix.package = pkgs.nix;
           }
         ];
@@ -77,57 +81,32 @@
 
       nixosConfigurations.laptop = nixpkgs.lib.nixosSystem {
         inherit pkgs system;
-        modules = [
-          determinate.nixosModules.default
-          home-manager.nixosModules.default
-          nix-index-database.nixosModules.nix-index
-          ./os/hardware-laptop.nix
-          ./os/configuration.nix
+        modules = baseline ++ [
+          ./hardware/laptop.nix
           {
             environment.systemPackages = [ (switch "laptop") ];
-            programs.nix-index-database.comma.enable = true;
-            home-manager.users.leo.local.bin = {
-              gui = true;
-              games = false;
-            };
           }
         ];
       };
 
       nixosConfigurations.desktop = nixpkgs.lib.nixosSystem {
         inherit pkgs system;
-        modules = [
-          determinate.nixosModules.default
-          home-manager.nixosModules.default
-          nix-index-database.nixosModules.nix-index
-          ./os/hardware-desktop.nix
-          ./os/configuration.nix
+        modules = baseline ++ [
+          ./hardware/desktop.nix
           {
             environment.systemPackages = [ (switch "desktop") ];
-            programs.nix-index-database.comma.enable = true;
-            home-manager.users.leo.local.bin = {
-              gui = true;
-              games = true;
-            };
+            local.games.enable = true;
           }
         ];
       };
 
       nixosConfigurations.zenbook = nixpkgs.lib.nixosSystem {
         inherit pkgs system;
-        modules = [
-          determinate.nixosModules.default
-          home-manager.nixosModules.default
-          nix-index-database.nixosModules.nix-index
-          ./os/hardware-zenbook.nix
-          ./os/configuration.nix
+        modules = baseline ++ [
+          ./hardware/zenbook.nix
           {
             environment.systemPackages = [ (switch "zenbook") ];
-            programs.nix-index-database.comma.enable = true;
-            home-manager.users.leo.local.bin = {
-              gui = true;
-              games = true;
-            };
+            local.games.enable = true;
           }
         ];
       };

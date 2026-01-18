@@ -1,16 +1,84 @@
+# Standalone home-manager configuration (e.g., for WSL or non-NixOS systems)
+# On NixOS, modules are loaded via os/configuration.nix instead
 {
   config,
   lib,
+  pkgs,
   ...
 }:
+with pkgs;
+with nodePackages;
 let
   mkConfigSymlink = x: config.lib.file.mkOutOfStoreSymlink "/home/leo/dotfiles/config/${x}";
+  nvr = writeShellScriptBin "nvr" ''
+    nvim --server $NVIM --remote-tab $(realpath $1)
+  '';
+  corePackages = [
+    editorconfig-core-c
+    bc
+    jq
+    gh
+    helix
+    gnutls
+    binutils
+    unzip
+    fd
+    (ripgrep.override { withPCRE2 = true; })
+    texlive.combined.scheme-medium
+    pandoc
+    fzf
+    bat
+    socat
+    coreutils
+    wakatime-cli
+    tldr
+    cmake
+    gcc
+    python3
+    tree-sitter
+    lazygit
+    nodejs
+    cargo
+    direnv
+    lua
+    lua51Packages.luarocks-nix
+    deno
+    dasel
+    pnpm
+    prettierd
+    stylua
+    lsof
+    openjdk
+    sbt
+    trashy
+    wezterm
+    tmux
+    tmuxPlugins.dracula
+    koka
+    nixd
+    lua-language-server
+    vtsls
+    vscode-langservers-extracted
+    yaml-language-server
+    vscode-js-debug
+    terraform-ls
+    harper
+    dockerfile-language-server
+    purescript
+    purescript-language-server
+    ffmpeg
+    yt-dlp
+    ruff
+    basedpyright
+    rust-analyzer
+    unrar
+    psmisc
+    gnumake
+    nvr
+    nix-tree
+  ];
 in
 {
-  imports = lib.fileset.toList ./modules;
-  local.bin.enable = true;
-  local.font.enable = true;
-
   programs.starship.enable = true;
   programs.zoxide.enable = true;
   programs.home-manager.enable = true;
@@ -27,9 +95,12 @@ in
     username = "leo";
     homeDirectory = "/home/leo";
     stateVersion = "22.11";
+    packages = corePackages ++ [
+      nerd-fonts.iosevka
+      nerd-fonts.symbols-only
+    ];
     sessionVariables = {
       PAGER = "more";
-      # SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/gnupg/S.gpg-agent.ssh";
       PNPM_HOME = "~/.local/share/pnpm";
       BUN_INSTALL = "~/.bun";
     };
@@ -45,6 +116,13 @@ in
       dps = "docker ps --format 'table{{.Names}}\t{{.Status}}\t{{.Ports}}'";
       dbr = "docker run --rm -it $(docker build -q .)";
     };
+  };
+
+  fonts.fontconfig = {
+    enable = true;
+    defaultFonts.monospace = [ "Iosevka Nerd Font Mono" ];
+    defaultFonts.serif = [ "FreeSerif" ];
+    defaultFonts.sansSerif = [ "Fira Sans" ];
   };
 
   programs.zsh = {
@@ -102,6 +180,10 @@ in
     defaultEditor = true;
   };
 
+  programs.vicinae = {
+    enable = true;
+  };
+
   home.file = {
     ".config/doom".source = mkConfigSymlink "doom";
     ".config/nvim".source = mkConfigSymlink "nvim";
@@ -118,7 +200,7 @@ in
       '';
     };
   };
-  #https://github.com/NixOS/nixpkgs/issues/12757
+
   home.activation.linkDesktopFiles = lib.hm.dag.entryAfter [ "installPackages" ] ''
     if [ -d "${config.home.profileDirectory}/share/applications" ]; then
       rm -rf ${config.home.homeDirectory}/.local/share/applications
