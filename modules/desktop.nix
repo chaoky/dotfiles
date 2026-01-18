@@ -50,20 +50,39 @@ in
     };
 
     home-manager.users.leo = {
-      # GNOME extensions
       dconf.settings = {
         "org/gnome/shell".enabled-extensions = (map (extension: extension.extensionUuid) extensions) ++ [
           "system76-power@system76.com"
         ];
       };
 
-      # Audio packages
       home.packages = with pkgs; [
+        # Audio
         easyeffects
         alsa-utils
         helvum
+        # Fonts
         nerd-fonts.iosevka
         nerd-fonts.symbols-only
+        # Terminals
+        wezterm
+        # GUI apps
+        redisinsight
+        discord
+        slack
+        caffeine-ng
+        qbittorrent
+        vlc
+        chromium
+        firefox-devedition
+        insomnia
+        brave
+        mongodb-compass
+        dbeaver-bin
+        postman
+        code-cursor
+        spotify
+        gnome-frog
       ];
 
       # Fonts

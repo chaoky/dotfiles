@@ -23,6 +23,8 @@ in
   };
 
   config = mkIf cfg.enable {
+    system.stateVersion = "23.11";
+
     # Boot
     boot.loader.systemd-boot.enable = true;
     boot.loader.efi.canTouchEfiVariables = true;
@@ -46,8 +48,14 @@ in
 
     # Nix settings
     nix.settings = {
-      trusted-users = [ "root" "leo" ];
-      experimental-features = [ "nix-command" "flakes" ];
+      trusted-users = [
+        "root"
+        "leo"
+      ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
       accept-flake-config = true;
     };
 
@@ -55,7 +63,10 @@ in
     users.users.leo = {
       isNormalUser = true;
       description = "leo";
-      extraGroups = [ "networkmanager" "wheel" ];
+      extraGroups = [
+        "networkmanager"
+        "wheel"
+      ];
     };
 
     # Networking
@@ -66,8 +77,16 @@ in
       checkReversePath = false;
       enable = true;
       allowPing = true;
-      allowedTCPPorts = [ 12345 8080 2056 ];
-      allowedUDPPorts = [ 12345 8080 2056 ];
+      allowedTCPPorts = [
+        12345
+        8080
+        2056
+      ];
+      allowedUDPPorts = [
+        12345
+        8080
+        2056
+      ];
     };
 
     services.zerotierone = {
@@ -102,34 +121,36 @@ in
     home-manager.useGlobalPkgs = true;
     home-manager.backupFileExtension = "backup";
 
-    home-manager.users.leo = { config, lib, ... }: {
-      programs.home-manager.enable = true;
+    home-manager.users.leo =
+      { config, lib, ... }:
+      {
+        programs.home-manager.enable = true;
 
-      home = {
-        username = "leo";
-        homeDirectory = "/home/leo";
-        stateVersion = "22.11";
-        sessionVariables = {
-          PAGER = "more";
-          PNPM_HOME = "~/.local/share/pnpm";
-          BUN_INSTALL = "~/.bun";
+        home = {
+          username = "leo";
+          homeDirectory = "/home/leo";
+          stateVersion = "22.11";
+          sessionVariables = {
+            PAGER = "more";
+            PNPM_HOME = "~/.local/share/pnpm";
+            BUN_INSTALL = "~/.bun";
+          };
+          sessionPath = [
+            "~/.local/share/pnpm"
+            "~/.bun/bin"
+            "~/.cargo/bin"
+          ];
         };
-        sessionPath = [
-          "~/.local/share/pnpm"
-          "~/.bun/bin"
-          "~/.cargo/bin"
-        ];
-      };
 
-      home.activation.linkDesktopFiles = lib.hm.dag.entryAfter [ "installPackages" ] ''
-        if [ -d "${config.home.profileDirectory}/share/applications" ]; then
-          rm -rf ${config.home.homeDirectory}/.local/share/applications
-          mkdir -p ${config.home.homeDirectory}/.local/share/applications
-          for file in ${config.home.profileDirectory}/share/applications/*; do
-            ln -sf "$file" ${config.home.homeDirectory}/.local/share/applications/
-          done
-        fi
-      '';
-    };
+        home.activation.linkDesktopFiles = lib.hm.dag.entryAfter [ "installPackages" ] ''
+          if [ -d "${config.home.profileDirectory}/share/applications" ]; then
+            rm -rf ${config.home.homeDirectory}/.local/share/applications
+            mkdir -p ${config.home.homeDirectory}/.local/share/applications
+            for file in ${config.home.profileDirectory}/share/applications/*; do
+              ln -sf "$file" ${config.home.homeDirectory}/.local/share/applications/
+            done
+          fi
+        '';
+      };
   };
 }
