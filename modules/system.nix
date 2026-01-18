@@ -57,6 +57,27 @@ in
         "flakes"
       ];
       accept-flake-config = true;
+      auto-optimise-store = true;
+      warn-dirty = false;
+    };
+
+    # Automatic garbage collection
+    nix.gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 30d";
+    };
+
+    # Periodic store optimization
+    nix.optimise = {
+      automatic = true;
+      dates = [ "weekly" ];
+    };
+
+    # Nice nixos-rebuild wrapper
+    programs.nh = {
+      enable = true;
+      flake = "/home/leo/dotfiles";
     };
 
     # User
