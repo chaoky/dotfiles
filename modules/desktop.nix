@@ -35,10 +35,6 @@ in
       };
     };
 
-    environment.systemPackages = with pkgs; [
-      gnome-tweaks
-    ];
-
     # Audio (Pipewire)
     services.pulseaudio.enable = false;
     security.rtkit.enable = true;
@@ -47,43 +43,66 @@ in
       alsa.enable = true;
       alsa.support32Bit = true;
       pulse.enable = true;
+
+      # Larger buffers to prevent distortion during high CPU load (gaming)
+      extraConfig.pipewire."99-gaming" = {
+        "context.properties" = {
+          "default.clock.rate" = 48000;
+          "default.clock.quantum" = 1024; # ~21ms buffer (default is 256-512)
+          "default.clock.min-quantum" = 512;
+          "default.clock.max-quantum" = 2048;
+        };
+      };
+
+      # WirePlumber session manager config
+      wireplumber.extraConfig."99-gaming" = {
+        "wireplumber.settings" = {
+          "default.clock.rate" = 48000;
+          "default.clock.allowed-rates" = [
+            44100
+            48000
+            96000
+          ];
+        };
+      };
     };
 
     home-manager.users.leo = {
       dconf.settings = {
-        "org/gnome/shell".enabled-extensions = (map (extension: extension.extensionUuid) extensions) ++ [
-          "system76-power@system76.com"
-        ];
+        "org/gnome/shell".enabled-extensions = (map (extension: extension.extensionUuid) extensions);
       };
 
-      home.packages = with pkgs; [
-        # Audio
-        easyeffects
-        alsa-utils
-        helvum
-        # Fonts
-        nerd-fonts.iosevka
-        nerd-fonts.symbols-only
-        # Terminals
-        wezterm
-        # GUI apps
-        redisinsight
-        discord
-        slack
-        caffeine-ng
-        qbittorrent
-        vlc
-        chromium
-        firefox-devedition
-        insomnia
-        brave
-        mongodb-compass
-        dbeaver-bin
-        postman
-        code-cursor
-        spotify
-        gnome-frog
-      ];
+      home.packages =
+        extensions
+        ++ (with pkgs; [
+          # Audio
+          easyeffects
+          alsa-utils
+          helvum
+          # Fonts
+          nerd-fonts.iosevka
+          nerd-fonts.symbols-only
+          # Terminals
+          wezterm
+          # GUI apps
+          redisinsight
+          discord
+          slack
+          caffeine-ng
+          qbittorrent
+          vlc
+          chromium
+          firefox-devedition
+          insomnia
+          brave
+          mongodb-compass
+          dbeaver-bin
+          postman
+          code-cursor
+          spotify
+          gnome-frog
+          gnome-tweaks
+        ]);
 
       # Fonts
       fonts.fontconfig = {

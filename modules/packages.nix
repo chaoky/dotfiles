@@ -5,7 +5,6 @@
   ...
 }:
 with pkgs;
-with nodePackages;
 with lib;
 let
   cfg = config.local.packages;
