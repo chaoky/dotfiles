@@ -32,7 +32,7 @@ in
       nixd lua-language-server vtsls vscode-langservers-extracted yaml-language-server
       vscode-js-debug terraform-ls harper dockerfile-language-server purescript basedpyright 
       purescript-language-server ffmpeg yt-dlp ruff rust-analyzer unrar psmisc gnumake nvr 
-      nix-tree
+      nix-tree claude-code
     ];
   };
 }
