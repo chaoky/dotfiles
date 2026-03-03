@@ -16,6 +16,8 @@
 
       services.flatpak.enable = true;
       services.printing.enable = true;
+      services.ratbagd.enable = true;
+      environment.systemPackages = [ pkgs.piper ];
       programs.nix-index-database.comma.enable = true;
 
       # Docker
@@ -40,6 +42,14 @@
               user.email = "levimanga@gmail.com";
               user.name = "chaoky";
               push.autoSetupRemote = true;
+            };
+          };
+
+          programs.jujutsu = {
+            enable = true;
+            settings = {
+              user.email = "levimanga@gmail.com";
+              user.name = "chaoky";
             };
           };
 
