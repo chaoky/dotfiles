@@ -14,7 +14,7 @@
         programs.fish = {
           enable = true;
           shellInit = ''
-            fnm env --use-on-cd --shell fish | source
+            fnm env --use-on-cd --corepack-enabled --shell fish | source
           '';
         };
 
