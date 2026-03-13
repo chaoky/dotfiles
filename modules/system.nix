@@ -90,6 +90,15 @@
         joinNetworks = [ "e4da7455b230f52a" ];
       };
 
+      services.tailscale = {
+        enable = true;
+        extraUpFlags = [
+          "--login-server"
+          "https://tail.leo.camp"
+          "--ssh"
+        ];
+      };
+
       services.samba = {
         enable = true;
         openFirewall = true;
