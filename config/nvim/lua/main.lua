@@ -321,6 +321,22 @@ require("lazy").setup({
 			"nvim-treesitter/nvim-treesitter",
 			lazy = false,
 			build = ":TSUpdate",
+			init = function()
+				vim.api.nvim_create_autocmd("FileType", {
+					pattern = "*",
+					callback = function()
+						-- Highlighting
+						if pcall(vim.treesitter.start) then
+							-- Folds
+							vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
+							vim.wo[0][0].foldmethod = "expr"
+
+							-- Indentation
+							vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+						end
+					end,
+				})
+			end,
 			config = function()
 				-- Add koka
 				vim.api.nvim_create_autocmd("User", {
@@ -334,23 +350,7 @@ require("lazy").setup({
 						}
 					end,
 				})
-
-				-- Highlighting
-				vim.api.nvim_create_autocmd("FileType", {
-					pattern = { "<filetype>" },
-					callback = function()
-						vim.treesitter.start()
-					end,
-				})
-
-				-- Folds
-				vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
-				vim.wo[0][0].foldmethod = "expr"
-
-				-- Indentation
-				vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-
-				require("nvim-treesitter").install({ "rust", "typescript", "javascript", "koka" })
+				require("nvim-treesitter").install({ "rust", "typescript", "javascript", "koka", "purescript" })
 			end,
 		},
 
