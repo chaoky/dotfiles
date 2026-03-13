@@ -7,7 +7,7 @@
       # Boot
       boot.loader.systemd-boot.enable = true;
       boot.loader.efi.canTouchEfiVariables = true;
-      boot.kernelPackages = pkgs.linuxPackages_latest;
+      boot.kernelPackages = pkgs.linuxPackages;
 
       # Locale
       time.timeZone = lib.mkForce null;
