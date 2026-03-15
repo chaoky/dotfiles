@@ -19,32 +19,6 @@
           '';
         };
 
-        programs.zsh = {
-          enable = true;
-          syntaxHighlighting.enable = true;
-          autosuggestion.enable = true;
-          historySubstringSearch.enable = true;
-          initContent = ''
-            # unfuck direnv nix shell
-            NIX_PATHS=$(echo $PATH | tr ':' '\n' | grep "/nix/" | tail -n +2 | tr '\n' ':')
-            if [[ $NIX_PATHS ]]; then
-              PATH=$NIX_PATHS$PATH
-            fi
-
-            # auto nix develop
-            nix_flake_cd() {
-              if [[ -f "flake.nix" && -z "$NIX_SHELL_LEVEL" ]]; then
-                export NIX_SHELL_LEVEL=1
-                nix develop --impure
-                export NIX_SHELL_LEVEL=
-              fi
-            }
-
-            # autoload -U add-zsh-hook
-            # add-zsh-hook chpwd nix_flake_cd && nix_flake_cd
-          '';
-        };
-
         programs.direnv = {
           enable = true;
           nix-direnv.enable = true;

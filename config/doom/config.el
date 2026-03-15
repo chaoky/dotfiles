@@ -129,7 +129,7 @@
 (after! vterm
   (setq
    vterm-buffer-name "vterm"
-   vterm-shell "zsh"))
+   vterm-shell "fish"))
 
 (after! treemacs
   (setq treemacs-read-string-input 'from-minibuffer))
