@@ -10,7 +10,7 @@
         nixd lua-language-server vtsls vscode-langservers-extracted yaml-language-server
         vscode-js-debug terraform-ls harper dockerfile-language-server purescript basedpyright
         purescript-language-server ffmpeg yt-dlp ruff rust-analyzer unrar psmisc gnumake
-        nix-tree claude-code github-cli jj-fzf jjui piper corepack
+        nix-tree claude-code github-cli jj-fzf jjui piper corepack xsel
       ];
     };
 }

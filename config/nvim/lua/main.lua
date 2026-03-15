@@ -20,6 +20,18 @@ vim.opt.tabstop = 2
 vim.opt.foldlevel = 99999999 -- For UFO
 vim.opt.showmode = false
 vim.opt.clipboard = "unnamedplus"
+vim.g.clipboard = {
+	name = "xsel",
+	copy = {
+		["+"] = "xsel --clipboard --input",
+		["*"] = "xsel --primary --input",
+	},
+	paste = {
+		["+"] = "xsel --clipboard --output",
+		["*"] = "xsel --primary --output",
+	},
+	cache_enabled = 0,
+}
 vim.opt.showtabline = 0
 
 vim.keymap.set("n", "<C-e>", "<cmd>nohlsearch<CR>", { desc = "Clear highlights" })
