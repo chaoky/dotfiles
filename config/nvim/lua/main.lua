@@ -154,6 +154,39 @@ require("lazy").setup({
 			end,
 		},
 
+		{ -- File explorer
+			"stevearc/oil.nvim",
+			dependencies = { "nvim-tree/nvim-web-devicons" },
+			config = function()
+				require("oil").setup({
+					default_file_explorer = true,
+					view_options = {
+						show_hidden = true,
+					},
+					keymaps = {
+						["<C-f>"] = {
+							callback = function()
+								local oil = require("oil")
+								local dir = oil.get_current_dir()
+								oil.close()
+								require("telescope.builtin").find_files({ cwd = dir })
+							end,
+							desc = "Find files in current directory",
+						},
+						["<C-g>"] = {
+							callback = function()
+								local oil = require("oil")
+								local dir = oil.get_current_dir()
+								oil.close()
+								require("telescope.builtin").live_grep({ cwd = dir })
+							end,
+							desc = "Grep in current directory",
+						},
+					},
+				})
+			end,
+		},
+
 		{ -- Fuzzy finder
 			"nvim-telescope/telescope.nvim",
 			event = "VimEnter",
@@ -161,7 +194,6 @@ require("lazy").setup({
 				"nvim-lua/plenary.nvim",
 				"nvim-tree/nvim-web-devicons",
 				"nvim-telescope/telescope-ui-select.nvim",
-				"nvim-telescope/telescope-file-browser.nvim",
 				"nvim-telescope/telescope-frecency.nvim",
 				"debugloop/telescope-undo.nvim",
 				"BurntSushi/ripgrep",
@@ -170,8 +202,6 @@ require("lazy").setup({
 				local tb = require("telescope.builtin")
 				local tas = require("telescope.actions.state")
 				local t = require("telescope")
-				local fbrowser = t.extensions.file_browser.file_browser
-				local fb_utils = require("telescope._extensions.file_browser.utils")
 
 				local function select_n(i)
 					return function(b)
@@ -181,42 +211,10 @@ require("lazy").setup({
 					end
 				end
 
-				local function finderPath(promptn)
-					return tas.get_current_picker(promptn).finder.path
-				end
-
-				local function mapAbs(x)
-					return vim.tbl_map(function(path)
-						return path:absolute()
-					end, x)
-				end
-
 				t.setup({
 					extensions = {
 						["ui-select"] = {
 							require("telescope.themes").get_dropdown(),
-						},
-						["file_browser"] = {
-							mappings = {
-								i = {
-									["<C-f>"] = function(promptn)
-										fargs(tb.find_files, {
-											cwd = finderPath(promptn),
-											default_text = tas.get_current_line(),
-										})
-									end,
-									["<C-g>"] = function(promptn)
-										local selections = fb_utils.get_selected_files(promptn, false)
-										fargs(tb.live_grep, {
-											-- stylua: ignore
-											search_dirs = vim.tbl_isempty(selections)
-												and { finderPath(promptn) }
-												or mapAbs(selections),
-										})
-									end,
-									["<C-e>"] = false,
-								},
-							},
 						},
 					},
 					defaults = {
@@ -244,9 +242,6 @@ require("lazy").setup({
 											default_text = tas.get_current_line(),
 										})
 									end,
-									["<C-i>"] = function()
-										fargs(fbrowser, { cwd = fstate.path })
-									end,
 								},
 							},
 						},
@@ -260,9 +255,6 @@ require("lazy").setup({
 											default_text = tas.get_current_line(),
 										})
 									end,
-									["<C-i>"] = function()
-										fargs(fbrowser, { cwd = fstate.path })
-									end,
 								},
 							},
 						},
@@ -270,7 +262,6 @@ require("lazy").setup({
 				})
 
 				t.load_extension("ui-select")
-				t.load_extension("file_browser")
 				t.load_extension("frecency")
 				t.load_extension("undo")
 			end,

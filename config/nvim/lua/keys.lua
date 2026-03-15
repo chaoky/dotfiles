@@ -64,7 +64,6 @@ M.keys = { -- Key discovery menu
 	opts = function()
 		local tb = require("telescope.builtin")
 		local te = require("telescope").extensions
-		local fbrowser = te.file_browser.file_browser
 
 		local function format()
 			require("conform").format({ async = true, lsp_format = "fallback" })
@@ -115,7 +114,7 @@ M.keys = { -- Key discovery menu
 				{
 					"<leader>e",
 					function()
-						M.fargs(fbrowser, { cwd = relativeCwd() })
+						require("oil").open()
 					end,
 					desc = "Explore",
 				},
