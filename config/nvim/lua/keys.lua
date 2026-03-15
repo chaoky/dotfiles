@@ -1,6 +1,26 @@
 local M = {}
 ---@module	'snacks'
 
+local ignore_patterns = {
+	"!node_modules",
+	"!target",
+	"!dist",
+	"!.git",
+	"!.spago",
+	"!.psci_modules",
+	"!output",
+	"!generated-docs",
+}
+
+local function make_glob_args(patterns)
+	local result = {}
+	for _, p in ipairs(patterns) do
+		table.insert(result, "-g")
+		table.insert(result, p)
+	end
+	return result
+end
+
 local function relativeCwd()
 	local _, cwd = pcall(vim.fn.expand, "%:p:h")
 	if cwd == "" or type(cwd) ~= "string" then
@@ -18,48 +38,9 @@ M.fstate = { path = "", all = true }
 function M.fargs(func, args)
 	args = args or {}
 
-	args.find_command = {
-		"rg",
-		"--files",
-		"--color",
-		"never",
-		"-g",
-		"!node_modules",
-		"-g",
-		"!target",
-		"-g",
-		"!dist",
-		"-g",
-		"!.git",
-		"-g",
-		"!.spago",
-		"-g",
-		"!.psci_modules",
-		"-g",
-		"!output",
-		"-g",
-		"!generated-docs",
-	}
-	args.additional_args = {
-		"--no-ignore",
-		"--hidden",
-		"-g",
-		"!node_modules",
-		"-g",
-		"!target",
-		"-g",
-		"!dist",
-		"-g",
-		"!.git",
-		"-g",
-		"!.spago",
-		"-g",
-		"!.psci_modules",
-		"-g",
-		"!output",
-		"-g",
-		"!generated-docs",
-	}
+	local glob_args = make_glob_args(ignore_patterns)
+	args.find_command = vim.list_extend({ "rg", "--files", "--color", "never" }, glob_args)
+	args.additional_args = vim.list_extend({ "--no-ignore", "--hidden" }, glob_args)
 
 	if args.all == false then
 		args.find_command = nil
@@ -97,17 +78,25 @@ M.keys = { -- Key discovery menu
 			end
 		end
 
+		vim.keymap.set("n", "<C-e>", "<cmd>nohlsearch<CR>", { desc = "Clear highlights" })
+		vim.keymap.set({ "t", "i", "v", "x" }, "<C-e>", "<C-\\><C-n>", { desc = "Switch to normal mode" })
+
 		return {
 			icons = { rules = false, mappings = false },
 			spec = {
 				{ "<leader>d", desc = "Document" },
 				{ "<leader>df", format, desc = "Format" },
+				{
+					"<leader>di",
+					function()
+						vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+					end,
+					desc = "Inlay Hints",
+				},
 				{ "<leader>dF", format_all_buffers, desc = "Format All" },
 				{ "<leader>de", "<cmd>Telescope diagnostics<CR>", desc = "Errors" },
 				{ "<leader>dg", "<cmd>Telescope current_buffer_fuzzy_find<CR>", desc = "Grep" },
 				{ "<leader>dd", require("dropbar.api").pick, desc = "Dropbar" },
-				{ "<leader>dr", vim.lsp.buf.rename, desc = "Rename" },
-				{ "<leader>da", vim.lsp.buf.code_action, desc = "Action" },
 
 				{
 					"<leader>f",
@@ -171,12 +160,16 @@ M.keys = { -- Key discovery menu
 				{ "<leader>r", "<cmd>Telescope resume<cr>", desc = "Resume" },
 
 				{ "gd", tb.lsp_definitions, desc = "Definition" },
-				{ "gr", tb.lsp_references, desc = "References" },
-				{ "gI", tb.lsp_implementations, desc = "Implementation" },
+				{ "grr", tb.lsp_references, desc = "References" },
+				{ "gri", tb.lsp_implementations, desc = "Implementation" },
 				{ "gD", vim.lsp.buf.declaration, desc = "Declaration" },
 
-				{ "p", "<Plug>(YankyPutAfter)", desc = "Paste" },
-				{ "P", "<Plug>(YankyPreviousEntry)", desc = "Paste Previous" },
+				{ "p", "<Plug>(YankyPutAfter)", desc = "Paste", mode = { "n", "x" } },
+				{ "p", "<Plug>(YankyPutAfter)", desc = "Paste", mode = { "n", "x" } },
+				{ "P", "<Plug>(YankyPutBefore)", desc = "Paste", mode = { "n", "x" } },
+				{ "<c-p>", "<Plug>(YankyPreviousEntry)", desc = "Paste Previous" },
+				{ "<c-n>", "<Plug>(YankyNextEntry)", desc = "Paste next" },
+
 				{ ";", vim.diagnostic.open_float, desc = "Diagnostic" },
 
 				{ "U", "<cmd>Telescope undo<cr>", desc = "Undo History" },

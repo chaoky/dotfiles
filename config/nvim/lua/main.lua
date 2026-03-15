@@ -17,7 +17,7 @@ vim.opt.inccommand = "split"
 vim.opt.cursorline = true
 vim.opt.scrolloff = 10
 vim.opt.tabstop = 2
-vim.opt.foldlevel = 99999999 -- For UFO
+vim.opt.foldlevel = 99 -- Start with all folds open (for nvim-ufo)
 vim.opt.showmode = false
 vim.opt.clipboard = "unnamedplus"
 vim.g.clipboard = {
@@ -34,14 +34,18 @@ vim.g.clipboard = {
 }
 vim.opt.showtabline = 0
 
-vim.keymap.set("n", "<C-e>", "<cmd>nohlsearch<CR>", { desc = "Clear highlights" })
-vim.keymap.set({ "t", "i", "v", "x" }, "<C-e>", "<C-\\><C-n>", { desc = "Switch to nomal mode" })
+-- Augroup for all custom autocmds (prevents accumulation on reload)
+local augroup = vim.api.nvim_create_augroup("UserConfig", { clear = true })
 
-vim.filetype.add({
-	extension = {
-		kk = "koka",
-		purs = "purescript",
-	},
+-- LSP attach handler for buffer-local setup
+vim.api.nvim_create_autocmd("LspAttach", {
+	group = augroup,
+	callback = function(ev)
+		local client = vim.lsp.get_client_by_id(ev.data.client_id)
+		if not client then
+			return
+		end
+	end,
 })
 
 local fargs = require("keys").fargs
@@ -50,10 +54,34 @@ local fstate = require("keys").fstate
 require("lazy").setup({
 	spec = {
 		require("keys").keys,
-		{ "akinsho/toggleterm.nvim", lazy = false, version = "*", config = true },
-		{ "folke/snacks.nvim", lazy = false, opts = {} },
+		require("lang").koka,
+		require("lang").purescript,
+		require("lang").rust,
+		require("lang").javascript,
+		require("lang").lua,
+		-- Use parent nvim when launched from subshell
 		{ "brianhuster/unnest.nvim", lazy = false, priority = 1001 },
 		{ "kdheepak/lazygit.nvim", lazy = true, cmd = { "LazyGit" } },
+		{ "wakatime/vim-wakatime" },
+		{ "akinsho/toggleterm.nvim", lazy = false, version = "*", config = true },
+		-- Detect tabstop and shift width automatically
+		{ "tpope/vim-sleuth" },
+		-- Git utilities
+		{ "lewis6991/gitsigns.nvim", opts = {} },
+		-- Clipboard history
+		{ "gbprod/yanky.nvim", opts = { highlight = { timer = 200 } } },
+		-- notifications and cmd line
+		{ "folke/noice.nvim", opts = {}, dependencies = { "MunifTanjim/nui.nvim", "rcarriga/nvim-notify" } },
+
+		{
+			"folke/snacks.nvim",
+			lazy = false,
+			opts = {
+				lazygit = { enabled = true },
+				bufdelete = { enabled = true },
+			},
+		},
+
 		{
 			"kawre/leetcode.nvim",
 			build = ":TSUpdate html",
@@ -67,10 +95,7 @@ require("lazy").setup({
 				},
 			},
 		},
-		{ "wakatime/vim-wakatime" },
-		{ "JoosepAlviste/nvim-ts-context-commentstring" }, -- Use comment string from TS
-		{ "tpope/vim-sleuth" }, -- Detect tabstop and shift width automatically
-		{ "lewis6991/gitsigns.nvim", opts = {} }, -- Git utilities
+
 		{
 			"direnv/direnv.vim",
 			config = function()
@@ -96,10 +121,17 @@ require("lazy").setup({
 						return vim.wo[win].winbar == "" and vim.fn.win_gettype(win) == "" and vim.bo[buf].ft ~= "help"
 					end,
 				},
+				sources = {
+					path = {
+						relative_to = function(_, _)
+							return vim.fn.expand("%:p:h:h")
+						end,
+					},
+				},
 			},
 		},
 
-		{ -- Cool mode line
+		{ -- mode line
 			"nvim-lualine/lualine.nvim",
 			dependencies = { "nvim-tree/nvim-web-devicons", "folke/noice.nvim" },
 			opts = function()
@@ -119,19 +151,6 @@ require("lazy").setup({
 						},
 					},
 				}
-			end,
-		},
-
-		{ -- Cool notifications and cmd line
-			"folke/noice.nvim",
-			opts = {},
-			dependencies = { "MunifTanjim/nui.nvim", "rcarriga/nvim-notify" },
-		},
-
-		{ -- Cool theme
-			"navarasu/onedark.nvim",
-			config = function()
-				require("onedark").load()
 			end,
 		},
 
@@ -257,49 +276,23 @@ require("lazy").setup({
 			end,
 		},
 
-		{ -- Clipboard history
-			"gbprod/yanky.nvim",
-			opts = { highlight = { timer = 200 } },
-		},
-
-		{ -- Lsp configs
+		{ -- LSP configs
 			"neovim/nvim-lspconfig",
+			dependencies = { "saghen/blink.cmp" },
 			config = function()
-				require("lspconfig").koka.setup({})
-				require("lspconfig").nixd.setup({})
-				require("lspconfig").lua_ls.setup({})
-				require("lspconfig").purescriptls.setup({
-					settings = {
-						purescript = {
-							addSpagoSources = true,
-						},
-					},
-					flags = {
-						debounce_text_changes = 150,
-					},
-				})
-				require("lspconfig").rust_analyzer.setup({
-					init_options = {
-						["rust_analyzer"] = {
-							cargo = {
-								targetDir = true,
-							},
-						},
-					},
+				vim.lsp.config("*", {
+					root_markers = { ".git" },
+					capabilities = require("blink.cmp").get_lsp_capabilities(),
 				})
 
-				require("lspconfig").vtsls.setup({})
-				-- require("lspconfig").ts_ls.setup({})
-				-- require("lspconfig").deno.setup({})
-				-- require("lspconfig").relay_lsp.setup({})
-
-				require("lspconfig").jsonls.setup({})
-				require("lspconfig").eslint.setup({})
-				require("lspconfig").yamlls.setup({})
-				require("lspconfig").terraformls.setup({})
-				-- require("lspconfig").harper_ls.setup({})
-				require("lspconfig").dockerls.setup({})
-				require("lspconfig").unison.setup({})
+				vim.lsp.enable({
+					"nixd",
+					"jsonls",
+					"eslint",
+					"yamlls",
+					"terraformls",
+					"dockerls",
+				})
 			end,
 		},
 
@@ -307,129 +300,54 @@ require("lazy").setup({
 			"stevearc/conform.nvim",
 			event = { "BufWritePre" },
 			cmd = { "ConformInfo" },
-			opts = {
-				notify_on_error = false,
-				formatters_by_ft = {
-					lua = { "stylua" },
-					javascript = { "prettierd", "prettier", "biome", stop_after_first = true },
-				},
-			},
-		},
-
-		{
-			-- Unison
-			"unisonweb/unison",
-			branch = "trunk",
-			config = function(plugin)
-				vim.opt.rtp:append(plugin.dir .. "/editor-support/vim")
-				require("lazy.core.loader").packadd(plugin.dir .. "/editor-support/vim")
-			end,
-			init = function(plugin)
-				require("lazy.core.loader").ftdetect(plugin.dir .. "/editor-support/vim")
-			end,
+			opts = { notify_on_error = false },
 		},
 
 		{ -- Tree-sitter configs
 			"nvim-treesitter/nvim-treesitter",
 			lazy = false,
 			build = ":TSUpdate",
-			init = function()
+			config = function()
+				-- Set up treesitter for each buffer (with augroup to prevent duplicates)
 				vim.api.nvim_create_autocmd("FileType", {
-					pattern = "*",
-					callback = function()
-						-- Highlighting
-						if pcall(vim.treesitter.start) then
-							-- Folds
-							vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
-							vim.wo[0][0].foldmethod = "expr"
-
-							-- Indentation
-							vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+					group = augroup,
+					callback = function(ev)
+						if pcall(vim.treesitter.start, ev.buf) then
+							vim.wo[vim.fn.bufwinid(ev.buf)].foldexpr = "v:lua.vim.treesitter.foldexpr()"
+							vim.wo[vim.fn.bufwinid(ev.buf)].foldmethod = "expr"
+							vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
 						end
 					end,
 				})
 			end,
-			config = function()
-				-- Add koka
-				vim.api.nvim_create_autocmd("User", {
-					pattern = "TSUpdate",
-					callback = function()
-						require("nvim-treesitter.parsers").koka = {
-							install_info = {
-								url = "https://github.com/koka-community/tree-sitter-koka",
-								queries = "queries",
-							},
-						}
-					end,
-				})
-				require("nvim-treesitter").install({ "rust", "typescript", "javascript", "koka", "purescript" })
-			end,
-		},
-
-		{ -- `lazydev` configures Lua LSP for your Neovim config, runtime and plugins
-			-- used for completion, annotations and signatures of Neovim API
-			"folke/lazydev.nvim",
-			ft = "lua",
-			dependencies = { "Bilal2453/luvit-meta" },
-			opts = {
-				library = {
-					-- Load luvit types when the `vim.uv` word is found
-					{ path = "luvit-meta/library", words = { "vim%.uv" } },
-				},
-			},
 		},
 
 		{ -- Auto completion
-			"hrsh7th/nvim-cmp",
-			event = "InsertEnter",
-			dependencies = {
-				{
-					"L3MON4D3/LuaSnip",
-					build = "make install_jsregexp",
-					dependencies = {
-						{
-							"rafamadriz/friendly-snippets",
-							config = function()
-								require("luasnip.loaders.from_vscode").lazy_load()
-							end,
+			"saghen/blink.cmp",
+			version = "1.*",
+			dependencies = { "rafamadriz/friendly-snippets" },
+			opts = {
+				keymap = { preset = "default" },
+				appearance = { nerd_font_variant = "mono" },
+				completion = { documentation = { auto_show = true } },
+				sources = {
+					default = { "lazydev", "lsp", "path", "snippets" },
+					providers = {
+						lazydev = {
+							name = "LazyDev",
+							module = "lazydev.integrations.blink",
+							score_offset = 100,
 						},
 					},
 				},
-				"saadparwaiz1/cmp_luasnip",
-				"hrsh7th/cmp-nvim-lsp",
-				"hrsh7th/cmp-path",
+				signature = { enabled = true },
 			},
+		},
+
+		{ -- theme
+			"navarasu/onedark.nvim",
 			config = function()
-				local cmp = require("cmp")
-				local luasnip = require("luasnip")
-				luasnip.config.setup({})
-
-				cmp.setup({
-					snippet = {
-						expand = function(args)
-							luasnip.lsp_expand(args.body)
-						end,
-					},
-					completion = { completeopt = "menu,menuone,noinsert" },
-					mapping = cmp.mapping.preset.insert({
-						["<C-Space>"] = cmp.mapping.complete({}),
-						["<C-n>"] = cmp.mapping.scroll_docs(4),
-						["<C-p>"] = cmp.mapping.scroll_docs(-4),
-						["<Tab>"] = cmp.mapping.select_next_item(),
-						["<S-Tab>"] = cmp.mapping.select_prev_item(),
-						["<CR>"] = cmp.mapping.confirm({ select = true }),
-					}),
-					sources = {
-						{ name = "lazydev", group_index = 0 },
-						{ name = "nvim_lsp" },
-						{ name = "luasnip" },
-						{ name = "path" },
-					},
-				})
-
-				local capabilities = vim.lsp.protocol.make_client_capabilities()
-				capabilities =
-					vim.tbl_deep_extend("force", capabilities, require("cmp_nvim_lsp").default_capabilities())
+				require("onedark").load()
 			end,
 		},
 	},
