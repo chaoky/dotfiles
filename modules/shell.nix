@@ -14,7 +14,8 @@
         programs.fish = {
           enable = true;
           shellInit = ''
-            fnm env --use-on-cd --corepack-enabled --shell fish | source
+            fnm env --use-on-cd --shell fish --version-file-strategy recursive --corepack-enabled | source
+            fish_add_path -g $FNM_MULTISHELL_PATH/bin
           '';
         };
 
