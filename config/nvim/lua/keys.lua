@@ -114,7 +114,7 @@ M.keys = { -- Key discovery menu
 				{
 					"<leader>e",
 					function()
-						require("oil").open()
+						require("fyler").toggle({ kind = "split_left_most" })
 					end,
 					desc = "Explore",
 				},

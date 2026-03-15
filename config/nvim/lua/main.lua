@@ -155,36 +155,36 @@ require("lazy").setup({
 		},
 
 		{ -- File explorer
-			"stevearc/oil.nvim",
-			dependencies = { "nvim-tree/nvim-web-devicons" },
-			config = function()
-				require("oil").setup({
-					default_file_explorer = true,
-					view_options = {
-						show_hidden = true,
-					},
-					keymaps = {
-						["<C-f>"] = {
-							callback = function()
-								local oil = require("oil")
-								local dir = oil.get_current_dir()
-								oil.close()
+			"A7Lavinraj/fyler.nvim",
+			dependencies = { "echasnovski/mini.icons" },
+			branch = "stable",
+			lazy = false,
+			opts = {
+				views = {
+					finder = {
+						mappings = {
+							["<C-f>"] = function(self)
+								local entry = self:cursor_node_entry()
+								local dir = entry and entry.path or vim.fn.getcwd()
+								if vim.fn.isdirectory(dir) == 0 then
+									dir = vim.fn.fnamemodify(dir, ":h")
+								end
+								require("fyler").close()
 								require("telescope.builtin").find_files({ cwd = dir })
 							end,
-							desc = "Find files in current directory",
-						},
-						["<C-g>"] = {
-							callback = function()
-								local oil = require("oil")
-								local dir = oil.get_current_dir()
-								oil.close()
+							["<C-g>"] = function(self)
+								local entry = self:cursor_node_entry()
+								local dir = entry and entry.path or vim.fn.getcwd()
+								if vim.fn.isdirectory(dir) == 0 then
+									dir = vim.fn.fnamemodify(dir, ":h")
+								end
+								require("fyler").close()
 								require("telescope.builtin").live_grep({ cwd = dir })
 							end,
-							desc = "Grep in current directory",
 						},
 					},
-				})
-			end,
+				},
+			},
 		},
 
 		{ -- Fuzzy finder
