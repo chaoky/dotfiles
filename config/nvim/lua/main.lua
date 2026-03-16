@@ -116,6 +116,26 @@ require("lazy").setup({
 		{ -- Cool breadcrumbs thing
 			"Bekaboo/dropbar.nvim",
 			opts = {
+				menu = {
+					keymaps = {
+						["o"] = function()
+							local menu = require("dropbar.utils").menu.get_current()
+							if not menu then
+								return
+							end
+							local cursor = vim.api.nvim_win_get_cursor(menu.win)
+							local component = menu.entries[cursor[1]]:first_clickable(cursor[2])
+							if not component then
+								return
+							end
+							local root_menu = menu:root()
+							if root_menu then
+								root_menu:close(false)
+							end
+							component:jump()
+						end,
+					},
+				},
 				bar = {
 					enable = function(buf, win, _)
 						return vim.wo[win].winbar == "" and vim.fn.win_gettype(win) == "" and vim.bo[buf].ft ~= "help"
@@ -126,6 +146,44 @@ require("lazy").setup({
 						relative_to = function(_, _)
 							return vim.fn.expand("%:p:h:h")
 						end,
+					},
+					treesitter = {
+						valid_types = {
+							"class",
+							"constructor",
+							"enum",
+							"enum_member",
+							"function",
+							"interface",
+							"macro",
+							"method",
+							"namespace",
+							"rule",
+							"section",
+							"struct",
+							"field",
+							"property",
+							"constant",
+							"type",
+						},
+					},
+					lsp = {
+						valid_symbols = {
+							"File",
+							"Module",
+							"Namespace",
+							"Class",
+							"Method",
+							"Constructor",
+							"Enum",
+							"Interface",
+							"Function",
+							"Struct",
+							"Field",
+							"Property",
+							"Constant",
+							"TypeParameter",
+						},
 					},
 				},
 			},
