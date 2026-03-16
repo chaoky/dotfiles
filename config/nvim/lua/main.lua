@@ -218,6 +218,11 @@ require("lazy").setup({
 						},
 					},
 					defaults = {
+						layout_config = {
+							width = 0.99,
+							height = 0.99,
+							preview_width = 0.6,
+						},
 						mappings = {
 							i = {
 								["11"] = select_n(0),

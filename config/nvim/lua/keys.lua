@@ -65,18 +65,6 @@ M.keys = { -- Key discovery menu
 		local tb = require("telescope.builtin")
 		local te = require("telescope").extensions
 
-		local function format()
-			require("conform").format({ async = true, lsp_format = "fallback" })
-		end
-
-		local function format_all_buffers()
-			for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-				if vim.api.nvim_buf_is_loaded(buf) and vim.bo[buf].modifiable and vim.bo[buf].buftype == "" then
-					require("conform").format({ bufnr = buf, async = true, lsp_format = "fallback" })
-				end
-			end
-		end
-
 		vim.keymap.set("n", "<C-e>", "<cmd>nohlsearch<CR>", { desc = "Clear highlights" })
 		vim.keymap.set({ "t", "i", "v", "x" }, "<C-e>", "<C-\\><C-n>", { desc = "Switch to normal mode" })
 
@@ -84,7 +72,13 @@ M.keys = { -- Key discovery menu
 			icons = { rules = false, mappings = false },
 			spec = {
 				{ "<leader>d", desc = "Document" },
-				{ "<leader>df", format, desc = "Format" },
+				{
+					"<leader>df",
+					function()
+						require("conform").format({ async = true, lsp_format = "fallback" })
+					end,
+					desc = "Format",
+				},
 				{
 					"<leader>di",
 					function()
@@ -92,10 +86,9 @@ M.keys = { -- Key discovery menu
 					end,
 					desc = "Inlay Hints",
 				},
-				{ "<leader>dF", format_all_buffers, desc = "Format All" },
-				{ "<leader>de", "<cmd>Telescope diagnostics<CR>", desc = "Errors" },
-				{ "<leader>dg", "<cmd>Telescope current_buffer_fuzzy_find<CR>", desc = "Grep" },
-				{ "<leader>dd", require("dropbar.api").pick, desc = "Dropbar" },
+				{ "<leader>dd", "<cmd>Telescope diagnostics<CR>", desc = "Diagnostics" },
+				{ "<leader>dt", "<cmd>Telescope treesitter<CR>", desc = "Treesitter" },
+				{ "<leader>t", require("dropbar.api").pick, desc = "Topbar" },
 
 				{
 					"<leader>f",
@@ -122,8 +115,10 @@ M.keys = { -- Key discovery menu
 				{ "<leader>m", desc = "Manage" },
 				{ "<leader>mu", "<cmd>Lazy update<cr>", desc = "Update" },
 				{ "<leader>mh", "<cmd>Telescope help_tags<cr>", desc = "Help" },
+				{ "<leader>mk", tb.keymaps, desc = "Keymaps" },
+				{ "<leader>mm", tb.marks, desc = "Marks" },
 
-				{ "<leader>s", desc = "Source Control" },
+				{ "<leader>s", desc = "Source" },
 				{
 					"<leader>ss",
 					function()
@@ -139,6 +134,14 @@ M.keys = { -- Key discovery menu
 					end,
 					desc = "File Log",
 				},
+				{ "<leader>sp", "<cmd>Gitsigns preview_hunk<cr>", desc = "Preview Hunk" },
+				{ "<leader>sa", "<cmd>Gitsigns stage_hunk<cr>", desc = "Stage Hunk" },
+				{ "<leader>sr", "<cmd>Gitsigns reset_hunk<cr>", desc = "Reset Hunk" },
+				{ "<leader>sd", "<cmd>Gitsigns diffthis<cr>", desc = "Diff" },
+				{ "<leader>sc", tb.git_commits, desc = "Commits" },
+
+				{ "]h", "<cmd>Gitsigns next_hunk<cr>", desc = "Next Hunk" },
+				{ "[h", "<cmd>Gitsigns prev_hunk<cr>", desc = "Previous Hunk" },
 
 				{ "<leader>o", te.frecency.frecency, desc = "Old" },
 				{
@@ -148,7 +151,9 @@ M.keys = { -- Key discovery menu
 					end,
 					desc = "Buffers",
 				},
-				{ "<leader>n", "<cmd>Noice dismiss<cr>", desc = "Notification" },
+				{ "<leader>n", desc = "Notification" },
+				{ "<leader>nd", "<cmd>Noice dismiss<cr>", desc = "Dismiss" },
+				{ "<leader>nh", "<cmd>Noice telescope<cr>", desc = "History" },
 				{
 					"<leader>k",
 					function()
