@@ -61,6 +61,9 @@ M.javascript = {
 	config = function()
 		require("conform").formatters_by_ft.javascript = { "prettierd", "prettier", "biome", stop_after_first = true }
 		require("conform").formatters_by_ft.typescript = { "prettierd", "prettier", "biome", stop_after_first = true }
+		vim.lsp.config("vtsls", {
+			filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
+		})
 		vim.lsp.enable("vtsls")
 		require("nvim-treesitter").install({ "typescript", "javascript" })
 	end,
@@ -78,6 +81,7 @@ M.lua = {
 			},
 		})
 		vim.lsp.enable("lua_ls")
+		require("nvim-treesitter").install({ "lua" })
 	end,
 }
 
