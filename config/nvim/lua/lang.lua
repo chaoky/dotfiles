@@ -3,7 +3,7 @@ local M = {}
 M.koka = {
 	name = "koka",
 	dir = ".",
-	dependencies = { "nvim-treesitter/nvim-treesitter" },
+	dependencies = { "nvim-treesitter/nvim-treesitter", "neovim/nvim-lspconfig" },
 	config = function()
 		vim.filetype.add({ extension = { kk = "koka" } })
 		vim.lsp.enable("koka")
@@ -22,7 +22,7 @@ M.koka = {
 M.purescript = {
 	name = "purescript",
 	dir = ".",
-	dependencies = { "nvim-treesitter/nvim-treesitter", "stevearc/conform.nvim" },
+	dependencies = { "nvim-treesitter/nvim-treesitter", "stevearc/conform.nvim", "neovim/nvim-lspconfig" },
 	config = function()
 		require("conform").formatters_by_ft.purescript = { "purs-tidy" }
 		vim.filetype.add({ extension = { purs = "purescript" } })
@@ -39,7 +39,7 @@ M.purescript = {
 M.rust = {
 	name = "rust",
 	dir = ".",
-	dependencies = { "nvim-treesitter/nvim-treesitter", "stevearc/conform.nvim" },
+	dependencies = { "nvim-treesitter/nvim-treesitter", "stevearc/conform.nvim", "neovim/nvim-lspconfig" },
 	config = function()
 		require("conform").formatters_by_ft.rust = { "rustfmt", lsp_format = "fallback" }
 		vim.lsp.enable("rust_analyzer")
@@ -57,7 +57,7 @@ M.rust = {
 M.javascript = {
 	name = "javascript",
 	dir = ".",
-	dependencies = { "nvim-treesitter/nvim-treesitter", "stevearc/conform.nvim" },
+	dependencies = { "nvim-treesitter/nvim-treesitter", "stevearc/conform.nvim", "neovim/nvim-lspconfig" },
 	config = function()
 		require("conform").formatters_by_ft.javascript = { "prettierd", "prettier", "biome", stop_after_first = true }
 		require("conform").formatters_by_ft.typescript = { "prettierd", "prettier", "biome", stop_after_first = true }
@@ -72,7 +72,7 @@ M.javascript = {
 M.lua = {
 	name = "lua",
 	dir = ".",
-	dependencies = { "nvim-treesitter/nvim-treesitter", "stevearc/conform.nvim", "folke/lazydev.nvim" },
+	dependencies = { "nvim-treesitter/nvim-treesitter", "stevearc/conform.nvim", "folke/lazydev.nvim", "neovim/nvim-lspconfig" },
 	config = function()
 		require("conform").formatters_by_ft.lua = { "stylua" }
 		require("lazydev").setup({
