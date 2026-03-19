@@ -13,9 +13,9 @@
         home.packages = [ pkgs.fnm ];
         programs.fish = {
           enable = true;
-          shellInit = ''
+          interactiveShellInit = ''
             fnm env --use-on-cd --shell fish --version-file-strategy recursive --corepack-enabled | source
-            fish_add_path -g $FNM_MULTISHELL_PATH/bin
+            fish_add_path $FNM_MULTISHELL_PATH/bin
           '';
         };
 
