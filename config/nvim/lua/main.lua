@@ -53,12 +53,6 @@ local fstate = require("keys").fstate
 
 require("lazy").setup({
 	spec = {
-		require("keys").keys,
-		require("lang").koka,
-		require("lang").purescript,
-		require("lang").rust,
-		require("lang").javascript,
-		require("lang").lua,
 		-- Use parent nvim when launched from subshell
 		{ "brianhuster/unnest.nvim", lazy = false, priority = 1001 },
 		{ "kdheepak/lazygit.nvim", lazy = true, cmd = { "LazyGit" } },
@@ -333,6 +327,8 @@ require("lazy").setup({
 		{ -- LSP configs
 			"neovim/nvim-lspconfig",
 			dependencies = { "saghen/blink.cmp" },
+			lazy = false,
+			priority = 999,
 			config = function()
 				vim.lsp.config("*", {
 					root_markers = { ".git" },
@@ -346,6 +342,7 @@ require("lazy").setup({
 					"yamlls",
 					"terraformls",
 					"dockerls",
+					"vtsls",
 				})
 			end,
 		},
@@ -404,6 +401,13 @@ require("lazy").setup({
 				require("onedark").load()
 			end,
 		},
+
+		require("keys").keys,
+		require("lang").koka,
+		require("lang").purescript,
+		require("lang").rust,
+		require("lang").javascript,
+		require("lang").lua,
 	},
 
 	install = { colorscheme = { "onedark" } },

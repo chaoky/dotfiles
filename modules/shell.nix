@@ -13,7 +13,7 @@
         home.packages = [ pkgs.fnm ];
         programs.fish = {
           enable = true;
-          interactiveShellInit = ''
+          shellInitLast = ''
             fnm env --use-on-cd --shell fish --version-file-strategy recursive --corepack-enabled | source
             fish_add_path $FNM_MULTISHELL_PATH/bin
           '';

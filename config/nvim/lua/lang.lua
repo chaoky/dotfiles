@@ -61,9 +61,6 @@ M.javascript = {
 	config = function()
 		require("conform").formatters_by_ft.javascript = { "prettierd", "prettier", "biome", stop_after_first = true }
 		require("conform").formatters_by_ft.typescript = { "prettierd", "prettier", "biome", stop_after_first = true }
-		vim.lsp.config("vtsls", {
-			filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
-		})
 		vim.lsp.enable("vtsls")
 		require("nvim-treesitter").install({ "typescript", "javascript" })
 	end,
@@ -72,7 +69,12 @@ M.javascript = {
 M.lua = {
 	name = "lua",
 	dir = ".",
-	dependencies = { "nvim-treesitter/nvim-treesitter", "stevearc/conform.nvim", "folke/lazydev.nvim", "neovim/nvim-lspconfig" },
+	dependencies = {
+		"nvim-treesitter/nvim-treesitter",
+		"stevearc/conform.nvim",
+		"folke/lazydev.nvim",
+		"neovim/nvim-lspconfig",
+	},
 	config = function()
 		require("conform").formatters_by_ft.lua = { "stylua" }
 		require("lazydev").setup({
