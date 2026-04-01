@@ -338,11 +338,9 @@ require("lazy").setup({
 				vim.lsp.enable({
 					"nixd",
 					"jsonls",
-					"eslint",
 					"yamlls",
 					"terraformls",
 					"dockerls",
-					"vtsls",
 				})
 			end,
 		},
@@ -403,11 +401,7 @@ require("lazy").setup({
 		},
 
 		require("keys").keys,
-		require("lang").koka,
-		require("lang").purescript,
-		require("lang").rust,
-		require("lang").javascript,
-		require("lang").lua,
+		require("lang"),
 	},
 
 	install = { colorscheme = { "onedark" } },
