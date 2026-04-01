@@ -163,10 +163,12 @@ M.keys = { -- Key discovery menu
 				},
 				{ "<leader>r", "<cmd>Telescope resume<cr>", desc = "Resume" },
 
-				{ "gd", tb.lsp_definitions, desc = "Definition" },
+				{ "gra", vim.lsp.buf.code_action, desc = "Action" },
+				{ "grn", vim.lsp.buf.rename, desc = "Rename" },
 				{ "grr", tb.lsp_references, desc = "References" },
 				{ "gri", tb.lsp_implementations, desc = "Implementation" },
-				{ "gD", vim.lsp.buf.declaration, desc = "Declaration" },
+				{ "grt", tb.lsp_type_definitions, desc = "Type Definitions" },
+				{ "gd", tb.lsp_definitions, desc = "Definition" },
 
 				{ "p", "<Plug>(YankyPutAfter)", desc = "Paste", mode = { "n", "x" } },
 				{ "p", "<Plug>(YankyPutAfter)", desc = "Paste", mode = { "n", "x" } },
