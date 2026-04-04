@@ -1,12 +1,12 @@
-{
-  lib,
-  stdenv,
-  fetchFromGitHub,
-  nix-update-script,
-  pkg-config,
-  cmake,
-  imagemagick,
-  libzip,
+{ lib
+, stdenv
+, fetchFromGitHub
+, nix-update-script
+, pkg-config
+, cmake
+, imagemagick
+, libzip
+,
 }:
 
 stdenv.mkDerivation {

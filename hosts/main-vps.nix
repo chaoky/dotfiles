@@ -1,9 +1,8 @@
-{
-  config,
-  pkgs,
-  lib,
-  modulesPath,
-  ...
+{ config
+, pkgs
+, lib
+, modulesPath
+, ...
 }:
 let
   cfg = config.services.headscale-server;

@@ -1,11 +1,11 @@
-{
-  fetchFromGitHub,
-  lib,
-  rustPlatform,
-  opencv,
-  nix-update-script,
-  clang,
-  pkg-config,
+{ fetchFromGitHub
+, lib
+, rustPlatform
+, opencv
+, nix-update-script
+, clang
+, pkg-config
+,
 }:
 
 rustPlatform.buildRustPackage rec {
