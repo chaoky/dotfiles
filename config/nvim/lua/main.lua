@@ -246,7 +246,6 @@ require("lazy").setup({
 				"nvim-lua/plenary.nvim",
 				"nvim-tree/nvim-web-devicons",
 				"nvim-telescope/telescope-ui-select.nvim",
-				"nvim-telescope/telescope-frecency.nvim",
 				"debugloop/telescope-undo.nvim",
 				"BurntSushi/ripgrep",
 			},
@@ -295,11 +294,7 @@ require("lazy").setup({
 							mappings = {
 								i = {
 									["<C-h>"] = function()
-										fargs(tb.find_files, {
-											cwd = fstate.path,
-											all = not fstate.all,
-											default_text = tas.get_current_line(),
-										})
+										fargs(tb.find_files, { cwd = fstate.path })
 									end,
 								},
 							},
@@ -308,11 +303,7 @@ require("lazy").setup({
 							mappings = {
 								i = {
 									["<C-h>"] = function()
-										fargs(tb.live_grep, {
-											cwd = fstate.path,
-											all = not fstate.all,
-											default_text = tas.get_current_line(),
-										})
+										fargs(tb.live_grep, { cwd = fstate.path })
 									end,
 								},
 							},
@@ -321,7 +312,6 @@ require("lazy").setup({
 				})
 
 				t.load_extension("ui-select")
-				t.load_extension("frecency")
 				t.load_extension("undo")
 			end,
 		},

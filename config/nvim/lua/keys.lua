@@ -10,6 +10,9 @@ local ignore_patterns = {
 	"!.psci_modules",
 	"!output",
 	"!generated-docs",
+	"!generated-docs",
+	"!_build",
+	"!dune.lock",
 }
 
 local function make_glob_args(patterns)
@@ -37,6 +40,13 @@ end
 M.fstate = { path = "", all = true }
 function M.fargs(func, args)
 	args = args or {}
+
+	if args.all == nil then
+		args.all = not M.fstate.all
+	end
+	if args.default_text == nil then
+		args.default_text = require("telescope.actions.state").get_current_line()
+	end
 
 	local glob_args = make_glob_args(ignore_patterns)
 	args.find_command = vim.list_extend({ "rg", "--files", "--color", "never" }, glob_args)
@@ -117,6 +127,7 @@ M.keys = { -- Key discovery menu
 				{ "<leader>mh", "<cmd>Telescope help_tags<cr>", desc = "Help" },
 				{ "<leader>mk", tb.keymaps, desc = "Keymaps" },
 				{ "<leader>mm", tb.marks, desc = "Marks" },
+				{ "<leader>mn", "<cmd>Noice telescope<cr>", desc = "Notifications" },
 
 				{ "<leader>s", desc = "Source" },
 				{
@@ -143,7 +154,7 @@ M.keys = { -- Key discovery menu
 				{ "]h", "<cmd>Gitsigns next_hunk<cr>", desc = "Next Hunk" },
 				{ "[h", "<cmd>Gitsigns prev_hunk<cr>", desc = "Previous Hunk" },
 
-				{ "<leader>o", te.frecency.frecency, desc = "Old" },
+				{ "<leader>o", tb.oldfiles, desc = "Old" },
 				{
 					"<leader><leader>",
 					function()
@@ -151,9 +162,7 @@ M.keys = { -- Key discovery menu
 					end,
 					desc = "Buffers",
 				},
-				{ "<leader>n", desc = "Notification" },
-				{ "<leader>nd", "<cmd>Noice dismiss<cr>", desc = "Dismiss" },
-				{ "<leader>nh", "<cmd>Noice telescope<cr>", desc = "History" },
+				{ "<leader>n", "<cmd>Noice dismiss<cr>", desc = "Notification" },
 				{
 					"<leader>k",
 					function()

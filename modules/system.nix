@@ -1,6 +1,6 @@
 {
   flake.nixosModules.system =
-    { pkgs, lib, ... }:
+    { pkgs, lib, unstable, ... }:
     {
       system.stateVersion = "23.11";
 
@@ -123,8 +123,10 @@
       ];
 
       # Home-manager
-      home-manager.useGlobalPkgs = true;
+      home-manager.useGlobalPkgs = false;
+      home-manager.useUserPackages = true;
       home-manager.backupFileExtension = "backup";
+      home-manager.extraSpecialArgs = { pkgs = unstable; };
 
       home-manager.users.leo =
         { config, lib, ... }:
