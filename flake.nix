@@ -19,18 +19,30 @@
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
-    home-manager.url = "github:nix-community/home-manager/release-25.11";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs-unstable";
-    nix-index-database.url = "github:nix-community/nix-index-database";
-    nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
-    colmena.url = "github:zhaofengli/colmena";
-    colmena.inputs.nixpkgs.follows = "nixpkgs";
-    headscale.url = "github:juanfont/headscale";
-    headscale.inputs.nixpkgs.follows = "nixpkgs";
-    disko.url = "github:nix-community/disko";
-    disko.inputs.nixpkgs.follows = "nixpkgs";
-    nixos-anywhere.url = "github:nix-community/nixos-anywhere";
-    nixos-anywhere.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager = {
+      url = "github:nix-community/home-manager/release-25.11";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    colmena = {
+      url = "github:zhaofengli/colmena";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    headscale = {
+      url = "github:juanfont/headscale";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nixos-anywhere = {
+      url = "github:nix-community/nixos-anywhere";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; }
@@ -51,13 +63,6 @@
               config.allowUnfree = true;
             };
 
-            apps = {
-              # nix run .#colmena -- apply --on headscale-server
-              colmena.program = inputs.colmena.packages.${system}.colmena;
-              # nix run .#nixos-anywhere -- --flake .#headscale-server --target-host root@tail.leo.camp
-              nixos-anywhere.program = inputs.nixos-anywhere.packages.${system}.nixos-anywhere;
-            };
-
             formatter = pkgs.treefmt.withConfig {
               runtimeInputs = [ pkgs.nixpkgs-fmt ];
               settings.formatter.nixfmt = {
@@ -70,19 +75,15 @@
         flake =
           let
             # Helper to create the nix-switch script for a given host
-            mkSwitcher = name: system: withSystem system ({ pkgs, ... }:
-              pkgs.writeShellScriptBin "nix-switch"
-                "sudo nixos-rebuild switch --flake ~/dotfiles#${name} --accept-flake-config $@"
-            );
+            mkSwitcher = name: pkgs: pkgs.writeShellScriptBin "nix-switch"
+              "sudo nixos-rebuild switch --flake ~/dotfiles#${name} --accept-flake-config $@";
 
             # Create a NixOS host configuration
             mkHost = name: system:
               withSystem system ({ pkgs, unstable, ... }:
                 inputs.nixpkgs.lib.nixosSystem {
-                  specialArgs = { inherit unstable; };
                   modules = [
                     inputs.nixpkgs.nixosModules.readOnlyPkgs
-                    { nixpkgs.pkgs = pkgs; }
                     inputs.determinate.nixosModules.default
                     inputs.home-manager.nixosModules.default
                     inputs.nix-index-database.nixosModules.nix-index
@@ -94,8 +95,12 @@
                     config.flake.nixosModules.games
                     ./hardware/${name}.nix
                     {
-                      environment.systemPackages = [ (mkSwitcher name system) ];
                       networking.hostName = "stanbot-nix"; #"${name}-stanbot-nix"
+                      environment.systemPackages = [ (mkSwitcher name pkgs) ];
+                      home-manager.useGlobalPkgs = false;
+                      home-manager.useUserPackages = true;
+                      home-manager.extraSpecialArgs = { pkgs = unstable; };
+                      nixpkgs.pkgs = pkgs;
                     }
                   ];
                 }

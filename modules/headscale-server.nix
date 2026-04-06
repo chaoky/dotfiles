@@ -7,15 +7,13 @@ let
     inputs.disko.nixosModules.disko
     inputs.headscale.nixosModules.default
     ../hosts/main-vps.nix
-    {
-      nixpkgs.pkgs = withSystem system ({ pkgs, ... }: pkgs);
-    }
   ];
 in
 {
   flake = {
     nixosConfigurations.headscale-server = inputs.nixpkgs.lib.nixosSystem {
       modules = headscaleServerModules ++ [
+        { nixpkgs.pkgs = withSystem system ({ pkgs, ... }: pkgs); }
         { services.headscale-server.domain = serverDomain; }
       ];
     };
@@ -30,6 +28,15 @@ in
           targetUser = "root";
         };
       };
+    };
+  };
+
+  perSystem = { system, ... }: {
+    apps = {
+      # nix run .#colmena -- apply --on headscale-server
+      colmena.program = inputs.colmena.packages.${system}.colmena;
+      # nix run .#nixos-anywhere -- --flake .#headscale-server --target-host root@tail.leo.camp
+      nixos-anywhere.program = inputs.nixos-anywhere.packages.${system}.nixos-anywhere;
     };
   };
 }

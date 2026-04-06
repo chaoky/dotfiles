@@ -1,163 +1,146 @@
 {
-  flake.nixosModules.system =
-    { pkgs, lib, unstable, ... }:
-    {
-      system.stateVersion = "23.11";
+  flake.nixosModules.system = { pkgs, lib, ... }: {
+    # Boot
+    boot.loader.systemd-boot.enable = true;
+    boot.loader.efi.canTouchEfiVariables = true;
+    boot.kernelPackages = pkgs.linuxPackages;
 
-      # Boot
-      boot.loader.systemd-boot.enable = true;
-      boot.loader.efi.canTouchEfiVariables = true;
-      boot.kernelPackages = pkgs.linuxPackages;
-
-      # Locale
-      time.timeZone = lib.mkForce null;
-      i18n.defaultLocale = "en_US.UTF-8";
-      i18n.extraLocaleSettings = {
-        LC_ADDRESS = "pt_BR.UTF-8";
-        LC_IDENTIFICATION = "pt_BR.UTF-8";
-        LC_MEASUREMENT = "pt_BR.UTF-8";
-        LC_MONETARY = "pt_BR.UTF-8";
-        LC_NAME = "pt_BR.UTF-8";
-        LC_NUMERIC = "pt_BR.UTF-8";
-        LC_PAPER = "pt_BR.UTF-8";
-        LC_TELEPHONE = "pt_BR.UTF-8";
-        LC_TIME = "pt_BR.UTF-8";
-      };
-      console.keyMap = "br-abnt2";
-
-      # Nix settings
-      nix.settings = {
-        trusted-users = [
-          "root"
-          "leo"
-        ];
-        experimental-features = [
-          "nix-command"
-          "flakes"
-        ];
-        accept-flake-config = true;
-        auto-optimise-store = true;
-        warn-dirty = false;
-      };
-
-      nix.gc = {
-        automatic = true;
-        dates = "weekly";
-        options = "--delete-older-than 30d";
-      };
-
-      nix.optimise = {
-        automatic = true;
-        dates = [ "weekly" ];
-      };
-
-      programs.nh = {
-        enable = true;
-        flake = "/home/leo/dotfiles";
-      };
-
-      # User
-      users.users.leo = {
-        isNormalUser = true;
-        description = "leo";
-        extraGroups = [
-          "networkmanager"
-          "wheel"
-        ];
-      };
-
-      # Networking
-      networking.networkmanager.enable = true;
-
-      networking.firewall = {
-        checkReversePath = false;
-        enable = true;
-        allowPing = true;
-        allowedTCPPorts = [
-          12345
-          8080
-          2056
-        ];
-        allowedUDPPorts = [
-          12345
-          8080
-          2056
-        ];
-      };
-
-      services.zerotierone = {
-        enable = true;
-        joinNetworks = [ "e4da7455b230f52a" ];
-      };
-
-      services.tailscale = {
-        enable = true;
-        extraUpFlags = [
-          "--login-server"
-          "https://tail.leo.camp"
-          "--ssh"
-        ];
-      };
-
-      services.samba = {
-        enable = true;
-        openFirewall = true;
-      };
-
-      services.avahi = {
-        enable = true;
-        publish.enable = true;
-        publish.userServices = true;
-        nssmdns4 = true;
-        openFirewall = true;
-      };
-
-      services.samba-wsdd = {
-        enable = true;
-        openFirewall = true;
-      };
-
-      environment.systemPackages = with pkgs; [
-        wireguard-tools
-        protonvpn-gui
-      ];
-
-      # Home-manager
-      home-manager.useGlobalPkgs = false;
-      home-manager.useUserPackages = true;
-      home-manager.backupFileExtension = "backup";
-      home-manager.extraSpecialArgs = { pkgs = unstable; };
-
-      home-manager.users.leo =
-        { config, lib, ... }:
-        {
-          programs.home-manager.enable = true;
-
-          home = {
-            username = "leo";
-            homeDirectory = "/home/leo";
-            stateVersion = "22.11";
-            sessionVariables = {
-              PAGER = "more";
-              PNPM_HOME = "~/.local/share/pnpm";
-              BUN_INSTALL = "~/.bun";
-            };
-            sessionPath = [
-              "~/.local/share/pnpm"
-              "~/.bun/bin"
-              "~/.cargo/bin"
-            ];
-          };
-
-          home.activation.linkDesktopFiles = lib.hm.dag.entryAfter [ "installPackages" ] ''
-            if [ -d "${config.home.profileDirectory}/share/applications" ]; then
-              rm -rf ${config.home.homeDirectory}/.local/share/applications
-              mkdir -p ${config.home.homeDirectory}/.local/share/applications
-              for file in ${config.home.profileDirectory}/share/applications/*; do
-                ln -sf "$file" ${config.home.homeDirectory}/.local/share/applications/
-              done
-            fi
-          '';
-        };
+    # Locale
+    time.timeZone = lib.mkForce null;
+    i18n.defaultLocale = "en_US.UTF-8";
+    i18n.extraLocaleSettings = {
+      LC_ADDRESS = "pt_BR.UTF-8";
+      LC_IDENTIFICATION = "pt_BR.UTF-8";
+      LC_MEASUREMENT = "pt_BR.UTF-8";
+      LC_MONETARY = "pt_BR.UTF-8";
+      LC_NAME = "pt_BR.UTF-8";
+      LC_NUMERIC = "pt_BR.UTF-8";
+      LC_PAPER = "pt_BR.UTF-8";
+      LC_TELEPHONE = "pt_BR.UTF-8";
+      LC_TIME = "pt_BR.UTF-8";
     };
+    console.keyMap = "br-abnt2";
+
+    # Nix settings
+    nix.settings = {
+      trusted-users = [
+        "root"
+        "leo"
+      ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
+      accept-flake-config = true;
+      auto-optimise-store = true;
+      warn-dirty = false;
+    };
+
+    nix.gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 30d";
+    };
+
+    nix.optimise = {
+      automatic = true;
+      dates = [ "weekly" ];
+    };
+
+    programs.nh = {
+      enable = true;
+      flake = "/home/leo/dotfiles";
+    };
+
+    # Networking
+    networking.networkmanager.enable = true;
+    networking.firewall = {
+      checkReversePath = false;
+      enable = true;
+      allowPing = true;
+      allowedTCPPorts = [
+        12345
+        8080
+        2056
+      ];
+      allowedUDPPorts = [
+        12345
+        8080
+        2056
+      ];
+    };
+
+    services.tailscale = {
+      enable = true;
+      extraUpFlags = [
+        "--login-server"
+        "https://tail.leo.camp"
+        "--ssh"
+      ];
+    };
+
+    services.samba = {
+      enable = true;
+      openFirewall = true;
+    };
+
+    services.samba-wsdd = {
+      enable = true;
+      openFirewall = true;
+    };
+
+    services.avahi = {
+      enable = true;
+      publish.enable = true;
+      publish.userServices = true;
+      nssmdns4 = true;
+      openFirewall = true;
+    };
+
+    # unstable for home-manager
+    home-manager.backupFileExtension = "backup";
+    system.stateVersion = "23.11";
+
+    # User
+    users.users.leo = {
+      isNormalUser = true;
+      description = "leo";
+      extraGroups = [
+        "networkmanager"
+        "wheel"
+      ];
+    };
+
+    home-manager.users.leo =
+      { config, lib, ... }:
+      {
+        programs.home-manager.enable = true;
+
+        home = {
+          username = "leo";
+          homeDirectory = "/home/leo";
+          stateVersion = "22.11";
+          sessionVariables = {
+            PAGER = "more";
+            PNPM_HOME = "~/.local/share/pnpm";
+            BUN_INSTALL = "~/.bun";
+          };
+          sessionPath = [
+            "~/.local/share/pnpm"
+            "~/.bun/bin"
+            "~/.cargo/bin"
+          ];
+        };
+
+        home.activation.linkDesktopFiles = lib.hm.dag.entryAfter [ "installPackages" ] ''
+          if [ -d "${config.home.profileDirectory}/share/applications" ]; then
+            rm -rf ${config.home.homeDirectory}/.local/share/applications
+            mkdir -p ${config.home.homeDirectory}/.local/share/applications
+            for file in ${config.home.profileDirectory}/share/applications/*; do
+              ln -sf "$file" ${config.home.homeDirectory}/.local/share/applications/
+            done
+          fi
+        '';
+      };
+  };
 }
