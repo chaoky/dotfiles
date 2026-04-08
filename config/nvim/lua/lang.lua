@@ -126,4 +126,21 @@ return {
 			require("nvim-treesitter").install({ "lua" })
 		end,
 	},
+	{
+		"ionide/Ionide-vim",
+		ft = { "fsharp", "fsharp_project" },
+		dependencies = { "nvim-treesitter/nvim-treesitter", "stevearc/conform.nvim" },
+		config = function()
+			require("conform").formatters_by_ft.fsharp = { "fantomas" }
+			vim.api.nvim_create_autocmd("LspAttach", {
+				callback = function(args)
+					local client = vim.lsp.get_client_by_id(args.data.client_id)
+					if client and client.name == "ionide" and client.server_capabilities then
+						client.server_capabilities.semanticTokensProvider = nil
+					end
+				end,
+			})
+			require("nvim-treesitter").install({ "fsharp" })
+		end,
+	},
 }
