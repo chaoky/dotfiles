@@ -6,7 +6,7 @@ let
   headscaleServerModules = [
     inputs.disko.nixosModules.disko
     inputs.headscale.nixosModules.default
-    ../hosts/main-vps.nix
+    ../hardware/main-vps.nix
     headscaleServerNixosModule
   ];
 
