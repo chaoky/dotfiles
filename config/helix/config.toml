@@ -3,7 +3,7 @@ theme = "onedark"
 [editor]
 line-number = "relative"
 
-[editor.file-picker]
-hidden = false
-ignore = false
-git-ignore = false
+# [editor.file-picker]
+# hidden = false
+# ignore = false
+# git-ignore = false
