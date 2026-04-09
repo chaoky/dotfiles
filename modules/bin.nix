@@ -1,7 +1,7 @@
 {
-  flake.nixosModules.bin = { pkgs, ... }:
+  flake.nixosModules.bin = { unstable, ... }:
     {
-      home-manager.users.leo.home.packages = with pkgs; with nodePackages; [
+      home-manager.users.leo.home.packages = with unstable; [
         editorconfig-core-c
         bc
         jq
@@ -50,7 +50,6 @@
         dockerfile-language-server
         purescript
         basedpyright
-        purescript-language-server
         ffmpeg
         yt-dlp
         ruff

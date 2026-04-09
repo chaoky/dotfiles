@@ -82,6 +82,7 @@
             mkHost = name: system:
               withSystem system ({ pkgs, unstable, ... }:
                 inputs.nixpkgs.lib.nixosSystem {
+                  specialArgs = { inherit unstable; };
                   modules = [
                     inputs.nixpkgs.nixosModules.readOnlyPkgs
                     inputs.determinate.nixosModules.default
@@ -97,9 +98,8 @@
                     {
                       networking.hostName = "stanbot-nix"; #"${name}-stanbot-nix"
                       environment.systemPackages = [ (mkSwitcher name pkgs) ];
-                      home-manager.useGlobalPkgs = false;
+                      home-manager.useGlobalPkgs = true;
                       home-manager.useUserPackages = true;
-                      home-manager.extraSpecialArgs = { pkgs = unstable; };
                       nixpkgs.pkgs = pkgs;
                     }
                   ];

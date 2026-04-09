@@ -1,6 +1,6 @@
 {
   flake.nixosModules.packages =
-    { pkgs, ... }:
+    { pkgs, unstable, ... }:
     {
       programs._1password.enable = true;
       programs._1password-gui = {
@@ -63,9 +63,11 @@
             };
           };
 
+
           programs.neovim = {
             enable = true;
             defaultEditor = true;
+            package = unstable.neovim-unwrapped;
           };
 
           programs.vicinae.enable = true;
