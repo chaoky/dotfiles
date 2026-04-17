@@ -81,7 +81,7 @@ let
                   "8.8.8.8"
                 ];
                 split = {
-                  "rds.amazonaws.com" = [ "10.20.0.2" ];
+                  "rds.amazonaws.com" = [ "10.60.0.2" ];
                 };
               };
             };
@@ -109,7 +109,7 @@ let
                     "group:admin" = [ "*@leo.camp" ];
                   };
                   hosts = {
-                    "work-vpc" = "10.20.0.0/16";
+                    "work-vpc" = "10.60.0.0/16";
                   };
                   acls = [
                     {
@@ -131,7 +131,7 @@ let
                   ];
                   autoApprovers = {
                     routes = {
-                      "10.20.0.0/16" = [ "group:admin" ];
+                      "10.60.0.0/16" = [ "group:admin" ];
                     };
                   };
                 }
