@@ -6,7 +6,16 @@
       users.users.leo.shell = pkgs.fish;
 
       home-manager.users.leo = {
-        programs.starship.enable = true;
+        programs.starship = {
+          enable = true;
+          settings = {
+            package.disabled = true;
+            nix_shell = {
+              symbol = "󱄅 ";
+              format = "[$symbol]($style)";
+            };
+          };
+        };
         programs.zoxide.enable = true;
         programs.bash.enable = true;
 
