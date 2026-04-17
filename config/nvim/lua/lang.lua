@@ -127,6 +127,33 @@ return {
 		end,
 	},
 	{
+		"lang/slint",
+		virtual = true,
+		ft = "slint",
+		dependencies = { "nvim-treesitter/nvim-treesitter", "neovim/nvim-lspconfig" },
+		init = function()
+			vim.filetype.add({ extension = { slint = "slint" } })
+			vim.api.nvim_create_autocmd("User", {
+				pattern = "TSUpdate",
+				callback = function()
+					require("nvim-treesitter.parsers").slint = {
+						install_info = {
+							url = "https://github.com/slint-ui/tree-sitter-slint",
+							revision = "master",
+							files = { "src/parser.c" },
+						},
+						filetype = "slint",
+						tier = 0,
+					}
+				end,
+			})
+		end,
+		config = function()
+			vim.lsp.enable("slint_lsp")
+			require("nvim-treesitter").install({ "slint" })
+		end,
+	},
+	{
 		"ionide/Ionide-vim",
 		ft = { "fsharp", "fsharp_project" },
 		dependencies = { "nvim-treesitter/nvim-treesitter", "stevearc/conform.nvim" },
