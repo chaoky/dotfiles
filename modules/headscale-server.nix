@@ -109,7 +109,9 @@ let
                     "group:admin" = [ "*@leo.camp" ];
                   };
                   hosts = {
-                    "work-vpc" = "10.60.0.0/16";
+                    "vpc-dev" = "10.20.0.0/16";
+                    "vpc-prod" = "10.40.0.0/16";
+                    "vpc" = "10.60.0.0/16";
                   };
                   acls = [
                     {
@@ -131,6 +133,8 @@ let
                   ];
                   autoApprovers = {
                     routes = {
+                      "10.20.0.0/16" = [ "group:admin" ];
+                      "10.40.0.0/16" = [ "group:admin" ];
                       "10.60.0.0/16" = [ "group:admin" ];
                     };
                   };
