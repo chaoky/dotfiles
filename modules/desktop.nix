@@ -5,6 +5,10 @@
       extensions = with pkgs.gnomeExtensions; [
         appindicator
         places-status-indicator
+        quick-settings-audio-panel
+        color-picker
+        clipboard-indicator
+        tiling-shell
       ];
     in
     {
@@ -68,6 +72,8 @@
             # GUI apps
             redisinsight
             discord
+            # stoat-desktop
+            zed-editor
             slack
             caffeine-ng
             qbittorrent
@@ -78,6 +84,7 @@
             brave
             mongodb-compass
             dbeaver-bin
+            jetbrains.datagrip
             postman
             code-cursor
             spotify
