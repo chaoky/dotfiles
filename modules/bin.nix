@@ -65,6 +65,7 @@
         piper
         corepack
         xsel
+        logseq
       ];
     };
 }
