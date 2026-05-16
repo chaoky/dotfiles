@@ -144,6 +144,18 @@ let
           };
         };
 
+        services.syncthing = {
+          enable = true;
+          user = "syncthing";
+          group = "syncthing";
+          dataDir = "/var/lib/syncthing";
+          configDir = "/var/lib/syncthing/.config/syncthing";
+          openDefaultPorts = false;
+          guiAddress = "0.0.0.0:8384";
+          overrideDevices = false;
+          overrideFolders = false;
+        };
+
         services.nginx = {
           enable = true;
           recommendedProxySettings = true;

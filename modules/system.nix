@@ -58,6 +58,7 @@
       checkReversePath = false;
       enable = true;
       allowPing = true;
+      trustedInterfaces = [ "tailscale0" ];
       allowedTCPPorts = [
         12345
         8080
@@ -77,6 +78,18 @@
         "https://tail.leo.camp"
         "--ssh"
       ];
+    };
+
+    services.syncthing = {
+      enable = true;
+      user = "leo";
+      group = "users";
+      dataDir = "/home/leo/Sync";
+      configDir = "/home/leo/.config/syncthing";
+      openDefaultPorts = false;
+      guiAddress = "127.0.0.1:8384";
+      overrideDevices = false;
+      overrideFolders = false;
     };
 
     services.samba = {
