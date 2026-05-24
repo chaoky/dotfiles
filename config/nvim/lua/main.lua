@@ -56,7 +56,7 @@ require("lazy").setup({
 		-- Use parent nvim when launched from subshell
 		{ "brianhuster/unnest.nvim", lazy = false, priority = 1001 },
 		{ "kdheepak/lazygit.nvim", lazy = true, cmd = { "LazyGit" } },
-		{ "wakatime/vim-wakatime" },
+		-- { "wakatime/vim-wakatime" },
 		{ "akinsho/toggleterm.nvim", lazy = false, version = "*", config = true },
 		-- Detect tabstop and shift width automatically
 		{ "tpope/vim-sleuth" },
@@ -294,7 +294,11 @@ require("lazy").setup({
 							mappings = {
 								i = {
 									["<C-h>"] = function()
-										fargs(tb.find_files, { cwd = fstate.path })
+										fargs(tb.find_files, {
+											cwd = fstate.path,
+											all = not fstate.all,
+											default_text = tas.get_current_line(),
+										})
 									end,
 								},
 							},
@@ -303,7 +307,11 @@ require("lazy").setup({
 							mappings = {
 								i = {
 									["<C-h>"] = function()
-										fargs(tb.live_grep, { cwd = fstate.path })
+										fargs(tb.live_grep, {
+											cwd = fstate.path,
+											all = not fstate.all,
+											default_text = tas.get_current_line(),
+										})
 									end,
 								},
 							},

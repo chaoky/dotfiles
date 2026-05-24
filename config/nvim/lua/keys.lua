@@ -41,13 +41,6 @@ M.fstate = { path = "", all = true }
 function M.fargs(func, args)
 	args = args or {}
 
-	if args.all == nil then
-		args.all = not M.fstate.all
-	end
-	if args.default_text == nil then
-		args.default_text = require("telescope.actions.state").get_current_line()
-	end
-
 	local glob_args = make_glob_args(ignore_patterns)
 	args.find_command = vim.list_extend({ "rg", "--files", "--color", "never" }, glob_args)
 	args.additional_args = vim.list_extend({ "--no-ignore", "--hidden" }, glob_args)
