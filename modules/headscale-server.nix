@@ -30,7 +30,8 @@ let
             443
           ];
           allowedUDPPorts = [
-            41641 # Tailscale
+            41641 # Tailscale (work tailnet)
+            41642 # Tailscale (personal tailnet)
           ];
           trustedInterfaces = [ "tailscale0" "tailscale1" ];
         };
@@ -51,9 +52,18 @@ let
           description = "Tailscale node agent (personal network)";
           after = [ "network.target" "tailscaled.service" "headscale.service" ];
           wants = [ "network.target" ];
-          wantedBy = [ "multi-user.target" ];
+          partOf = [ "tailscaled.service" ];
+          wantedBy = [ "multi-user.target" "tailscaled.service" ];
           serviceConfig = {
-            ExecStart = "${pkgs.tailscale}/bin/tailscaled --state=/var/lib/tailscale-personal/tailscaled.state --socket=/var/run/tailscale-personal/tailscaled.sock --tun=tailscale1";
+            ExecStart = "${pkgs.tailscale}/bin/tailscaled --state=/var/lib/tailscale-personal/tailscaled.state --socket=/var/run/tailscale-personal/tailscaled.sock --tun=tailscale1 --port=41642";
+            ExecStartPost = pkgs.writeShellScript "tailscaled-personal-up" ''
+              for i in $(seq 1 10); do
+                ${pkgs.tailscale}/bin/tailscale --socket=/var/run/tailscale-personal/tailscaled.sock set \
+                  --advertise-routes=10.20.0.0/16,10.40.0.0/16,10.60.0.0/16 && exit 0
+                sleep 1
+              done
+              exit 1
+            '';
             StateDirectory = "tailscale-personal";
             RuntimeDirectory = "tailscale-personal";
             Restart = "on-failure";

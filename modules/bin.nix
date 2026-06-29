@@ -66,6 +66,9 @@
         corepack
         xsel
         logseq
+        wasmtime
+        codex
+        aws-cdk-cli
       ];
     };
 }

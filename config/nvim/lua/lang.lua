@@ -14,6 +14,7 @@ return {
 							url = "https://github.com/koka-community/tree-sitter-koka",
 							revision = "main",
 							files = { "src/parser.c", "src/scanner.c" },
+							queries = "queries",
 						},
 						filetype = "koka",
 						tier = 0,

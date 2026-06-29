@@ -54,6 +54,36 @@
             ];
           };
         };
+
+        # Virtual mic: a null sink whose monitor is exposed as a source.
+        # Route apps (and optionally a loopback of the real mic) into "virtmic",
+        # then pick "Monitor of virtmic" as the input device in Zoom/Discord/OBS.
+        extraConfig.pipewire."99-virtmic" = {
+          "context.modules" = [
+            {
+              name = "libpipewire-module-loopback";
+              args = {
+                "node.description" = "Virtual Mic";
+                "capture.props" = {
+                  "node.name" = "virtmic";
+                  "media.class" = "Audio/Sink";
+                  "audio.position" = [
+                    "FL"
+                    "FR"
+                  ];
+                };
+                "playback.props" = {
+                  "node.name" = "virtmic-source";
+                  "media.class" = "Audio/Source";
+                  "audio.position" = [
+                    "FL"
+                    "FR"
+                  ];
+                };
+              };
+            }
+          ];
+        };
       };
 
       home-manager.users.leo = {
@@ -63,7 +93,8 @@
             # Audio
             easyeffects
             alsa-utils
-            helvum
+            crosspipe
+            qpwgraph
             # Fonts
             nerd-fonts.iosevka
             nerd-fonts.symbols-only
@@ -90,6 +121,7 @@
             spotify
             gnome-frog
             gnome-tweaks
+            stremio-linux-shell
           ]);
 
         fonts.fontconfig = {

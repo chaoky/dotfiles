@@ -25,10 +25,18 @@
         extest.enable = true;
       };
 
+      # GTA Online on Linux: block BattlEye DNS so the runtime no-ops
+      # https://steamcommunity.com/sharedfiles/filedetails/?id=3658540317
+      networking.extraHosts = ''
+        0.0.0.0 paradise-s1.battleye.com
+        0.0.0.0 test-s1.battleye.com
+        0.0.0.0 paradiseenhanced-s1.battleye.com
+      '';
+
       home-manager.users.leo.home.packages = with pkgs; [
         gdlauncher-carbon
         lutris
-        wineWowPackages.stable
+        wineWow64Packages.stable
         winetricks
         wine-wayland
         krita

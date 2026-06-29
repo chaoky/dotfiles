@@ -6,7 +6,7 @@
     boot.kernelPackages = pkgs.linuxPackages;
 
     # Locale
-    time.timeZone = lib.mkForce null;
+    time.timeZone = lib.mkForce "America/Bahia";
     i18n.defaultLocale = "en_US.UTF-8";
     i18n.extraLocaleSettings = {
       LC_ADDRESS = "pt_BR.UTF-8";

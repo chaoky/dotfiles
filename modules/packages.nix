@@ -67,6 +67,7 @@
           programs.neovim = {
             enable = true;
             defaultEditor = true;
+            sideloadInitLua = true;
             package = unstable.neovim-unwrapped;
           };
 

@@ -15,12 +15,12 @@
   };
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
     home-manager = {
-      url = "github:nix-community/home-manager/release-25.11";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-index-database = {
@@ -57,10 +57,12 @@
             _module.args.pkgs = import inputs.nixpkgs {
               inherit system;
               config.allowUnfree = true;
+              config.permittedInsecurePackages = [ "nodejs-slim-20.20.2" ];
             };
             _module.args.unstable = import inputs.nixpkgs-unstable {
               inherit system;
               config.allowUnfree = true;
+              config.permittedInsecurePackages = [ "nodejs-slim-20.20.2" ];
             };
 
             formatter = pkgs.treefmt.withConfig {
