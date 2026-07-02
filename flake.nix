@@ -15,8 +15,8 @@
   };
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0";
+    nixpkgs-unstable.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1";
     flake-parts.url = "github:hercules-ci/flake-parts";
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
     home-manager = {
@@ -57,12 +57,12 @@
             _module.args.pkgs = import inputs.nixpkgs {
               inherit system;
               config.allowUnfree = true;
-              config.permittedInsecurePackages = [ "nodejs-slim-20.20.2" ];
+              config.permittedInsecurePackages = [ "nodejs-slim-20.20.2" "electron-39.8.10" ];
             };
             _module.args.unstable = import inputs.nixpkgs-unstable {
               inherit system;
               config.allowUnfree = true;
-              config.permittedInsecurePackages = [ "nodejs-slim-20.20.2" ];
+              config.permittedInsecurePackages = [ "nodejs-slim-20.20.2" "electron-39.8.10" ];
             };
 
             formatter = pkgs.treefmt.withConfig {
