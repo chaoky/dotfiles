@@ -55,6 +55,26 @@
           };
         };
 
+        # Hide unwanted audio outputs from GNOME.
+        wireplumber.extraConfig."99-hide-outputs" = {
+          # Disable the NVIDIA GPU's HDMI audio card entirely.
+          "monitor.alsa.rules" = [
+            {
+              matches = [ { "device.name" = "alsa_card.pci-0000_07_00.1"; } ];
+              actions.update-props."device.disabled" = true;
+            }
+          ];
+
+          # Force the AIRPULSE A80 to analog output so the digital
+          # (IEC958) sink is never offered.
+          "device.profile.priority.rules" = [
+            {
+              matches = [ { "device.name" = "alsa_card.usb-EDIFIER_AIRPULSE_A80-00"; } ];
+              actions.update-props."priorities" = [ "output:analog-stereo" ];
+            }
+          ];
+        };
+
         # Virtual mic: a null sink whose monitor is exposed as a source.
         # Route apps (and optionally a loopback of the real mic) into "virtmic",
         # then pick "Monitor of virtmic" as the input device in Zoom/Discord/OBS.
@@ -66,6 +86,7 @@
                 "node.description" = "Virtual Mic";
                 "capture.props" = {
                   "node.name" = "virtmic";
+                  "node.description" = "Mic Feed";
                   "media.class" = "Audio/Sink";
                   "audio.position" = [
                     "FL"
@@ -74,6 +95,7 @@
                 };
                 "playback.props" = {
                   "node.name" = "virtmic-source";
+                  "node.description" = "Virtual Mic";
                   "media.class" = "Audio/Source";
                   "audio.position" = [
                     "FL"
