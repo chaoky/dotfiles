@@ -95,6 +95,7 @@
                     config.flake.nixosModules.packages
                     config.flake.nixosModules.bin
                     config.flake.nixosModules.desktop
+                    config.flake.nixosModules.audio
                     config.flake.nixosModules.games
                     ./hardware/${name}.nix
                     {
