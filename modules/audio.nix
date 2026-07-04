@@ -87,7 +87,12 @@
             # Cleaner names for the visible outputs.
             {
               matches = [ { "node.name" = "alsa_output.usb-EDIFIER_AIRPULSE_A80-00.analog-stereo"; } ];
-              actions.update-props."node.description" = "AIRPULSE A80";
+              actions.update-props = {
+                "node.description" = "AIRPULSE A80";
+                # Make the monitor (and thus the subwoofer loopback) follow the
+                # A80 volume slider instead of tapping a fixed pre-volume signal.
+                "monitor.channel-volumes" = true;
+              };
             }
             {
               matches = [ { "node.name" = "alsa_output.pci-0000_09_00.4.analog-surround-21"; } ];
