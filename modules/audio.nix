@@ -1,44 +1,9 @@
 {
   flake.nixosModules.audio =
     { pkgs, ... }:
-    let
-      # Analog-only ALSA card profile for the AIRPULSE A80, so the redundant
-      # digital (IEC958) output profile is never generated (and thus never
-      # shown by GNOME). Same as the stock analog-stereo mapping, minus iec958.
-      airpulseProfileSet = pkgs.writeText "airpulse-a80.conf" ''
-        [General]
-        auto-profiles = yes
-
-        [Mapping analog-stereo]
-        device-strings = front:%f
-        channel-map = left,right
-        paths-output = analog-output analog-output-lineout analog-output-speaker analog-output-headphones analog-output-headphones-2
-        priority = 15
-
-        [Mapping stereo-fallback]
-        device-strings = hw:%f
-        fallback = yes
-        channel-map = front-left,front-right
-        paths-output = analog-output analog-output-lineout analog-output-speaker analog-output-headphones analog-output-headphones-2
-        priority = 1
-      '';
-
-      # ACP looks for profile-sets in a single directory; override it with a
-      # copy of the stock sets plus our custom A80 one so other cards still work.
-      acpProfileSets = pkgs.runCommand "acp-profile-sets" { } ''
-        mkdir -p $out
-        cp ${pkgs.pipewire}/share/alsa-card-profile/mixer/profile-sets/*.conf $out/
-        cp ${airpulseProfileSet} $out/airpulse-a80.conf
-      '';
-    in
     {
       services.pulseaudio.enable = false;
       security.rtkit.enable = true;
-
-      # Custom ACP profile-set directory (adds the analog-only A80 profile).
-      # WirePlumber loads the ALSA SPA plugin, so it needs this in its env.
-      systemd.user.services.wireplumber.environment.ACP_PROFILES_DIR = "${acpProfileSets}";
-      systemd.user.services.pipewire.environment.ACP_PROFILES_DIR = "${acpProfileSets}";
 
       services.pipewire = {
         enable = true;
@@ -67,7 +32,18 @@
           };
         };
 
-        # Hide unwanted audio outputs from GNOME.
+        # WirePlumber restores each device's last-used profile before our
+        # priority rules run, so a stale stored profile (e.g. an old iec958 or
+        # surround selection) could override them. Disable just the profile-state
+        # hook so the analog-stereo pins below are always authoritative.
+        # Route/default-node/stream state stay on, so the default output and
+        # remembered volumes persist.
+        wireplumber.extraConfig."99-pin-profiles" = {
+          "wireplumber.profiles".main."hooks.device.profile.state" = "disabled";
+        };
+
+        # Trim redundant per-device profiles so GNOME shows a single entry per
+        # device instead of one per (unused) profile.
         wireplumber.extraConfig."99-hide-outputs" = {
           "monitor.alsa.rules" = [
             # Disable the NVIDIA GPU's HDMI audio card entirely.
@@ -75,80 +51,36 @@
               matches = [ { "device.name" = "alsa_card.pci-0000_07_00.1"; } ];
               actions.update-props."device.disabled" = true;
             }
-            # Give the AIRPULSE A80 an analog-only profile-set so the digital
-            # (IEC958) output profile isn't created.
+            # Give the A80, A50 and onboard card the stock analog-only.conf
+            # profile-set: it drops the digital (IEC958) output (and Pro Audio),
+            # so each shows a single analog output in GNOME instead of two.
             {
-              matches = [ { "device.name" = "alsa_card.usb-EDIFIER_AIRPULSE_A80-00"; } ];
+              matches = [
+                { "device.name" = "alsa_card.usb-EDIFIER_AIRPULSE_A80-00"; }
+                { "device.name" = "alsa_card.usb-Logitech_A50-00"; }
+                { "device.name" = "alsa_card.pci-0000_09_00.4"; }
+              ];
               actions.update-props = {
-                "device.profile-set" = "airpulse-a80.conf";
+                "device.profile-set" = "analog-only.conf";
                 "api.acp.disable-pro-audio" = true;
               };
             }
-            # Cleaner names for the visible outputs.
-            {
-              matches = [ { "node.name" = "alsa_output.usb-EDIFIER_AIRPULSE_A80-00.analog-stereo"; } ];
-              actions.update-props = {
-                "node.description" = "AIRPULSE A80";
-                # Make the monitor (and thus the subwoofer loopback) follow the
-                # A80 volume slider instead of tapping a fixed pre-volume signal.
-                "monitor.channel-volumes" = true;
-              };
-            }
-            {
-              matches = [ { "node.name" = "alsa_output.pci-0000_09_00.4.analog-surround-21"; } ];
-              actions.update-props."node.description" = "Line Out";
-            }
-            # Cleaner names for the inputs (microphones).
-            {
-              matches = [ { "node.name" = "alsa_input.usb-046d_Brio_500_2419LZ53GXB8-02.analog-stereo"; } ];
-              actions.update-props."node.description" = "Brio 500";
-            }
-            {
-              matches = [ { "node.name" = "alsa_input.usb-BLUE_MICROPHONE_Blue_Snowball_SUGA_2021_01_07_32441-00.mono-fallback"; } ];
-              actions.update-props."node.description" = "Blue Snowball";
-            }
-            {
-              matches = [ { "node.name" = "alsa_input.pci-0000_09_00.4.analog-stereo"; } ];
-              actions.update-props."node.description" = "Line In";
-            }
           ];
 
-          # Default output profiles: analog for the A80, and analog surround 2.1
-          # for the onboard card so its LFE channel (orange SUB jack) is active.
+          # Default profiles: analog stereo output for each (keeping the mic /
+          # line-in input where the card has one).
           "device.profile.priority.rules" = [
             {
               matches = [ { "device.name" = "alsa_card.usb-EDIFIER_AIRPULSE_A80-00"; } ];
               actions.update-props."priorities" = [ "output:analog-stereo" ];
             }
             {
-              matches = [ { "device.name" = "alsa_card.pci-0000_09_00.4"; } ];
-              actions.update-props."priorities" = [ "output:analog-surround-21+input:analog-stereo" ];
+              matches = [ { "device.name" = "alsa_card.usb-Logitech_A50-00"; } ];
+              actions.update-props."priorities" = [ "output:analog-stereo+input:mono-fallback" ];
             }
-          ];
-        };
-
-        # Subwoofer: mirror the A80 (mains) output, summed to mono, into the
-        # onboard card's LFE channel, which drives the powered sub on the SUB
-        # jack. The sub does its own low-pass, so we send a full-range signal.
-        extraConfig.pipewire."99-subwoofer" = {
-          "context.modules" = [
             {
-              name = "libpipewire-module-loopback";
-              args = {
-                "node.description" = "Subwoofer";
-                "capture.props" = {
-                  "node.name" = "subwoofer";
-                  "target.object" = "alsa_output.usb-EDIFIER_AIRPULSE_A80-00.analog-stereo";
-                  "stream.capture.sink" = true;
-                  "audio.position" = [ "MONO" ];
-                  "node.passive" = true;
-                };
-                "playback.props" = {
-                  "node.name" = "subwoofer-lfe";
-                  "target.object" = "alsa_output.pci-0000_09_00.4.analog-surround-21";
-                  "audio.position" = [ "LFE" ];
-                };
-              };
+              matches = [ { "device.name" = "alsa_card.pci-0000_09_00.4"; } ];
+              actions.update-props."priorities" = [ "output:analog-stereo+input:analog-stereo" ];
             }
           ];
         };
