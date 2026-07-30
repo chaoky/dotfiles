@@ -43,6 +43,10 @@
       url = "github:nix-community/nixos-anywhere";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    zen-browser = {
+      url = "github:youwen5/zen-browser-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; }
@@ -57,12 +61,12 @@
             _module.args.pkgs = import inputs.nixpkgs {
               inherit system;
               config.allowUnfree = true;
-              config.permittedInsecurePackages = [ "nodejs-slim-20.20.2" "electron-39.8.10" ];
+              config.permittedInsecurePackages = [ "electron-39.8.10" ];
             };
             _module.args.unstable = import inputs.nixpkgs-unstable {
               inherit system;
               config.allowUnfree = true;
-              config.permittedInsecurePackages = [ "nodejs-slim-20.20.2" "electron-39.8.10" ];
+              config.permittedInsecurePackages = [ "electron-39.8.10" ];
             };
 
             formatter = pkgs.treefmt.withConfig {
@@ -84,7 +88,7 @@
             mkHost = name: system:
               withSystem system ({ pkgs, unstable, ... }:
                 inputs.nixpkgs.lib.nixosSystem {
-                  specialArgs = { inherit unstable; };
+                  specialArgs = { inherit unstable inputs; };
                   modules = [
                     inputs.nixpkgs.nixosModules.readOnlyPkgs
                     inputs.determinate.nixosModules.default

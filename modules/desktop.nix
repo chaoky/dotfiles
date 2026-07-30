@@ -1,7 +1,8 @@
 {
   flake.nixosModules.desktop =
-    { pkgs, ... }:
+    { pkgs, unstable, inputs, ... }:
     let
+      zen-browser = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default;
       extensions = with pkgs.gnomeExtensions; [
         appindicator
         places-status-indicator
@@ -36,10 +37,10 @@
             # Terminals
             wezterm
             # GUI apps
-            redisinsight
+            # redisinsight
             discord
             # stoat-desktop
-            zed-editor
+            unstable.zed-editor
             slack
             caffeine-ng
             qbittorrent
@@ -56,7 +57,7 @@
             spotify
             gnome-frog
             gnome-tweaks
-            stremio-linux-shell
+            zen-browser
           ]);
 
         fonts.fontconfig = {
