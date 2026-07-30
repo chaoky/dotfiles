@@ -19,7 +19,10 @@
       services.flatpak.enable = true;
       services.printing.enable = true;
       services.ratbagd.enable = true;
-      environment.systemPackages = [ pkgs.piper ];
+      environment.systemPackages = [
+        pkgs.piper
+        pkgs.lm_sensors
+      ];
       programs.nix-index-database.comma.enable = true;
 
       # Docker

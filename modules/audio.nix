@@ -48,7 +48,7 @@
           "monitor.alsa.rules" = [
             # Disable the NVIDIA GPU's HDMI audio card entirely.
             {
-              matches = [ { "device.name" = "alsa_card.pci-0000_07_00.1"; } ];
+              matches = [{ "device.name" = "alsa_card.pci-0000_07_00.1"; }];
               actions.update-props."device.disabled" = true;
             }
             # Give the A80, A50 and onboard card the stock analog-only.conf
@@ -71,15 +71,15 @@
           # line-in input where the card has one).
           "device.profile.priority.rules" = [
             {
-              matches = [ { "device.name" = "alsa_card.usb-EDIFIER_AIRPULSE_A80-00"; } ];
+              matches = [{ "device.name" = "alsa_card.usb-EDIFIER_AIRPULSE_A80-00"; }];
               actions.update-props."priorities" = [ "output:analog-stereo" ];
             }
             {
-              matches = [ { "device.name" = "alsa_card.usb-Logitech_A50-00"; } ];
+              matches = [{ "device.name" = "alsa_card.usb-Logitech_A50-00"; }];
               actions.update-props."priorities" = [ "output:analog-stereo+input:mono-fallback" ];
             }
             {
-              matches = [ { "device.name" = "alsa_card.pci-0000_09_00.4"; } ];
+              matches = [{ "device.name" = "alsa_card.pci-0000_09_00.4"; }];
               actions.update-props."priorities" = [ "output:analog-stereo+input:analog-stereo" ];
             }
           ];

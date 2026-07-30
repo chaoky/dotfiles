@@ -1,7 +1,13 @@
 {
   flake.nixosModules.bin = { unstable, ... }:
+    with unstable;
+    let
+      claudepz = writeShellScriptBin "claudepz" ''
+        exec env CLAUDE_CONFIG_DIR="$HOME/.claudepz" ${unstable.claude-code}/bin/claude "$@"
+      '';
+    in
     {
-      home-manager.users.leo.home.packages = with unstable; [
+      home-manager.users.leo.home.packages = [
         editorconfig-core-c
         bc
         jq
@@ -59,16 +65,20 @@
         gnumake
         nix-tree
         claude-code
+        claudepz
+        codex
         github-cli
         jj-fzf
         jjui
         piper
         corepack
         xsel
+        wl-clipboard
         logseq
         wasmtime
-        codex
+        devenv
         aws-cdk-cli
+        nordpass
       ];
     };
 }

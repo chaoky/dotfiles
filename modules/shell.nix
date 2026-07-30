@@ -35,8 +35,8 @@
 
         home.shellAliases = {
           ls = "ls --color=auto";
-          yk = "xsel --clipboard --input";
-          pp = "xsel --clipboard --output";
+          yk = "wl-copy";
+          pp = "wl-paste";
           dps = "docker ps --format 'table{{.Names}}\t{{.Status}}\t{{.Ports}}'";
           dbr = "docker run --rm -it $(docker build -q .)";
         };
