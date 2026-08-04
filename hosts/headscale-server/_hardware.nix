@@ -82,7 +82,7 @@
   };
 
   users.users.root.openssh.authorizedKeys.keys = [
-    (builtins.readFile ../config/ssh/id_rsa.pub)
+    (builtins.readFile ../../config/ssh/id_rsa.pub)
   ];
 
   environment.systemPackages = with pkgs; [
