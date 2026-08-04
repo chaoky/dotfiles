@@ -1,3 +1,7 @@
+Host *
+     AddKeysToAgent yes
+     IdentityFile ~/.ssh/id_rsa
+
 Host yagoMine
      HostName 35.199.81.27
      User lordie

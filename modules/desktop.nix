@@ -19,6 +19,10 @@
       services.gnome.gnome-keyring.enable = true;
       environment.gnome.excludePackages = [ pkgs.seahorse ];
 
+      # Use the native GNOME/gcr passphrase dialog instead of the ugly
+      # x11-ssh-askpass that NixOS wires up by default under X.
+      programs.ssh.askPassword = "${pkgs.gcr_4}/libexec/gcr4-ssh-askpass";
+
       services.xserver = {
         enable = true;
         xkb = {

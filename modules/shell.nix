@@ -17,11 +17,22 @@
           };
         };
         programs.zoxide.enable = true;
-        programs.bash.enable = true;
+        programs.bash = {
+          enable = true;
+          initExtra = ''
+            export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/gcr/ssh"
+          '';
+        };
 
         home.packages = [ pkgs.fnm ];
         programs.fish = {
           enable = true;
+          shellInit = ''
+            set -gx SSH_AUTH_SOCK "$XDG_RUNTIME_DIR/gcr/ssh"
+          '';
+          interactiveShellInit = ''
+            devenv hook fish | source
+          '';
           shellInitLast = ''
             fnm env --use-on-cd --shell fish --version-file-strategy recursive --corepack-enabled | source
             fish_add_path $FNM_MULTISHELL_PATH/bin

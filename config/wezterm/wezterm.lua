@@ -3,6 +3,7 @@ local config = wezterm.config_builder()
 
 config.enable_wayland = false
 config.hide_tab_bar_if_only_one_tab = true
+config.mux_enable_ssh_agent = false
 config.window_padding = {
 	left = 0,
 	right = 0,
