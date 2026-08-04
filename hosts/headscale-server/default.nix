@@ -47,6 +47,21 @@ let
           ];
         };
 
+        # NixOS's tailscaled-autoconnect only invokes `tailscale up` once at
+        # first-auth, so --accept-dns=false in extraUpFlags stops applying on
+        # subsequent restarts/reconnects and the daemon grabs resolv.conf again.
+        # Re-assert the setting on every daemon start.
+        systemd.services.tailscaled.serviceConfig.ExecStartPost = pkgs.writeShellScript "tailscaled-no-dns" ''
+          for i in $(seq 1 60); do
+            if ${pkgs.tailscale}/bin/tailscale ip -4 >/dev/null 2>&1; then
+              ${pkgs.tailscale}/bin/tailscale set --accept-dns=false
+              exit 0
+            fi
+            sleep 2
+          done
+          exit 1
+        '';
+
         # Second tailscale instance for personal network, advertising work routes
         systemd.services.tailscaled-personal = {
           description = "Tailscale node agent (personal network)";
