@@ -12,6 +12,7 @@
           config.flake.nixosModules.system
           config.flake.nixosModules.shell
           config.flake.nixosModules.packages
+          config.flake.nixosModules.dotfiles
           config.flake.nixosModules.bin
           config.flake.nixosModules.desktop
           config.flake.nixosModules.audio

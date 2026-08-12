@@ -39,7 +39,7 @@
       };
 
       home-manager.users.leo =
-        { config, ... }:
+        { ... }:
         {
           programs.git = {
             enable = true;
@@ -77,12 +77,6 @@
           programs.vicinae.enable = true;
 
           home.file = {
-            ".config/doom".source = config.lib.file.mkOutOfStoreSymlink "/home/leo/dotfiles/config/doom";
-            ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "/home/leo/dotfiles/config/nvim";
-            ".config/ghostty".source = config.lib.file.mkOutOfStoreSymlink "/home/leo/dotfiles/config/ghostty";
-            ".config/helix".source = config.lib.file.mkOutOfStoreSymlink "/home/leo/dotfiles/config/helix";
-            ".config/wezterm".source = config.lib.file.mkOutOfStoreSymlink "/home/leo/dotfiles/config/wezterm";
-            ".ssh".source = config.lib.file.mkOutOfStoreSymlink "/home/leo/dotfiles/config/ssh";
             ".wakatime.cfg2" = {
               text = ''
                 [settings]
