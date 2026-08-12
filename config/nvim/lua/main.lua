@@ -57,7 +57,24 @@ require("lazy").setup({
 		{ "brianhuster/unnest.nvim", lazy = false, priority = 1001 },
 		{ "kdheepak/lazygit.nvim", lazy = true, cmd = { "LazyGit" } },
 		-- { "wakatime/vim-wakatime" },
-		{ "akinsho/toggleterm.nvim", lazy = false, version = "*", config = true },
+		{
+			"akinsho/toggleterm.nvim",
+			lazy = false,
+			version = "*",
+			opts = {
+				float_opts = {
+					border = "none",
+					width = function()
+						return vim.o.columns
+					end,
+					height = function()
+						return vim.o.lines - vim.o.cmdheight
+					end,
+					row = 0,
+					col = 0,
+				},
+			},
+		},
 		-- Detect tabstop and shift width automatically
 		{ "tpope/vim-sleuth" },
 		-- Git utilities
