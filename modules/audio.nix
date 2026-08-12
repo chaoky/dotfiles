@@ -1,6 +1,6 @@
 {
   flake.nixosModules.audio =
-    { pkgs, ... }:
+    { pkgs, username, ... }:
     {
       services.pulseaudio.enable = false;
       security.rtkit.enable = true;
@@ -118,7 +118,7 @@
         };
       };
 
-      home-manager.users.leo.home.packages = with pkgs; [
+      home-manager.users.${username}.home.packages = with pkgs; [
         easyeffects
         alsa-utils
         crosspipe

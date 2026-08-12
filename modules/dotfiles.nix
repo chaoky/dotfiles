@@ -1,6 +1,6 @@
 {
   flake.nixosModules.dotfiles =
-    { lib, ... }:
+    { lib, username, ... }:
     let
       # Overrides the default ~/.config/<name> destination; null means unlinked.
       targets = {
@@ -15,7 +15,7 @@
       split = lib.partition (name: !(targets ? ${name})) entries;
     in
     {
-      home-manager.users.leo =
+      home-manager.users.${username} =
         { config, ... }:
         let
           # Symlinks point at the live working tree, not the store copy, so edits

@@ -1,6 +1,6 @@
 {
   flake.nixosModules.desktop =
-    { pkgs, unstable, inputs, ... }:
+    { pkgs, unstable, inputs, username, ... }:
     let
       zen-browser = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default;
       extensions = with pkgs.gnomeExtensions; [
@@ -31,7 +31,7 @@
         };
       };
 
-      home-manager.users.leo = {
+      home-manager.users.${username} = {
         home.packages =
           extensions
           ++ (with pkgs; [

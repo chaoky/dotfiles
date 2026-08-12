@@ -1,9 +1,9 @@
 { config, inputs, withSystem, ... }:
 {
-  flake.lib.mkHost = { name, system, hardware }:
+  flake.lib.mkHost = { name, system, hardware, username ? "leo" }:
     withSystem system ({ pkgs, unstable, self', ... }:
       inputs.nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit unstable inputs self'; };
+        specialArgs = { inherit unstable inputs self' username; };
         modules = [
           inputs.nixpkgs.nixosModules.readOnlyPkgs
           inputs.determinate.nixosModules.default

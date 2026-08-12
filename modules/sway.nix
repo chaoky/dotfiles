@@ -1,8 +1,8 @@
 {
   flake.nixosModules.sway =
-    { pkgs, ... }:
+    { pkgs, username, ... }:
     {
-      home-manager.users.leo = {
+      home-manager.users.${username} = {
         home.packages = [ pkgs.alacritty ];
         wayland.windowManager.sway = {
           enable = true;

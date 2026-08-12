@@ -1,14 +1,14 @@
 {
   flake.nixosModules.shell =
-    { pkgs, inputs, ... }:
+    { pkgs, inputs, username, ... }:
     let
       zjstatus = inputs.zjstatus.packages.${pkgs.stdenv.hostPlatform.system}.default;
     in
     {
       programs.fish.enable = true;
-      users.users.leo.shell = pkgs.fish;
+      users.users.${username}.shell = pkgs.fish;
 
-      home-manager.users.leo = { ... }: {
+      home-manager.users.${username} = { ... }: {
         programs.starship = {
           enable = true;
           settings = {

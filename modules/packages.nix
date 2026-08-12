@@ -1,11 +1,11 @@
 {
   flake.nixosModules.packages =
-    { pkgs, unstable, ... }:
+    { pkgs, unstable, username, ... }:
     {
       programs._1password.enable = true;
       programs._1password-gui = {
         enable = true;
-        polkitPolicyOwners = [ "leo" ];
+        polkitPolicyOwners = [ username ];
       };
 
       programs.obs-studio = {
@@ -27,7 +27,7 @@
 
       # Docker
       virtualisation.docker.enable = true;
-      users.users.leo.extraGroups = [ "docker" ];
+      users.users.${username}.extraGroups = [ "docker" ];
 
       # Nix-ld
       programs.nix-ld = {
@@ -38,7 +38,7 @@
         ];
       };
 
-      home-manager.users.leo =
+      home-manager.users.${username} =
         { ... }:
         {
           programs.git = {

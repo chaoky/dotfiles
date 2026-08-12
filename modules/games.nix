@@ -1,6 +1,6 @@
 {
   flake.nixosModules.games =
-    { pkgs, ... }:
+    { pkgs, username, ... }:
     {
       # Xbox controller
       hardware.bluetooth.settings = {
@@ -33,7 +33,7 @@
         0.0.0.0 paradiseenhanced-s1.battleye.com
       '';
 
-      home-manager.users.leo.home.packages = with pkgs; [
+      home-manager.users.${username}.home.packages = with pkgs; [
         gdlauncher-carbon
         lutris
         wineWow64Packages.stable

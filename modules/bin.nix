@@ -1,5 +1,5 @@
 {
-  flake.nixosModules.bin = { unstable, ... }:
+  flake.nixosModules.bin = { unstable, username, ... }:
     with unstable;
     let
       claudepz = writeShellScriptBin "claudepz" ''
@@ -7,7 +7,7 @@
       '';
     in
     {
-      home-manager.users.leo.home.packages = [
+      home-manager.users.${username}.home.packages = [
         editorconfig-core-c
         bc
         jq
