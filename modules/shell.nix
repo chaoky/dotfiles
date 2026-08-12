@@ -5,7 +5,7 @@
       programs.fish.enable = true;
       users.users.leo.shell = pkgs.fish;
 
-      home-manager.users.leo = {
+      home-manager.users.leo = { config, ... }: {
         programs.starship = {
           enable = true;
           settings = {
@@ -17,6 +17,14 @@
           };
         };
         programs.zoxide.enable = true;
+        programs.zellij = {
+          enable = true;
+          # don't auto-start zellij on shell launch
+          enableFishIntegration = false;
+          enableBashIntegration = false;
+        };
+        home.file.".config/zellij".source =
+          config.lib.file.mkOutOfStoreSymlink "/home/leo/dotfiles/config/zellij";
         programs.bash = {
           enable = true;
           initExtra = ''

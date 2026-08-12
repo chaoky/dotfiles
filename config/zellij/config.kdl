@@ -1,0 +1,41 @@
+// Ported from config/tmux/tmux.conf — i3-style Alt bindings, Colemak-DH nav.
+
+pane_frames false
+simplified_ui true
+mouse_mode true
+// layouts/default.kdl swaps compact-bar for zjstatus
+default_layout "default"
+
+keybinds {
+    // let Ctrl+t pass through to the shell/programs
+    unbind "Ctrl t"
+
+    shared_except "locked" {
+        // pane navigation (was M-n/e/i/o select-pane)
+        bind "Alt n" { MoveFocus "Left"; }
+        bind "Alt e" { MoveFocus "Down"; }
+        bind "Alt i" { MoveFocus "Up"; }
+        bind "Alt o" { MoveFocus "Right"; }
+
+        // splits (was prefix h/v split-window)
+        bind "Alt h" { NewPane "Right"; }
+        bind "Alt v" { NewPane "Down"; }
+
+        // tab switching (was M-1..8); Alt+t opens a new tab
+        bind "Alt 1" { GoToTab 1; }
+        bind "Alt 2" { GoToTab 2; }
+        bind "Alt 3" { GoToTab 3; }
+        bind "Alt 4" { GoToTab 4; }
+        bind "Alt 5" { GoToTab 5; }
+        bind "Alt 6" { GoToTab 6; }
+        bind "Alt 7" { GoToTab 7; }
+        bind "Alt 8" { GoToTab 8; }
+        bind "Alt t" { NewTab; }
+
+        // copy mode (was M-[)
+        bind "Alt [" { SwitchToMode "Scroll"; }
+
+        // kill pane (was prefix q)
+        bind "Alt q" { CloseFocus; }
+    }
+}

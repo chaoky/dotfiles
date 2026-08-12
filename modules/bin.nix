@@ -42,8 +42,6 @@
         openjdk
         sbt
         trashy
-        tmux
-        tmuxPlugins.dracula
         koka
         nixd
         lua-language-server

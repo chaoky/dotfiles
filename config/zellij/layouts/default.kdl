@@ -1,0 +1,33 @@
+// Replaces the built-in compact-bar with zjstatus, whose {index} is the tab's
+// live position — so Alt+1..8 always match the labels, even after closing a
+// tab in the middle (zellij's own "Tab #N" names are fixed at creation time).
+// Colours are dracula, matching config/kitty/dracula.conf.
+
+layout {
+    pane
+    pane size=1 borderless=true {
+        plugin location="file:/home/leo/.local/share/zellij/plugins/zjstatus.wasm" {
+            format_left  "{tabs}"
+            format_right "{mode}"
+            format_space ""
+
+            tab_normal "#[fg=#6272A4] {index} "
+            tab_active "#[fg=#F8F8F2,bold] {index} "
+
+            mode_normal       ""
+            mode_locked       "#[fg=#FF5555,bold] {name} "
+            mode_scroll       "#[fg=#8BE9FD,bold] {name} "
+            mode_search       "#[fg=#8BE9FD,bold] {name} "
+            mode_enter_search "#[fg=#8BE9FD,bold] {name} "
+            mode_rename_tab   "#[fg=#50FA7B,bold] {name} "
+            mode_rename_pane  "#[fg=#50FA7B,bold] {name} "
+            mode_resize       "#[fg=#F1FA8C,bold] {name} "
+            mode_pane         "#[fg=#F1FA8C,bold] {name} "
+            mode_tab          "#[fg=#F1FA8C,bold] {name} "
+            mode_move         "#[fg=#F1FA8C,bold] {name} "
+            mode_session      "#[fg=#F1FA8C,bold] {name} "
+            mode_prompt       "#[fg=#F1FA8C,bold] {name} "
+            mode_tmux         "#[fg=#F1FA8C,bold] {name} "
+        }
+    }
+}

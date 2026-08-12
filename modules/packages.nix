@@ -79,7 +79,6 @@
           home.file = {
             ".config/doom".source = config.lib.file.mkOutOfStoreSymlink "/home/leo/dotfiles/config/doom";
             ".config/nvim".source = config.lib.file.mkOutOfStoreSymlink "/home/leo/dotfiles/config/nvim";
-            ".config/tmux".source = config.lib.file.mkOutOfStoreSymlink "/home/leo/dotfiles/config/tmux";
             ".config/ghostty".source = config.lib.file.mkOutOfStoreSymlink "/home/leo/dotfiles/config/ghostty";
             ".config/helix".source = config.lib.file.mkOutOfStoreSymlink "/home/leo/dotfiles/config/helix";
             ".config/wezterm".source = config.lib.file.mkOutOfStoreSymlink "/home/leo/dotfiles/config/wezterm";
