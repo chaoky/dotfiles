@@ -48,6 +48,9 @@
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Deliberately not following nixpkgs: zjstatus is a wasm/rust build and
+    # pinning it to its own nixpkgs keeps upstream's cachix artifacts usable.
+    zjstatus.url = "github:dj95/zjstatus";
   };
 
   outputs = inputs: inputs.flake-parts.lib.mkFlake { inherit inputs; }

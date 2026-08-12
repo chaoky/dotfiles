@@ -1,11 +1,14 @@
 {
   flake.nixosModules.shell =
-    { pkgs, ... }:
+    { pkgs, inputs, ... }:
+    let
+      zjstatus = inputs.zjstatus.packages.${pkgs.stdenv.hostPlatform.system}.default;
+    in
     {
       programs.fish.enable = true;
       users.users.leo.shell = pkgs.fish;
 
-      home-manager.users.leo = { config, ... }: {
+      home-manager.users.leo = { ... }: {
         programs.starship = {
           enable = true;
           settings = {
@@ -19,12 +22,16 @@
         programs.zoxide.enable = true;
         programs.zellij = {
           enable = true;
-          # don't auto-start zellij on shell launch
-          enableFishIntegration = false;
+          enableFishIntegration = true;
           enableBashIntegration = false;
         };
-        home.file.".config/zellij".source =
-          config.lib.file.mkOutOfStoreSymlink "/home/leo/dotfiles/config/zellij";
+        # Kept out of ~/.config/zellij: dotfiles.nix symlinks that whole tree
+        # back into the repo, so nothing generated can live there. The stable
+        # path matters — zellij caches plugin permissions per location, so
+        # pointing layouts at this instead of the store path means version
+        # bumps don't re-trigger the permission prompt.
+        xdg.dataFile."zellij/plugins/zjstatus.wasm".source =
+          "${zjstatus}/bin/zjstatus.wasm";
         programs.bash = {
           enable = true;
           initExtra = ''
