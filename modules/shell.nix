@@ -1,9 +1,6 @@
 {
   flake.nixosModules.shell =
-    { pkgs, inputs, username, ... }:
-    let
-      zjstatus = inputs.zjstatus.packages.${pkgs.stdenv.hostPlatform.system}.default;
-    in
+    { pkgs, username, ... }:
     {
       programs.fish.enable = true;
       users.users.${username}.shell = pkgs.fish;
@@ -20,18 +17,6 @@
           };
         };
         programs.zoxide.enable = true;
-        programs.zellij = {
-          enable = true;
-          enableFishIntegration = true;
-          enableBashIntegration = false;
-        };
-        # Kept out of ~/.config/zellij: dotfiles.nix symlinks that whole tree
-        # back into the repo, so nothing generated can live there. The stable
-        # path matters — zellij caches plugin permissions per location, so
-        # pointing layouts at this instead of the store path means version
-        # bumps don't re-trigger the permission prompt.
-        xdg.dataFile."zellij/plugins/zjstatus.wasm".source =
-          "${zjstatus}/bin/zjstatus.wasm";
         programs.bash = {
           enable = true;
           initExtra = ''
@@ -39,13 +24,17 @@
           '';
         };
 
-        home.packages = [ pkgs.fnm ];
+        home.packages = with pkgs; [ fnm tmux tmuxPlugins.resurrect tmuxPlugins.continuum ];
         programs.fish = {
           enable = true;
           shellInit = ''
             set -gx SSH_AUTH_SOCK "$XDG_RUNTIME_DIR/gcr/ssh"
           '';
           interactiveShellInit = ''
+            if status is-interactive; and not set -q TMUX; and test "$TERM" != dumb
+                exec tmux new-session -A -s main
+            end
+
             devenv hook fish | source
           '';
           shellInitLast = ''
