@@ -2,8 +2,8 @@
   flake.nixosModules.bin = { unstable, username, ... }:
     with unstable;
     let
-      claudepz = writeShellScriptBin "claudepz" ''
-        exec env CLAUDE_CONFIG_DIR="$HOME/.claudepz" ${unstable.claude-code}/bin/claude "$@"
+      claudep = writeShellScriptBin "claudep" ''
+        exec env CLAUDE_CONFIG_DIR="$HOME/.claudep" ${unstable.claude-code}/bin/claude "$@"
       '';
     in
     {
@@ -63,7 +63,7 @@
         gnumake
         nix-tree
         claude-code
-        claudepz
+        claudep
         codex
         github-cli
         jj-fzf
