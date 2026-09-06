@@ -79,14 +79,6 @@ in
     modesetting.enable = true;
     open = true;
     nvidiaSettings = true;
-    powerManagement.enable = true;
-    # The new-in-595 kernel-suspend-notifier path fails to preserve VRAM under
-    # memory pressure (NV_ERR_NO_MEMORY at suspend entry), breaking clipboard
-    # and app launching after resume. Use the systemd suspend services instead.
-    powerManagement.kernelSuspendNotifier = false;
+    package = config.boot.kernelPackages.nvidiaPackages.production;
   };
-
-  # Let VRAM preservation spill to disk instead of failing when RAM is tight.
-  # Must be disk-backed (ext4 root), not tmpfs.
-  hardware.nvidia.moduleParams.nvidia.NVreg_TemporaryFilePath = "/var/tmp";
 }
