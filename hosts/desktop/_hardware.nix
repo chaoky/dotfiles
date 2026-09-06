@@ -1,5 +1,6 @@
 { config
 , lib
+, pkgs
 , modulesPath
 , ...
 }:
@@ -72,6 +73,8 @@ in
   hardware.keyboard.qmk.enable = true;
 
   # Nvidia stuff
+  # nvidia-open 595 doesn't compile against kernel 7.2 yet
+  boot.kernelPackages = lib.mkForce pkgs.linuxPackages_7_1;
   hardware.graphics.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
 
