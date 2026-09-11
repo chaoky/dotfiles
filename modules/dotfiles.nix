@@ -22,15 +22,11 @@
         {
           xdg.configFile = lib.genAttrs split.right live;
 
-          home.file = lib.listToAttrs
-            (
-              map (name: lib.nameValuePair targets.${name} (live name)) (
-                lib.filter (name: targets.${name} != null) split.wrong
-              )
-            ) // {
-            ".claude/statusline.sh" = live "claude/statusline.sh";
-            ".claudep/statusline.sh" = live "claude/statusline.sh";
-          };
+          home.file = lib.listToAttrs (
+            map (name: lib.nameValuePair targets.${name} (live name)) (
+              lib.filter (name: targets.${name} != null) split.wrong
+            )
+          );
         };
     };
 }
