@@ -32,7 +32,7 @@
           '';
           interactiveShellInit = ''
             if status is-interactive; and not set -q TMUX; and test "$TERM" != dumb
-                exec tmux new-session -A -s main
+                tmux new-session -A -s main
             end
 
             devenv hook fish | source
