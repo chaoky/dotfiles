@@ -53,7 +53,6 @@
             firefox-devedition
             insomnia
             brave
-            mongodb-compass
             dbeaver-bin
             jetbrains.datagrip
             postman
