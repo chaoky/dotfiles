@@ -28,6 +28,8 @@
       # Docker
       virtualisation.docker.enable = true;
       users.users.${username}.extraGroups = [ "docker" ];
+      boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
+      boot.binfmt.preferStaticEmulators = true;
 
       # Nix-ld
       programs.nix-ld = {
