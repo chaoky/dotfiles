@@ -18,6 +18,7 @@
           config.flake.nixosModules.audio
           config.flake.nixosModules.games
           config.flake.nixosModules.gog-wine
+          config.flake.nixosModules.resume
           hardware
           {
             networking.hostName = "stanbot-nix"; #"${name}-stanbot-nix"
