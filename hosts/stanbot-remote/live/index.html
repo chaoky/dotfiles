@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>live.leo.camp</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='8' r='6' fill='%23e5484d'/></svg>">
+<style>
+  :root {
+    --bg: #fafaf9; --fg: #1c1917; --muted: #78716c; --card: #fff;
+    --border: #e7e5e4; --accent: #2563eb; --accent-fg: #fff;
+    --live: #e5484d; --ok: #16a34a; --code: #f5f5f4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141414; --fg: #eeeeec; --muted: #a1a09a; --card: #1c1c1c;
+      --border: #2e2e2e; --accent: #3b82f6; --accent-fg: #fff;
+      --live: #f2555a; --ok: #22c55e; --code: #262626;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  main { max-width: 720px; margin: 0 auto; padding: 32px 16px 64px; }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; }
+  h2 { font-size: 1.15rem; margin: 40px 0 12px; }
+  p { margin: 0 0 12px; }
+  .muted { color: var(--muted); }
+  .small { font-size: .875rem; }
+  .dot {
+    display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+    background: var(--live); margin-right: 8px; vertical-align: 1px;
+  }
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 14px 16px; margin-bottom: 10px;
+  }
+  .stream { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .stream .info { flex: 1; min-width: 160px; }
+  .stream .name { font-weight: 600; word-break: break-all; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  button, .btn {
+    font: inherit; font-size: .95rem; padding: 8px 14px; border-radius: 8px;
+    border: 1px solid var(--border); background: var(--card); color: var(--fg);
+    cursor: pointer; text-decoration: none; display: inline-block;
+  }
+  button:hover, .btn:hover { border-color: var(--muted); }
+  .primary { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+  .primary:hover { filter: brightness(1.1); border-color: var(--accent); }
+  .danger { background: var(--live); border-color: var(--live); color: #fff; }
+  button:disabled { opacity: .5; cursor: default; }
+  input[type=text] {
+    font: inherit; padding: 8px 10px; border-radius: 8px; width: 100%;
+    border: 1px solid var(--border); background: var(--bg); color: var(--fg);
+  }
+  .field { margin-bottom: 4px; }
+  .field label { display: block; font-weight: 600; margin-bottom: 4px; }
+  code, .url {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .9em;
+    background: var(--code); padding: 2px 6px; border-radius: 5px; word-break: break-all;
+  }
+  ol { padding-left: 20px; margin: 0; }
+  ol li { margin-bottom: 10px; }
+  ul { padding-left: 20px; margin: 6px 0 0; }
+  #status { margin-top: 12px; }
+  #status.ok { color: var(--ok); }
+  #status.err { color: var(--live); }
+  #live-box { margin-top: 12px; }
+  video { width: 100%; border-radius: 8px; background: #000; margin-top: 12px; max-height: 240px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <h1><span class="dot"></span>live.leo.camp</h1>
+
+  <!-- 1. Live now -->
+  <h2>Live now</h2>
+  <div id="streams"><p class="muted">Loading…</p></div>
+  <p id="list-error" class="small muted" hidden></p>
+
+  <!-- 2. Browser streaming -->
+  <h2>Go live</h2>
+  <div class="card">
+    <div id="unsupported" hidden>
+      <p>Screen sharing isn't supported here. Use a desktop browser or OBS.</p>
+    </div>
+    <div id="publisher">
+      <div class="field">
+        <label for="name">Stream name</label>
+        <input id="name" type="text" placeholder="e.g. leo" autocomplete="off" spellcheck="false">
+        <p class="small muted" style="margin:4px 0 12px"><span class="url" id="name-url"></span></p>
+      </div>
+      <div class="row">
+        <button id="start" class="primary">Start sharing</button>
+        <button id="stop" class="danger" hidden>Stop</button>
+      </div>
+      <p id="status" class="small"></p>
+      <div id="live-box" hidden>
+        <div class="row">
+          <span class="url" id="watch-url"></span>
+          <button id="copy-own">Copy</button>
+        </div>
+        <video id="preview" muted playsinline autoplay></video>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. OBS -->
+  <h2>OBS</h2>
+  <div class="card">
+    <ol>
+      <li><b>Settings → Stream</b>
+        <ul>
+          <li>Service: <b>WHIP</b></li>
+          <li>Server: <span class="url" id="obs-url"></span> <button id="copy-obs" class="small">Copy</button></li>
+        </ul>
+      </li>
+      <li><span class="muted">(optional)</span> <b>Settings → Output</b> → Advanced
+        <ul>
+          <li>Keyframe Interval: <b>1 s</b></li>
+          <li>B-frames: <b>0</b> / Tune: <b>zerolatency</b></li>
+          <li>Bitrate: <b>4000–6000 Kbps</b></li>
+        </ul>
+      </li>
+      <li><b>Start Streaming</b></li>
+    </ol>
+  </div>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const origin = location.origin;
+let liveNames = new Set();
+
+// ---------- helpers ----------
+function store(key, value) {
+  try {
+    if (value === undefined) return localStorage.getItem(key);
+    localStorage.setItem(key, value);
+  } catch (_) { return null; }
+}
+
+function cleanName(s) {
+  return s.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9_-]/g, '');
+}
+
+function watchUrl(name) { return `${origin}/${encodeURIComponent(name)}`; }
+
+function since(iso) {
+  const s = Math.max(0, Math.floor((Date.now() - new Date(iso)) / 1000));
+  if (s < 60) return 'just started';
+  const m = Math.floor(s / 60);
+  if (m < 60) return `${m} min`;
+  return `${Math.floor(m / 60)} h ${m % 60} min`;
+}
+
+async function copy(text, btn) {
+  try {
+    await navigator.clipboard.writeText(text);
+    const old = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => (btn.textContent = old), 1200);
+  } catch (_) {
+    prompt('Copy this link:', text);
+  }
+}
+
+// ---------- 1. live list ----------
+function renderStreams(items) {
+  const box = $('streams');
+  box.replaceChildren();
+  if (!items.length) {
+    box.innerHTML = '<p class="muted">Nobody\'s live.</p>';
+    return;
+  }
+  for (const p of items) {
+    const card = document.createElement('div');
+    card.className = 'card stream';
+
+    const info = document.createElement('div');
+    info.className = 'info';
+    const name = document.createElement('div');
+    name.className = 'name';
+    name.innerHTML = '<span class="dot"></span>';
+    name.append(p.name);
+    const meta = document.createElement('div');
+    meta.className = 'small muted';
+    const viewers = (p.readers || []).length;
+    meta.textContent = `${since(p.readyTime)} · ${viewers} watching`;
+    info.append(name, meta);
+
+    const watch = document.createElement('a');
+    watch.className = 'btn primary';
+    watch.href = watchUrl(p.name);
+    watch.target = '_blank';
+    watch.rel = 'noopener';
+    watch.textContent = 'Watch';
+
+    const cp = document.createElement('button');
+    cp.textContent = 'Copy link';
+    cp.onclick = () => copy(watchUrl(p.name), cp);
+
+    card.append(info, watch, cp);
+    box.append(card);
+  }
+}
+
+async function refresh() {
+  try {
+    const res = await fetch('/api/paths', { cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    const items = (data.items || [])
+      .filter((p) => p.ready)
+      .sort((a, b) => a.name.localeCompare(b.name));
+    liveNames = new Set(items.map((p) => p.name));
+    renderStreams(items);
+    $('list-error').hidden = true;
+  } catch (e) {
+    $('list-error').textContent = `Couldn't load streams (${e.message})`;
+    $('list-error').hidden = false;
+  }
+}
+
+refresh();
+setInterval(refresh, 5000);
+
+// ---------- name field ----------
+const nameInput = $('name');
+nameInput.value = store('streamName') || '';
+
+function updateNameUrls() {
+  const n = cleanName(nameInput.value) || 'your-name';
+  $('name-url').textContent = watchUrl(n);
+  $('obs-url').textContent = `${origin}/${n}/whip`;
+}
+nameInput.addEventListener('input', () => {
+  store('streamName', cleanName(nameInput.value));
+  updateNameUrls();
+});
+updateNameUrls();
+$('copy-obs').onclick = () => copy($('obs-url').textContent, $('copy-obs'));
+
+// ---------- 2. browser publishing (WHIP) ----------
+let session = null; // { pc, tracks, resource, name }
+let confirmTakeover = false;
+
+function setStatus(text, kind = '') {
+  $('status').textContent = text;
+  $('status').className = `small ${kind}`;
+}
+
+function setLiveUI(live) {
+  $('start').hidden = live;
+  $('stop').hidden = !live;
+  $('live-box').hidden = !live;
+  nameInput.disabled = live;
+}
+
+if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+  $('publisher').hidden = true;
+  $('unsupported').hidden = false;
+}
+
+function waitForIce(pc) {
+  if (pc.iceGatheringState === 'complete') return Promise.resolve();
+  return new Promise((resolve) => {
+    const done = () => { pc.removeEventListener('icegatheringstatechange', check); resolve(); };
+    const check = () => pc.iceGatheringState === 'complete' && done();
+    pc.addEventListener('icegatheringstatechange', check);
+    setTimeout(done, 2000);
+  });
+}
+
+async function start() {
+  const name = cleanName(nameInput.value);
+  if (!name) {
+    setStatus('Pick a name.', 'err');
+    nameInput.focus();
+    return;
+  }
+  if (liveNames.has(name) && !confirmTakeover) {
+    confirmTakeover = true;
+    setStatus(`“${name}” is live. Click again to take over.`, 'err');
+    return;
+  }
+  confirmTakeover = false;
+  $('start').disabled = true;
+  setStatus('');
+
+  const s = { name, tracks: [], pc: null, resource: null };
+  try {
+    const screen = await navigator.mediaDevices.getDisplayMedia({
+      video: { frameRate: { ideal: 30 } },
+      audio: true,
+    });
+    s.tracks.push(...screen.getTracks());
+    const audio = screen.getAudioTracks();
+
+    const video = screen.getVideoTracks()[0];
+    video.contentHint = 'detail';
+    // The browser's own "Stop sharing" button ends the video track.
+    video.addEventListener('ended', () => stop());
+
+    setStatus('Connecting…');
+    const pc = new RTCPeerConnection();
+    s.pc = pc;
+    session = s;
+    pc.addTransceiver(video, { direction: 'sendonly' });
+    for (const t of audio) pc.addTransceiver(t, { direction: 'sendonly' });
+
+    pc.addEventListener('connectionstatechange', () => {
+      if (session !== s) return;
+      if (pc.connectionState === 'connected') setStatus('Live', 'ok');
+      if (pc.connectionState === 'failed') stop('Connection lost.');
+    });
+
+    await pc.setLocalDescription(await pc.createOffer());
+    await waitForIce(pc);
+
+    const res = await fetch(`/${encodeURIComponent(name)}/whip`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/sdp' },
+      body: pc.localDescription.sdp,
+    });
+    if (!res.ok) throw new Error(`server said ${res.status}: ${(await res.text()).trim()}`);
+    const loc = res.headers.get('Location');
+    if (loc) s.resource = new URL(loc, res.url).href;
+    await pc.setRemoteDescription({ type: 'answer', sdp: await res.text() });
+
+    $('watch-url').textContent = watchUrl(name);
+    $('preview').srcObject = new MediaStream([video]);
+    setLiveUI(true);
+    if (pc.connectionState !== 'connected') setStatus('Connecting…');
+  } catch (e) {
+    const cancelled = e.name === 'NotAllowedError' || e.name === 'AbortError';
+    await stop(cancelled ? '' : `Couldn't start: ${e.message}`, s);
+  } finally {
+    $('start').disabled = false;
+  }
+}
+
+async function stop(message = 'Stopped.', s = session) {
+  if (!s) return;
+  if (session === s) session = null;
+  const resource = s.resource;
+  s.resource = null;
+  s.tracks.forEach((t) => t.stop());
+  if (s.pc) s.pc.close();
+  $('preview').srcObject = null;
+  setLiveUI(false);
+  setStatus(message, message && message !== 'Stopped.' ? 'err' : '');
+  if (resource) fetch(resource, { method: 'DELETE' }).catch(() => {});
+  setTimeout(refresh, 500);
+}
+
+$('start').onclick = start;
+$('stop').onclick = () => stop();
+$('copy-own').onclick = () => copy($('watch-url').textContent, $('copy-own'));
+nameInput.addEventListener('input', () => (confirmTakeover = false));
+window.addEventListener('pagehide', () => {
+  if (session && session.resource) fetch(session.resource, { method: 'DELETE', keepalive: true });
+});
+</script>
+</body>
+</html>

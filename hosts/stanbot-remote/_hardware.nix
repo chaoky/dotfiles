@@ -5,7 +5,7 @@
   ];
 
   disko.devices.disk.main = {
-    device = "/dev/sda";
+    device = "/dev/vda";
     type = "disk";
     content = {
       type = "gpt";
@@ -46,12 +46,20 @@
     "uhci_hcd"
     "virtio_pci"
     "virtio_scsi"
+    "virtio_blk"
     "sd_mod"
     "sr_mod"
   ];
 
-  networking.hostName = "headscale-server";
+  networking.hostName = "stanbot-remote";
   networking.useDHCP = true;
+
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 2048;
+    }
+  ];
 
   system.stateVersion = "23.11";
   time.timeZone = "UTC";

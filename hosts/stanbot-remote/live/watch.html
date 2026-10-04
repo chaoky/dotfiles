@@ -1,0 +1,232 @@
+{{$n := .OriginalReq.URL.Path | trimPrefix "/" | trimSuffix "/"}}<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{$n}} · live.leo.camp</title>
+<meta property="og:site_name" content="live.leo.camp">
+<meta property="og:title" content="{{$n}} is live">
+<meta property="og:description" content="Watch on live.leo.camp">
+<meta property="og:url" content="https://live.leo.camp/{{$n}}">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
+<meta name="theme-color" content="#e5484d">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><circle cx='8' cy='8' r='6' fill='%23e5484d'/></svg>">
+<style>
+  :root {
+    --bg: #fafaf9; --fg: #1c1917; --muted: #78716c; --card: #fff;
+    --border: #e7e5e4; --live: #e5484d;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #141414; --fg: #eeeeec; --muted: #a1a09a; --card: #1c1c1c;
+      --border: #2e2e2e; --live: #f2555a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  main { padding: 16px 16px 48px; }
+  header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  header h1 { font-size: 1.3rem; margin: 0; flex: 1; word-break: break-all; }
+  a { color: var(--muted); }
+  .dot {
+    display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+    background: var(--muted); margin-right: 8px; vertical-align: 2px;
+  }
+  .dot.on { background: var(--live); }
+  video { width: 100%; aspect-ratio: 16 / 9; border-radius: 8px; background: #000; display: block; }
+  .bar { display: flex; align-items: center; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
+  [hidden] { display: none !important; }
+  input {
+    font: inherit; font-size: .9rem; padding: 6px 10px; border-radius: 8px; width: 160px;
+    border: 1px solid var(--border); background: var(--card); color: var(--fg);
+  }
+  #viewers { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 2px; }
+  .viewer {
+    display: flex; flex-direction: column; align-items: center; width: 64px;
+    font-size: .7rem; color: var(--muted);
+  }
+  .viewer span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .viewer img {
+    width: 48px; height: 48px; border-radius: 50%; object-fit: cover;
+    border: 3px solid var(--c); background: var(--c);
+  }
+  .viewer.me { width: 88px; cursor: pointer; color: var(--fg); }
+  .viewer.me img { width: 72px; height: 72px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1><span class="dot" id="dot"></span><span id="title"></span></h1>
+    <a href="/">all streams</a>
+  </header>
+  <video id="video" autoplay muted playsinline controls></video>
+  <div class="bar">
+    <div id="viewers"></div>
+    <input id="me" type="text" placeholder="your name" maxlength="20" autocomplete="off" spellcheck="false" hidden>
+  </div>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const name = decodeURIComponent(location.pathname.replace(/^\/|\/$/g, ''));
+const vid = Math.random().toString(36).slice(2, 12); // identifies our own session in /api/viewers
+let pc = null;
+let resource = null;
+let live = false;
+
+$('title').textContent = name;
+
+function store(key, value) {
+  try {
+    if (value === undefined) return localStorage.getItem(key);
+    localStorage.setItem(key, value);
+  } catch (_) { return null; }
+}
+
+function cleanViewer(s) {
+  return s.replace(/[^A-Za-z0-9 _-]/g, '').trim().slice(0, 20);
+}
+
+// ---------- player (WHEP) ----------
+function waitForIce(p) {
+  if (p.iceGatheringState === 'complete') return Promise.resolve();
+  return new Promise((resolve) => {
+    const done = () => { p.removeEventListener('icegatheringstatechange', check); resolve(); };
+    const check = () => p.iceGatheringState === 'complete' && done();
+    p.addEventListener('icegatheringstatechange', check);
+    setTimeout(done, 2000);
+  });
+}
+
+function disconnect() {
+  if (resource) fetch(resource, { method: 'DELETE' }).catch(() => {});
+  resource = null;
+  if (pc) pc.close();
+  pc = null;
+}
+
+async function connect() {
+  const p = new RTCPeerConnection();
+  pc = p;
+  const media = new MediaStream();
+  p.addTransceiver('video', { direction: 'recvonly' });
+  p.addTransceiver('audio', { direction: 'recvonly' });
+  p.ontrack = (e) => {
+    media.addTrack(e.track);
+    $('video').srcObject = media;
+  };
+  p.onconnectionstatechange = () => {
+    if (pc === p && (p.connectionState === 'failed' || p.connectionState === 'closed')) disconnect();
+  };
+  try {
+    await p.setLocalDescription(await p.createOffer());
+    await waitForIce(p);
+    const viewer = cleanViewer($('me').value);
+    const qs = `?vid=${vid}&viewer=${encodeURIComponent(viewer)}`;
+    const res = await fetch(`/${encodeURIComponent(name)}/whep${qs}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/sdp' },
+      body: p.localDescription.sdp,
+    });
+    if (!res.ok) throw new Error(res.status);
+    const loc = res.headers.get('Location');
+    if (pc !== p) return;
+    if (loc) resource = new URL(loc, res.url).href;
+    await p.setRemoteDescription({ type: 'answer', sdp: await res.text() });
+    setTimeout(tick, 1000);
+  } catch (_) {
+    if (pc === p) disconnect();
+  }
+}
+
+// ---------- viewer name ----------
+$('me').value = store('viewerName') || '';
+function rename() {
+  const v = cleanViewer($('me').value);
+  $('me').value = v;
+  if (v === (store('viewerName') || '')) return;
+  store('viewerName', v);
+  disconnect();
+  if (live) connect();
+}
+function editName(show) {
+  $('me').hidden = !show;
+  if (show) $('me').focus();
+  else rename();
+}
+$('me').addEventListener('keydown', (e) => e.key === 'Enter' && editName(false));
+document.addEventListener('click', (e) => {
+  if ($('me').hidden || e.target === $('me') || e.target.closest('.viewer.me')) return;
+  editName(false);
+});
+
+// ---------- status + viewers ----------
+// Elements are kept per session so icons aren't reloaded on every poll.
+const icons = new Map();
+
+const AVATARS = 98; // live/avatars/{0..97}.webp, faces from the AFHQ dataset
+
+function hash(s, mod) {
+  let h = 0;
+  for (const c of s) h = (h * 31 + c.charCodeAt(0)) % 100003;
+  return h % mod;
+}
+
+function viewerIcon(key, mine) {
+  let el = icons.get(key);
+  if (el) return el;
+  el = document.createElement('div');
+  el.className = mine ? 'viewer me' : 'viewer';
+  el.style.setProperty('--c', `hsl(${hash(key, 360)} 70% 55%)`);
+  const img = document.createElement('img');
+  img.alt = '';
+  img.src = `/avatars/${hash(key, AVATARS)}.webp`;
+  el.append(img, document.createElement('span'));
+  if (mine) el.onclick = () => editName($('me').hidden);
+  icons.set(key, el);
+  return el;
+}
+
+function renderViewers(list) {
+  list.sort((a, b) => (b.vid === vid) - (a.vid === vid));
+  const seen = new Set();
+  const els = list.map((v, i) => {
+    const key = v.vid || `anon-${i}`;
+    seen.add(key);
+    const el = viewerIcon(key, v.vid === vid);
+    el.lastChild.textContent = v.viewer || 'anon';
+    el.title = v.vid === vid ? 'you · click to rename' : el.lastChild.textContent;
+    return el;
+  });
+  for (const key of icons.keys()) if (!seen.has(key)) icons.delete(key);
+  $('viewers').replaceChildren(...els);
+}
+
+async function tick() {
+  try {
+    const [paths, viewers] = await Promise.all([
+      fetch('/api/paths', { cache: 'no-store' }).then((r) => r.json()),
+      fetch('/api/viewers', { cache: 'no-store' }).then((r) => r.json()),
+    ]);
+    const p = (paths.items || []).find((i) => i.name === name);
+    live = !!(p && p.ready);
+    $('dot').classList.toggle('on', live);
+    renderViewers(live ? viewers.filter((v) => v.path === name) : []);
+  } catch (_) {}
+  if (live && !pc) connect();
+  if (!live && pc) disconnect();
+}
+
+tick();
+setInterval(tick, 5000);
+window.addEventListener('pagehide', () => {
+  if (resource) fetch(resource, { method: 'DELETE', keepalive: true });
+});
+</script>
+</body>
+</html>

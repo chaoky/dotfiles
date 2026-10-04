@@ -3,14 +3,14 @@ let
   serverDomain = "tail.leo.camp";
   system = "x86_64-linux";
 
-  headscaleServerModules = [
+  stanbotRemoteModules = [
     inputs.disko.nixosModules.disko
     inputs.headscale.nixosModules.default
     ./_hardware.nix
-    headscaleServerNixosModule
+    stanbotRemoteNixosModule
   ];
 
-  headscaleServerNixosModule = { config, pkgs, lib, ... }:
+  stanbotRemoteNixosModule = { config, pkgs, lib, ... }:
     let
       cfg = config.services.headscale-server;
       acmeEmail = "levimanga@gmail.com";
@@ -28,8 +28,10 @@ let
             22
             80
             443
+            8189 # MediaMTX WebRTC (TCP fallback)
           ];
           allowedUDPPorts = [
+            8189 # MediaMTX WebRTC
             41641 # Tailscale (work tailnet)
             41642 # Tailscale (personal tailnet)
           ];
@@ -181,22 +183,127 @@ let
           overrideFolders = false;
         };
 
-        services.nginx = {
+        services.caddy = {
           enable = true;
-          recommendedProxySettings = true;
-          recommendedTlsSettings = true;
-          virtualHosts.${cfg.domain} = {
-            enableACME = true;
-            forceSSL = true;
-            locations."/".proxyPass = "http://127.0.0.1:${toString config.services.headscale.port}";
-            locations."/".proxyWebsockets = true;
+          email = acmeEmail;
+          virtualHosts.${cfg.domain}.extraConfig = ''
+            reverse_proxy 127.0.0.1:${toString config.services.headscale.port}
+          '';
+          virtualHosts."live.leo.camp".extraConfig = ''
+            @site path / /index.html /avatars/*
+            handle @site {
+              root * ${./live}
+              file_server
+            }
+            # the only API endpoint exposed publicly: read-only stream list
+            @paths {
+              method GET
+              path /api/paths
+            }
+            handle @paths {
+              rewrite * /v3/paths/list
+              reverse_proxy 127.0.0.1:9997
+            }
+            # viewer names per stream, IPs stripped by mediamtx-viewers
+            @viewers {
+              method GET
+              path /api/viewers
+            }
+            handle @viewers {
+              rewrite * /
+              reverse_proxy 127.0.0.1:9998
+            }
+            # watch page (WHIP/WHEP sub-paths fall through to mediamtx)
+            @watch {
+              method GET
+              path_regexp ^/[a-z0-9_-]+/?$
+            }
+            handle @watch {
+              root * ${./live}
+              rewrite * /watch.html
+              templates
+              file_server
+            }
+            # players, WHIP and WHEP
+            handle {
+              reverse_proxy 127.0.0.1:8889
+            }
+          '';
+        };
+
+        services.mediamtx = {
+          enable = true;
+          settings = {
+            # no auth: anyone may publish/read/playback; API/metrics stay localhost-only
+            authInternalUsers = [
+              {
+                user = "any";
+                pass = "";
+                ips = [ ];
+                permissions = [
+                  { action = "publish"; }
+                  { action = "read"; }
+                  { action = "playback"; }
+                ];
+              }
+              {
+                user = "any";
+                pass = "";
+                ips = [
+                  "127.0.0.1"
+                  "::1"
+                ];
+                permissions = [
+                  { action = "api"; }
+                  { action = "metrics"; }
+                  { action = "pprof"; }
+                ];
+              }
+            ];
+            api = true;
+            apiAddress = "127.0.0.1:9997"; # stream list exposed read-only via caddy
+            webrtcAddress = "127.0.0.1:8889"; # HTTP/WHIP/WHEP only via caddy
+            webrtcLocalUDPAddress = ":8189";
+            webrtcLocalTCPAddress = ":8189"; # fallback for UDP-blocked clients
+            webrtcAdditionalHosts = [ "live.leo.camp" ];
+            paths.all_others = { }; # accept any stream name
           };
         };
 
-        security.acme = {
-          acceptTerms = true;
-          defaults.email = acmeEmail;
+        # Stateless filter over the mediamtx API: exposes only {path, viewer}
+        # of reading WebRTC sessions, never remote addresses.
+        systemd.sockets.mediamtx-viewers = {
+          wantedBy = [ "sockets.target" ];
+          socketConfig = {
+            ListenStream = "127.0.0.1:9998";
+            Accept = true;
+          };
         };
+        systemd.services."mediamtx-viewers@" = {
+          serviceConfig = {
+            DynamicUser = true;
+            StandardInput = "socket";
+            StandardOutput = "socket";
+            ExecStart = pkgs.writeShellScript "mediamtx-viewers" ''
+              export LC_ALL=C # byte-length Content-Length
+              while IFS= read -r line && [ "''${line%$'\r'}" != "" ]; do :; done
+              body=$(${pkgs.curl}/bin/curl -sf 127.0.0.1:9997/v3/webrtcsessions/list \
+                | ${pkgs.jq}/bin/jq -c '[.items[] | select(.state == "read")
+                  | (.query | split("&") | map(split("=") | {(.[0]): (.[1] // "")}) | add // {}) as $q
+                  | {path,
+                     viewer: ($q.viewer // "" | gsub("%20"; " ") | gsub("[^A-Za-z0-9 _-]"; "") | .[0:20]),
+                     vid: ($q.vid // "" | gsub("[^A-Za-z0-9]"; "") | .[0:16])}]') || body='[]'
+              printf 'HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: %d\r\nConnection: close\r\n\r\n%s' "''${#body}" "$body"
+            '';
+          };
+        };
+
+        # State migrated from the old host carries foreign UIDs; re-own it.
+        systemd.tmpfiles.rules = [
+          "Z /var/lib/headscale - headscale headscale -"
+          "Z /var/lib/syncthing - syncthing syncthing -"
+          "Z /var/lib/caddy - caddy caddy -"
+        ];
 
         # Enable IP forwarding for subnet routing
         boot.kernel.sysctl = {
@@ -208,10 +315,10 @@ let
 in
 {
   flake = {
-    nixosModules.headscale-server = headscaleServerNixosModule;
+    nixosModules.stanbot-remote = stanbotRemoteNixosModule;
 
-    nixosConfigurations.headscale-server = inputs.nixpkgs.lib.nixosSystem {
-      modules = headscaleServerModules ++ [
+    nixosConfigurations.stanbot-remote = inputs.nixpkgs.lib.nixosSystem {
+      modules = stanbotRemoteModules ++ [
         { nixpkgs.pkgs = withSystem system ({ pkgs, ... }: pkgs); }
         { services.headscale-server.domain = serverDomain; }
       ];
@@ -219,8 +326,8 @@ in
 
     colmenaHive = inputs.colmena.lib.makeHive {
       meta.nixpkgs = withSystem system ({ pkgs, ... }: pkgs);
-      headscale-server = {
-        imports = headscaleServerModules;
+      stanbot-remote = {
+        imports = stanbotRemoteModules;
         services.headscale-server.domain = serverDomain;
         deployment = {
           targetHost = serverDomain;
@@ -232,9 +339,9 @@ in
 
   perSystem = { system, ... }: {
     apps = {
-      # nix run .#colmena -- apply --on headscale-server
+      # nix run .#colmena -- apply --on stanbot-remote
       colmena.program = inputs.colmena.packages.${system}.colmena;
-      # nix run .#nixos-anywhere -- --flake .#headscale-server --target-host root@tail.leo.camp
+      # nix run .#nixos-anywhere -- --flake .#stanbot-remote --target-host ubuntu@201.23.80.203
       nixos-anywhere.program = inputs.nixos-anywhere.packages.${system}.nixos-anywhere;
     };
   };
