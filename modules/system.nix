@@ -2,14 +2,13 @@
   flake.nixosModules.system =
     { pkgs, lib, config, username, ... }:
     let
-      # NixOS derives this as /home/<username>; reading it keeps one source of truth.
       homeDir = config.users.users.${username}.home;
     in
     {
       # Boot
       boot.loader.systemd-boot.enable = true;
       boot.loader.efi.canTouchEfiVariables = true;
-      boot.kernelPackages = pkgs.linuxPackages_latest;
+      boot.kernelPackages = pkgs.linuxPackages;
 
       # Locale
       time.timeZone = lib.mkForce "America/Bahia";

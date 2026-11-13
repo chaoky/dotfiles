@@ -13,6 +13,15 @@
         enableVirtualCamera = true;
         plugins = with pkgs.obs-studio-plugins; [
           obs-vaapi
+          obs-pipewire-audio-capture
+          # nixpkgs adds the driver runpath to OBS's libs and plugins but not
+          # to bin/obs-nvenc-test, so NVENC detection fails and OBS silently
+          # falls back to x264. wrapOBS splices each plugin's
+          # obsWrapperArguments into the launcher, so a no-op "plugin" can
+          # expose the driver libs to that helper without rebuilding OBS.
+          (pkgs.runCommand "obs-nvidia-driver-env" {
+            passthru.obsWrapperArguments = [ "--prefix LD_LIBRARY_PATH : /run/opengl-driver/lib" ];
+          } "mkdir -p $out")
         ];
       };
 
@@ -74,6 +83,8 @@
             defaultEditor = true;
             sideloadInitLua = true;
             package = unstable.neovim-unwrapped;
+            withPython3 = false;
+            withRuby = false;
           };
 
           programs.vicinae.enable = true;

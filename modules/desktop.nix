@@ -1,16 +1,16 @@
 {
   flake.nixosModules.desktop =
-    { pkgs, unstable, inputs, username, ... }:
+    { pkgs, unstable, inputs, username, self', ... }:
     let
       zen-browser = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default;
-      extensions = with pkgs.gnomeExtensions; [
+      extensions = [ self'.packages.game-lock ] ++ (with pkgs.gnomeExtensions; [
         appindicator
         places-status-indicator
         quick-settings-audio-panel
         color-picker
         clipboard-indicator
         tiling-shell
-      ];
+      ]);
     in
     {
       # GNOME

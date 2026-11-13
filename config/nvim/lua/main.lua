@@ -20,18 +20,6 @@ vim.opt.tabstop = 2
 vim.opt.foldlevel = 99 -- Start with all folds open (for nvim-ufo)
 vim.opt.showmode = false
 vim.opt.clipboard = "unnamedplus"
-vim.g.clipboard = {
-	name = "xsel",
-	copy = {
-		["+"] = "xsel --clipboard --input",
-		["*"] = "xsel --primary --input",
-	},
-	paste = {
-		["+"] = "xsel --clipboard --output",
-		["*"] = "xsel --primary --output",
-	},
-	cache_enabled = 0,
-}
 vim.opt.showtabline = 0
 
 -- Augroup for all custom autocmds (prevents accumulation on reload)

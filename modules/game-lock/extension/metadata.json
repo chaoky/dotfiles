@@ -1,0 +1,6 @@
+{
+  "uuid": "game-lock@chaoky",
+  "name": "Game Lock",
+  "description": "Blocks Super keybindings while a fullscreen window is focused.",
+  "shell-version": ["50"]
+}

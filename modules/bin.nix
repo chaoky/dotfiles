@@ -1,5 +1,5 @@
 {
-  flake.nixosModules.bin = { unstable, username, ... }:
+  flake.nixosModules.bin = { pkgs, unstable, username, self', ... }:
     with unstable;
     let
       claude = writeShellScriptBin "claude" ''
@@ -21,7 +21,7 @@
         unzip
         fd
         (ripgrep.override { withPCRE2 = true; })
-        texlive.combined.scheme-medium
+        texliveMedium
         pandoc
         fzf
         bat
@@ -55,7 +55,7 @@
         terraform-ls
         harper
         dockerfile-language-server
-        purescript
+        pkgs.purescript # unstable binary segfaults in installPhase (2026-10)
         basedpyright
         ffmpeg
         yt-dlp
@@ -67,6 +67,7 @@
         nix-tree
         claude
         claudep
+        self'.packages.smokeapi
         codex
         github-cli
         jj-fzf
@@ -80,6 +81,8 @@
         devenv
         aws-cdk-cli
         nordpass
+        wireguard-tools
+        proton-vpn
       ];
     };
 }

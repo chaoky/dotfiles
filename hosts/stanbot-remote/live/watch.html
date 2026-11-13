@@ -28,7 +28,9 @@
     margin: 0; background: var(--bg); color: var(--fg);
     font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
   }
-  main { padding: 16px 16px 48px; }
+  /* Fill the viewport without scrolling: header and bubbles take what they
+     need, the video gets the rest. */
+  main { display: flex; flex-direction: column; height: 100vh; height: 100dvh; padding: 16px; }
   header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
   header h1 { font-size: 1.3rem; margin: 0; flex: 1; word-break: break-all; }
   a { color: var(--muted); }
@@ -37,7 +39,14 @@
     background: var(--muted); margin-right: 8px; vertical-align: 2px;
   }
   .dot.on { background: var(--live); }
-  video { width: 100%; aspect-ratio: 16 / 9; border-radius: 8px; background: #000; display: block; }
+  .stage {
+    flex: 1; min-height: 0; container-type: size;
+    display: flex; align-items: center; justify-content: center;
+  }
+  video {
+    width: min(100cqw, 100cqh * 16 / 9); aspect-ratio: 16 / 9;
+    border-radius: 8px; background: #000; display: block;
+  }
   .bar { display: flex; align-items: center; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
   [hidden] { display: none !important; }
   input {
@@ -64,7 +73,7 @@
     <h1><span class="dot" id="dot"></span><span id="title"></span></h1>
     <a href="/">all streams</a>
   </header>
-  <video id="video" autoplay muted playsinline controls></video>
+  <div class="stage"><video id="video" autoplay muted playsinline controls></video></div>
   <div class="bar">
     <div id="viewers"></div>
     <input id="me" type="text" placeholder="your name" maxlength="20" autocomplete="off" spellcheck="false" hidden>

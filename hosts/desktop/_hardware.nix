@@ -31,6 +31,11 @@ in
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
 
+  # The SanDisk SSD PLUS on /media/sally wedges after repeated DIPM link
+  # sleep/wake cycles (SError PHYRdyChg/CommWake/DevExch, then IDENTIFY fails)
+  # until physically replugged. Keep SATA links at max_performance.
+  boot.kernelParams = [ "ahci.mobile_lpm_policy=1" ];
+
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/12a56770-bf7f-4526-b5f1-520f3ecd555b";
     fsType = "ext4";
@@ -72,9 +77,6 @@ in
 
   hardware.keyboard.qmk.enable = true;
 
-  # Nvidia stuff
-  # nvidia-open 595 doesn't compile against kernel 7.2 yet
-  boot.kernelPackages = lib.mkForce pkgs.linuxPackages_7_1;
   hardware.graphics.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
 
