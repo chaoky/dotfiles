@@ -18,6 +18,7 @@
     import-tree.url = "github:denful/import-tree";
     nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0";
     nixpkgs-unstable.url = "https://flakehub.com/f/NixOS/nixpkgs/0.1";
+    nixpkgs-server.url = "https://flakehub.com/f/NixOS/nixpkgs/0";
     determinate.url = "https://flakehub.com/f/DeterminateSystems/determinate/*";
     flake-parts.url = "github:hercules-ci/flake-parts";
     home-manager = {
@@ -30,19 +31,19 @@
     };
     colmena = {
       url = "github:zhaofengli/colmena";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-server";
     };
     headscale = {
       url = "github:juanfont/headscale";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-server";
     };
     disko = {
       url = "github:nix-community/disko";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-server";
     };
     nixos-anywhere = {
       url = "github:nix-community/nixos-anywhere";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-server";
     };
     zen-browser = {
       url = "github:youwen5/zen-browser-flake";

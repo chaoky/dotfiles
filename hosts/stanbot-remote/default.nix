@@ -1,7 +1,12 @@
-{ inputs, withSystem, ... }:
+{ inputs, ... }:
 let
   serverDomain = "tail.leo.camp";
   system = "x86_64-linux";
+
+  pkgs = import inputs.nixpkgs-server {
+    inherit system;
+    config.allowUnfree = true;
+  };
 
   stanbotRemoteModules = [
     inputs.disko.nixosModules.disko
@@ -317,15 +322,15 @@ in
   flake = {
     nixosModules.stanbot-remote = stanbotRemoteNixosModule;
 
-    nixosConfigurations.stanbot-remote = inputs.nixpkgs.lib.nixosSystem {
+    nixosConfigurations.stanbot-remote = inputs.nixpkgs-server.lib.nixosSystem {
       modules = stanbotRemoteModules ++ [
-        { nixpkgs.pkgs = withSystem system ({ pkgs, ... }: pkgs); }
+        { nixpkgs.pkgs = pkgs; }
         { services.headscale-server.domain = serverDomain; }
       ];
     };
 
     colmenaHive = inputs.colmena.lib.makeHive {
-      meta.nixpkgs = withSystem system ({ pkgs, ... }: pkgs);
+      meta.nixpkgs = pkgs;
       stanbot-remote = {
         imports = stanbotRemoteModules;
         services.headscale-server.domain = serverDomain;
