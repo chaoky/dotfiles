@@ -280,11 +280,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1794761399,
-        "narHash": "sha256-RvO6QGawE93rc6d0hvM9t3MiULEdYKJhTMFc2Y2oYEo=",
+        "lastModified": 1794761630,
+        "narHash": "sha256-QSB2rfr4zeqx2p7Ic7WNSyPdGoynjuZCIoC2+S17m6k=",
         "ref": "refs/heads/at-atproto-crates",
-        "rev": "193e1ad7f6fc3b45ba67fee71213d69d53df845e",
-        "revCount": 59,
+        "rev": "0c800b6ca80850969922d373b13047e153913471",
+        "revCount": 60,
         "type": "git",
         "url": "file:///home/leo/Documents/rec/gymini-slint"
       },
