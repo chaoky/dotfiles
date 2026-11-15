@@ -45,6 +45,11 @@
       url = "github:nix-community/nixos-anywhere";
       inputs.nixpkgs.follows = "nixpkgs-server";
     };
+    # gymini's spaces PDS and OAuth client metadata, for stanbot-remote. Not following
+    # nixpkgs-server on purpose: the PDS's pnpm dependency hash is only valid for the pnpm in
+    # gymini's own pinned nixpkgs. A local checkout for now (whatever is checked out, uncommitted
+    # changes included); switch to github:chaoky/gymini-slint once the branch is pushed.
+    gymini.url = "git+file:///home/leo/Documents/rec/gymini-slint";
     zen-browser = {
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";

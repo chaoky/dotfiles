@@ -11,6 +11,8 @@ let
   stanbotRemoteModules = [
     inputs.disko.nixosModules.disko
     inputs.headscale.nixosModules.default
+    inputs.gymini.nixosModules.gymini-pds
+    inputs.gymini.nixosModules.gymini-oauth
     ./_hardware.nix
     stanbotRemoteNixosModule
   ];
@@ -234,6 +236,24 @@ let
               reverse_proxy 127.0.0.1:8889
             }
           '';
+        };
+
+        # atproto PDS with the spaces alpha, for gymini's private sync. Handles live under
+        # *.pds.leo.camp (on-demand TLS); secrets and the lexicon authority account are created
+        # on first start under /var/lib/gymini-pds.
+        services.gymini-pds = {
+          enable = true;
+          hostname = "pds.leo.camp";
+          caddy.enable = true;
+        };
+
+        # gymini's OAuth client_id and callback page. The signing key is generated into
+        # /var/lib/gymini-oauth/private/key.did on first start.
+        services.gymini-oauth = {
+          enable = true;
+          domain = "gymini.leo.camp";
+          nginx.enable = false;
+          caddy.enable = true;
         };
 
         services.mediamtx = {
